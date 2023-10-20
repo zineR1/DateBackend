@@ -1,6 +1,7 @@
 import { Ticket } from '../models/Ticket.js';
 import { User } from '../models/User.js';
 import Utils from '../utils/index.js';
+import emailService from '../services/email.service.js';
 
 export const getUsers = async(req, res) => {
     try {
@@ -39,6 +40,7 @@ export const createUser = async(req, res) => {
     const { 
         name,
         lastName, 
+        userName,
         email, 
         password, 
         description,
@@ -65,6 +67,7 @@ export const createUser = async(req, res) => {
         const newUSer = await User.create({
             name,
             lastName,
+            userName,
             email,
             password: nwPass,
             description,
@@ -93,6 +96,7 @@ export const updateUser = async(req, res) => {
         email, 
         password, 
         description,
+        //userName,
         pictures,
         age, 
         dateOfBirth,
@@ -112,10 +116,11 @@ export const updateUser = async(req, res) => {
         user.email = email;
         user.password = password;
         user.description = description;
+       // user.userName = userName;
       //  user.pictures = pictures;
         user.age = age;
         user.dateOfBirth = dateOfBirth;
-    //    user.genre = genre;
+          user.genre = genre;
         user.city = city;
         user.sentimentalSituation = sentimentalSituation;
         user.phone = phone;
@@ -187,3 +192,32 @@ export const resetPassword = async(req, res) => {
       res.json(user)
 }
 
+
+export const correoReset = async(req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await User.findOne({
+            where: {
+                email: email
+            }
+        })
+        if(!user){
+            return res.status(401).json({ massage: ' Usuario o Contraseña Incorrecto'})
+          }
+          const page = `
+            <div>
+                <h1>Reset Contraseña Vinculando</h1>
+                <h3>Hola ${user.name} restaura tu contraseña con este link</h3>
+                <a href="https://www.google.com">Cambiar Contraseña</a> 
+            </div>
+          
+          `
+          const result = await emailService.sendEmail(user.email, 'Hola Como estas', page);
+          res.send("email enviado")
+    } catch (error) {
+        res.send(error.message)
+    }
+    //
+
+    
+}
