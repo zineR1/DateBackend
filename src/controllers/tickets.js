@@ -29,12 +29,13 @@ export const getTicketById = async(req, res) => {
 
 export const createTicket = async(req, res) => {
     try {
-        const { price, sold, userId } = req.body;
+        const { price, sold, userId, eventId } = req.body;
 
         const newTicket = await Ticket.create({
             price,
             sold,
-            userId
+            userId,
+            eventId
          });
     
         res.json(newTicket);
@@ -76,3 +77,4 @@ export const deleteTicket = async(req, res) => {
         return res.status(500).json({message: error.message});
     }
 }
+

@@ -14,6 +14,9 @@ export const User = sequelize.define('users', {
     lastName: {
         type: DataTypes.STRING
     },
+    userName: {
+        type: DataTypes.STRING
+    }, 
     email: {
         type: DataTypes.STRING
     },
@@ -32,23 +35,27 @@ export const User = sequelize.define('users', {
     dateOfBirth: {
         type: DataTypes.STRING
     },
-    /* genre: {
-        types: DataTypes.STRING
-    },
- */    city: {
+      genre: {
+        type: DataTypes.STRING
+    }, 
+    city: {
         type: DataTypes.STRING
     },
     sentimentalSituation: {
         type: DataTypes.STRING
     },
     phone: {
+        type: DataTypes.STRING
+
+    },
+    eventId: {
         type: DataTypes.INTEGER
+    },
 
-    }
+}
+);
 
-});
-
-User.hasMany(Ticket, {
+/* User.hasMany(Ticket, {
     foreignKey: 'userId',
     sourceKey: 'id'
 });
@@ -56,4 +63,4 @@ User.hasMany(Ticket, {
 Ticket.belongsTo(User, {
     foreignKey: 'userId',
     targetId: 'id'
-})
+}) */
