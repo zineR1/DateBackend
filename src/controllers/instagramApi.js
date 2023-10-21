@@ -6,7 +6,7 @@ dotenv.config();
 export const getFirstCode = async (req, res) => {
   // Primera data recibida desde el frontend
   const code = req.body.code;
-  const userName = userName;
+  const userName = req.body.userName;
   let redirectUri = req.body.redirectUri;
   let accessToken = null;
   let INSTA_APP_ID = process.env.INSTA_APP_ID;
@@ -14,7 +14,7 @@ export const getFirstCode = async (req, res) => {
 
   try {
     // send form based request to Instagram API
-    let result = await request.post({
+    let result = await req.post({
       url: "https://api.instagram.com/oauth/access_token",
       form: {
         client_id: INSTA_APP_ID,
