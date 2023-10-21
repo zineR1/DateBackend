@@ -38,4 +38,4 @@ if (process.env.DATABASE_URL === undefined)
   console.log(colors.black.bgRed("En la capa de desarrollo"));
 else console.log(process.env.DATABASE_URL, "DATABASE URI");
 
-export default sequelize; 
+export {sequelize}; 
