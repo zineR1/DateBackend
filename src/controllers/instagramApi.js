@@ -1,10 +1,12 @@
 import dotenv from "dotenv";
+import { User } from '../models/User.js'
 
 dotenv.config();
 
 export const getFirstCode = async (req, res) => {
   // Primera data recibida desde el frontend
-  let code = req.body.code;
+  const code = req.body.code;
+  const userName = userName;
   let redirectUri = req.body.redirectUri;
   let accessToken = null;
   let INSTA_APP_ID = process.env.INSTA_APP_ID;
@@ -25,6 +27,7 @@ export const getFirstCode = async (req, res) => {
 
     // Got access token. Parse string response to JSON
     accessToken = JSON.parse(result).access_token;
+    console.log(accessToken);
     //res.json(accessToken);
   } catch (e) {
     res.send("Fallo en el primer paso");
@@ -35,8 +38,19 @@ export const getFirstCode = async (req, res) => {
     );
     accessToken = resp.data.access_token;
     console.log(colors.black.bgRed(accessToken, "En la capa de desarrollo"));
+    console.log(accessToken);
     // save accessToken  to Database
+    const user = await User.findOne({
+        where: {
+            userName: userName
+        }
+    });
+
+    user.instagramToken = accessToken;
+    await user.save();
   } catch (e) {
     res.send("Fallo en el segundo paso");
   }
+  console.log("Code", code);
 };
+
