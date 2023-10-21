@@ -1,12 +1,12 @@
 import http from "http";
 import app from "./app.js";
-import { sequelize } from "./database/database.js";
+import  sequelize  from "./database/database.js";
 import { Server } from "socket.io";
 
 const PORT = process.env.PORT || 3001;
 
 async function main() {
-  await sequelize.sync();
+  await sequelize.sync({ force: false });
   const server = http.createServer(app);
   const io = new Server();
   io.on("connection", (socket) => {

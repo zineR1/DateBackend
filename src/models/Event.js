@@ -1,6 +1,5 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../database/database.js';
-
+import { DataTypes } from "sequelize";
+import sequelize from "../database/database.js";
 
 /* 
     la tabla tickets va a tener todas las entradas compradas
@@ -9,44 +8,44 @@ import { sequelize } from '../database/database.js';
     en la tabla Tickets
 */
 
-export const Event = sequelize.define('events', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    flyer: {
-        type: DataTypes.STRING
-    },
-    nombreEvento: {
-        type: DataTypes.STRING,
-    },
-    fechaEvento: {
-        type: DataTypes.STRING
-    },
-    horaInicio: {
-        type: DataTypes.STRING
-    },
-    horaFin: {
-        type: DataTypes.STRING
-    },
-    descripcion: {
-        type: DataTypes.STRING
-    },
-    ubicacion: {
-        type: DataTypes.STRING
-    },
-    tipoEntrada: {
-        type: DataTypes.ENUM('simple', 'multiple'),
-        defaultValue: 'simple'
-    },
-    entradas: {
-        type: DataTypes.STRING
-    },
-    organizadores: {
-        type: DataTypes.STRING
-    },
-    invitados: {
-        type: DataTypes.STRING
-    }
-})
+export const Event = sequelize.define("events", {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  flyer: {
+    type: DataTypes.STRING,
+  },
+  nombreEvento: {
+    type: DataTypes.STRING,
+  },
+  fechaEvento: {
+    type: DataTypes.STRING,
+  },
+  horaInicio: {
+    type: DataTypes.STRING,
+  },
+  horaFin: {
+    type: DataTypes.STRING,
+  },
+  descripcion: {
+    type: DataTypes.STRING,
+  },
+  ubicacion: {
+    type: DataTypes.STRING,
+  },
+  tipoEntrada: {
+    type: DataTypes.ENUM("simple", "multiple"),
+    defaultValue: "simple",
+  },
+  entradas: {
+    type: DataTypes.STRING,
+  },
+  organizadores: {
+    type: DataTypes.STRING,
+  },
+  invitados: {
+    type: DataTypes.STRING,
+  },
+});
