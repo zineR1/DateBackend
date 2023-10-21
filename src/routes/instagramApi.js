@@ -3,7 +3,7 @@ import { getFirstCode } from '../controllers/instagramApi.js';
 
 const router = Router();
 
-router.get('/init-insta', getFirstCode);
+router.post('/init-insta', getFirstCode);
 
 
 export default router;

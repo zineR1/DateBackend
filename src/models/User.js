@@ -47,8 +47,8 @@ export const User = sequelize.define('users', {
         type: DataTypes.STRING
 
     },
-    eventId: {
-        type: DataTypes.INTEGER
+    instagramToken: {
+        type: DataTypes.STRING
     },
 
 }
