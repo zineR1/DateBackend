@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { getTickets} from '../controllers/tickets.js';
+import { getFirstCode } from '../controllers/instagramApi.js';
 
 const router = Router();
 
-router.get('/init-insta', getTickets);
+router.get('/init-insta', getFirstCode);
 
 
 export default router;

@@ -1,12 +1,41 @@
-import { Sequelize } from "sequelize";
+/*import { Sequelize } from "sequelize";
 
 export const sequelize = new Sequelize('Date','postgres', 'ale',{
     host: 'localhost',
     dialect: 'postgres'
 })
+ */
 
+import { Sequelize } from "sequelize";
+import dotenv from 'dotenv';
+import colors from 'colors';
 
-/* {"access_token": "IGQWRNSjk3V1R3RGRVZAkZApa2R6bkE3ZA2JWeVN3dE5lQ0g2UWlYN0FPY0Q3MGJZAVUE1cEdKZAGxLYkVUU0cwek12NXVTWTNvRzRtVTlKdnNSN3NuS1BoRWtFX0Juai04X2NtbjhXamNzaHpvR0NRWWFEVzJkS01BUVZAxZAGRCSURXejZAOUQZDZD", "user_id": 5947555218680529} */
+dotenv.config();
 
-/* curl -X GET \
-'https://graph.instagram.com/5947555218680529?fields=id,username&access_token=IGQWRNSjk3V1R3RGRVZAkZApa2R6bkE3ZA2JWeVN3dE5lQ0g2UWlYN0FPY0Q3MGJZAVUE1cEdKZAGxLYkVUU0cwek12NXVTWTNvRzRtVTlKdnNSN3NuS1BoRWtFX0Juai04X2NtbjhXamNzaHpvR0NRWWFEVzJkS01BUVZAxZAGRCSURXejZAOUQZDZD' */
+const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_PORT } = process.env;
+
+/* const proConfig = {
+  connectionString: process.env.DATABASE_URL,
+}; */
+
+const config = `postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+
+let sequelize;
+process.env.NODE_ENV === "production"
+  ? (sequelize = new Sequelize(process.env.DATABASE_URL, {
+      dialect: "postgres",
+      protocol: "postgres",
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      },
+    }))
+  : (sequelize = new Sequelize(config));
+
+if (process.env.DATABASE_URL === undefined)
+  console.log(colors.black.bgRed("En la capa de desarrollo"));
+else console.log(process.env.DATABASE_URL, "DATABASE URI");
+
+module. Exports = sequelize;

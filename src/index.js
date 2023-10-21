@@ -1,26 +1,24 @@
-import http from 'http';
-import app from './app.js';
-import { sequelize } from './database/database.js';
-import { Server } from 'socket.io';
+import http from "http";
+import app from "./app.js";
+import { sequelize } from "./database/database.js";
+import { Server } from "socket.io";
+
+const PORT = process.env.PORT || 3001;
 
 async function main() {
+  await sequelize.sync();
+  const server = http.createServer(app);
+  const io = new Server();
+  io.on("connection", (socket) => {
+    console.log("A user connected");
 
-      
-        await sequelize.sync()
-        const server = http.createServer(app);
-        const io = new Server;
-        io.on('connection', (socket) => {
-            console.log('A user connected');
+    socket.on("disconnect", () => {
+      console.log("User disconnected");
+    });
+  });
 
-            socket.on('disconnect', () => {
-                console.log('User disconnected');
-            });
-        });
-
-        server.listen(3001, console.log("running on 3001"));
-
-    }
+  server.listen(PORT, console.log(`Server runnin on ${PORT}`));
+}
 ///servidor con sockets
 
-
-main(); 
+main();

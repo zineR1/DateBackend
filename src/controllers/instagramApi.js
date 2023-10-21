@@ -1,11 +1,15 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const getFirstCode = async(req, res) => {
 // Primera data recibida desde el frontend
 let code = req.body.code;
 let redirectUri = req.body.redirectUri;
 let accessToken = null;
-let INSTA_APP_ID = 1036428654475318;
-let INSTA_APP_SECRET = '7b106edaf98ed16042632a487dfa10f7';
+let INSTA_APP_ID = process.env.INSTA_APP_ID;
+let INSTA_APP_SECRET = process.env.INSTA_APP_SECRET;
+
 try {
     // send form based request to Instagram API
     let result = await request.post({
@@ -21,8 +25,15 @@ try {
 
     // Got access token. Parse string response to JSON
     accessToken = JSON.parse(result).access_token;
-    res.json(accessToken);
+    //res.json(accessToken);
 } catch (e) {
-    console.log("Error=====", e);
+    res.send('Fallo en el primer paso')
 }
+try {
+    let resp = await axios.get(`https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${process.env.INSTA_APP_SECRET}&access_token=${accessToken}`)
+    accessToken = resp.data.access_token;
+    // save accessToken  to Database
+  } catch (e) {
+    res.send('Fallo en el segundo paso')
+  }
 }
