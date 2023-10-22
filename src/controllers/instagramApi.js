@@ -13,6 +13,8 @@ export const getFirstCode = async (req, res) => {
 console.log(code,"CODE")
 console.log(redirectUri,"redirectUri")
 console.log(idUser,"idUser")
+console.log(INSTA_APP_ID,"INSTA_APP_ID")
+console.log(INSTA_APP_SECRET,"INSTA_APP_SECRET")
 
   try {
     // send form based request to Instagram API
