@@ -33,7 +33,7 @@ console.log(result, "RESULTTTT")
     accessToken = JSON.parse(result).access_token;
     //res.json(accessToken);
   } catch (e) {
-    return res.send("Fallo en el primer paso");
+    return res.send(result,"Fallo en el primer paso");
   }
   try {
     let resp = await axios.get(
@@ -43,7 +43,7 @@ console.log(result, "RESULTTTT")
     console.log(colors.black.bgRed(accessToken, "En la capa de desarrollo"));
     // save accessToken  to Database
   } catch (e) {
-    return res.send("Fallo en el segundo paso");
+    return res.send(resp,"Fallo en el segundo paso");
   }
 
   try {
@@ -63,6 +63,6 @@ console.log(result, "RESULTTTT")
     // Got insta photos
     res.send({ infoTotal: resp, fotos: instaPhotos });
   } catch (e) {
-    return res.send("Fallo en el tercer paso");
+    return res.send(resp,"Fallo en el tercer paso");
   }
 };
