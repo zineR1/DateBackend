@@ -18,7 +18,7 @@ console.log(INSTA_APP_SECRET,"INSTA_APP_SECRET")
 
   try {
     // send form based request to Instagram API
-    let result = await request.post({
+    let result = await axios.post({
       url: "https://api.instagram.com/oauth/access_token",
       form: {
         client_id: INSTA_APP_ID,
