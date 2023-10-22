@@ -1,20 +1,19 @@
 import dotenv from "dotenv";
-import { User } from '../models/User.js'
 
 dotenv.config();
 
 export const getFirstCode = async (req, res) => {
   // Primera data recibida desde el frontend
   const code = req.body.code;
-  const userName = req.body.userName;
-  let redirectUri = req.body.redirectUri;
+  const redirectUri = req.body.redirectUri;
+  const idUser = req.body.id;
   let accessToken = null;
-  let INSTA_APP_ID = process.env.INSTA_APP_ID;
-  let INSTA_APP_SECRET = process.env.INSTA_APP_SECRET;
+  const INSTA_APP_ID = process.env.INSTA_APP_ID;
+  const INSTA_APP_SECRET = process.env.INSTA_APP_SECRET;
 
   try {
     // send form based request to Instagram API
-    let result = await req.post({
+    let result = await request.post({
       url: "https://api.instagram.com/oauth/access_token",
       form: {
         client_id: INSTA_APP_ID,
@@ -27,7 +26,6 @@ export const getFirstCode = async (req, res) => {
 
     // Got access token. Parse string response to JSON
     accessToken = JSON.parse(result).access_token;
-    console.log(accessToken);
     //res.json(accessToken);
   } catch (e) {
     res.send("Fallo en el primer paso");
@@ -38,19 +36,28 @@ export const getFirstCode = async (req, res) => {
     );
     accessToken = resp.data.access_token;
     console.log(colors.black.bgRed(accessToken, "En la capa de desarrollo"));
-    console.log(accessToken);
     // save accessToken  to Database
-    const user = await User.findOne({
-        where: {
-            userName: userName
-        }
-    });
-
-    user.instagramToken = accessToken;
-    await user.save();
   } catch (e) {
     res.send("Fallo en el segundo paso");
   }
-  console.log("Code", code);
-};
 
+  try {
+    const user = await User.findOne({
+      where: {
+        id: idUser,
+      },
+    });
+    let instaAccessToken = user.instagramToken; // get from DB
+    let resp = await axios.get(
+      `https://graph.instagram.com/me/media?fields=media_type,username,permalink,media_url&access_token=${instaAccessToken}`
+    );
+    resp = resp.data;
+    let instaPhotos = resp.data
+      .filter((d) => d.media_type === "IMAGE")
+      .map((d) => d.media_url);
+    // Got insta photos
+    res.send({ infoTotal: resp, fotos: instaPhotos });
+  } catch (e) {
+    console.log(e.response.data.error);
+  }
+};
