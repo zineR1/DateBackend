@@ -5,7 +5,7 @@ dotenv.config();
 export const getFirstCode = async (req, res) => {
   // Primera data recibida desde el frontend
   const code = req.body.code;
-  const redirectUri = req.body.redirectUri;
+  const redirectUri = req.body.redirectUrl;
   const idUser = req.body.id;
   let accessToken = null;
   const INSTA_APP_ID = process.env.INSTA_APP_ID;
