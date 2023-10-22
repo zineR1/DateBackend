@@ -33,7 +33,7 @@ console.log(result, "RESULTTTT")
     accessToken = JSON.parse(result).access_token;
     //res.json(accessToken);
   } catch (e) {
-    return res.send(result,"Fallo en el primer paso");
+    return res.send(e,"Fallo en el primer paso");
   }
   try {
     let resp = await axios.get(
