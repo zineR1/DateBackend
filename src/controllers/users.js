@@ -38,44 +38,28 @@ export const getUserById = async (req, res) => {
 
 export const createUser = async (req, res) => {
   const {
-    name,
-    lastName,
-    userName,
     email,
-    password,
-    description,
-    pictures,
-    dateOfBirth,
-    genre,
-    city,
-    sentimentalSituation,
-    phone,
+    password
+    
   } = req.body;
 
-  const nwAge = (date) => {
+ /*  const nwAge = (date) => {
     const fechaNac = new Date(date);
     const fechaActual = new Date();
     const diferenciaTiempo = fechaActual - fechaNac;
     const edad = Math.floor(diferenciaTiempo / (365.25 * 24 * 60 * 60 * 1000));
     return edad;
-  };
+  }; */
   const nwPass = Utils.createHash(password);
+  console.log(nwPass);
   try {
     const newUSer = await User.create({
-      name,
-      lastName,
-      userName,
       email,
-      password: nwPass,
-      description,
-      pictures,
-      age: nwAge(dateOfBirth),
-      dateOfBirth,
-      genre,
-      city,
-      sentimentalSituation,
-      phone,
+      nwPass
     });
+    newUSer.password = nwPass;
+
+    await newUSer.save();
 
     res.json(newUSer);
   } catch (error) {
