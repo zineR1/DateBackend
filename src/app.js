@@ -11,10 +11,12 @@ import cors from 'cors';
 
 const app = express();
 
+const whiteList = ["http://localhost:3000", "http://localhost:3001", "https://datebackendpruebas.onrender.com/init-insta", "https://datebackendpruebas.onrender.com"];
+
 //midlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
-app.use(cors());
+app.use(cors({ origin: whiteList }));
 app.use(cookieParser());
 
 initPassport();
