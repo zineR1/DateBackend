@@ -11,7 +11,7 @@ import cors from 'cors';
 
 const app = express();
 
-const whiteList = ["http://localhost:3000", "http://localhost:3001", "https://datebackendpruebas.onrender.com/init-insta", "https://datebackendpruebas.onrender.com"];
+const whiteList = ["http://localhost:3000", "http://localhost:3001", "https://datebackendpruebas.onrender.com/init-insta", "https://datebackendpruebas.onrender.com", "https://datefrontendpruebas.onrender.com"];
 
 //midlewares
 app.use(express.json());
