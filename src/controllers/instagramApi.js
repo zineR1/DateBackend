@@ -10,6 +10,9 @@ export const getFirstCode = async (req, res) => {
   let accessToken = null;
   const INSTA_APP_ID = process.env.INSTA_APP_ID;
   const INSTA_APP_SECRET = process.env.INSTA_APP_SECRET;
+console.log(code,"CODE")
+console.log(redirectUri,"redirectUri")
+console.log(idUser,"idUser")
 
   try {
     // send form based request to Instagram API
