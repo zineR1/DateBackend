@@ -11,6 +11,7 @@ import cors from "cors";
 
 const app = express();
 
+  
 const allowedOrigins = [
   "https://datefrontendpruebas.onrender.com",
   "http://localhost:3000",
@@ -33,7 +34,13 @@ app.use(cookieParser());
 
 initPassport();
 app.use(passport.initialize());
-
+app.use(function (_, res, next) {
+    res.header("Access-Control-Allow-Origin", "https://datefrontendpruebas.onrender.com");
+    res.header("Access-Control-Allow-Origin", "GET, POST, PUT, DELETE");
+    res.header("Access-Control-Allow-Origin", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Origin", true);
+    next();
+  });
 app.use(routerUsers);
 app.use(routerTickets);
 app.use(routerAuth);
