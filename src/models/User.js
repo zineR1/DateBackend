@@ -50,6 +50,9 @@ export const User = sequelize.define('users', {
     instagramToken: {
         type: DataTypes.STRING
     },
+    events: {
+        type: DataTypes.ARRAY(DataTypes.JSON)
+    }
 
 }
 );
