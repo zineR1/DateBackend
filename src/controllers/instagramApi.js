@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+import axios from 'axios'
+import { User } from '../models/User.js'
 
 dotenv.config();
 
@@ -15,6 +17,8 @@ console.log(redirectUri,"redirectUri")
 console.log(idUser,"idUser")
 console.log(INSTA_APP_ID,"INSTA_APP_ID")
 console.log(INSTA_APP_SECRET,"INSTA_APP_SECRET")
+
+
 
   try {
     // send form based request to Instagram API
@@ -43,7 +47,7 @@ console.log(result, "RESULTTTT")
     console.log(colors.black.bgRed(accessToken, "En la capa de desarrollo"));
     // save accessToken  to Database
   } catch (e) {
-    return res.send(resp,"Fallo en el segundo paso");
+    return res.send(res,"Fallo en el segundo paso");
   }
 
   try {
@@ -63,6 +67,6 @@ console.log(result, "RESULTTTT")
     // Got insta photos
     res.send({ infoTotal: resp, fotos: instaPhotos });
   } catch (e) {
-    return res.send(resp,"Fallo en el tercer paso");
+    return res.send(res,"Fallo en el tercer paso");
   }
 };

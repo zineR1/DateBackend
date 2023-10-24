@@ -39,8 +39,8 @@ export const getUserById = async (req, res) => {
 export const createUser = async (req, res) => {
   const {
     email,
-    password
-    
+    password,
+    events
   } = req.body;
 
  /*  const nwAge = (date) => {
@@ -55,7 +55,8 @@ export const createUser = async (req, res) => {
   try {
     const newUSer = await User.create({
       email,
-      nwPass
+      nwPass,
+      events
     });
     newUSer.password = nwPass;
 
@@ -75,7 +76,7 @@ export const updateUser = async (req, res) => {
     email,
     password,
     description,
-    //userName,
+    userName,
     pictures,
     age,
     dateOfBirth,
@@ -93,8 +94,8 @@ export const updateUser = async (req, res) => {
     user.email = email;
     user.password = password;
     user.description = description;
-    // user.userName = userName;
-    //  user.pictures = pictures;
+     user.userName = userName;
+     user.pictures = pictures;
     user.age = age;
     user.dateOfBirth = dateOfBirth;
     user.genre = genre;
@@ -193,7 +194,7 @@ export const correoReset = async (req, res) => {
             <div>
                 <h1>Reset Contraseña Vinculando</h1>
                 <h3>Hola ${user.name} restaura tu contraseña con este link</h3>
-                <a href="https://www.google.com">Cambiar Contraseña</a> 
+                <a href="https://datefrontendpruebas.onrender.com/#/forgotPw2">Cambiar Contraseña</a> 
             </div>
           
           `;

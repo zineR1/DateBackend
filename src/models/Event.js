@@ -41,12 +41,12 @@ export const Event = sequelize.define('events', {
         defaultValue: 'simple'
     },
     entradas: {
-        type: DataTypes.STRING
+        type: DataTypes.ARRAY(DataTypes.JSON)
     },
     organizadores: {
-        type: DataTypes.STRING
+        type: DataTypes.ARRAY(DataTypes.JSON)
     },
     invitados: {
-        type: DataTypes.STRING
+        type: DataTypes.ARRAY(DataTypes.JSON)
     }
 })

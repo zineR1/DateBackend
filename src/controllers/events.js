@@ -14,6 +14,13 @@ export const getEvents = async(req, res) => {
 
 export const createEvent = async(req, res) => {
     
+    /* 
+        El campo entrada va a ser enviado desde el front. el id debereia ser generado por aqui
+        El cmpo organizadores tambien sera enviado desde el front
+        el campor invitados 
+    */
+
+
     const {
         flyer,
         nombreEvento,
@@ -42,7 +49,7 @@ export const createEvent = async(req, res) => {
             organizadores,
             invitados
         });
-
+        console.log(newEvent.organizadores)
         res.json(newEvent);
     } catch (error) {
         return res.status(500).json({message: error.message});
@@ -66,7 +73,7 @@ export const deleteEvent = async(req, res) => {
 }
 
 export const soldTickets = async(req, res) => {
-    const { id, cantidad } = req.body;
+    const { id, cantidad, organizadoresNomb } = req.body;
 
     const event = await Event.findOne({
         where: {
@@ -90,11 +97,80 @@ export const soldTickets = async(req, res) => {
     })
 
     const test = arr.map((e) => {
-        return {...e.dataValues, nombreEntrada: event.nombreEvento, cantidadEntradas: cantidad, descripcion:event.descripcion }
+        return {...e.dataValues, nombreEntrada: event.nombreEvento, cantidadEntradas: cantidad, descripcion:event.descripcion, invitados: users }
     })
     event.entradas = test;
     res.send(userEvent)
 
 }
+
+
+
+export const agregarInvitado = async(req, res) => {
+    const { id, nombre, apellido, userName, foto, comprobante, confirmado, entrada, total} = req.body;
+
+
+    const nuevoInvitado = {
+        nombre,
+        apellido,
+        userName,
+        foto,
+        comprobante,
+        confirmado,
+        entrada,
+        total
+      };
+
+      const event = await Event.findOne({
+        where: {
+            id: id
+        }
+    })
+    
+
+  if (!event) {
+        return res.status(404).json({ message: 'Evento no encontrado' });
+      } 
+
+      let newArray = Object.assign([], instance.event.invitados);
+
+      newArray.push(nuevoInvitado);
+      await instance.update(
+        event.invitados = newArray
+      )
+      
+     
+
+       // Asegurarse de que el evento tenga un array de invitados
+    /* if (!event.invitados) {
+        event.invitados = [];
+        event.invitados.push(nuevoInvitado);
+        console.log(event.invitados, " Invitados if");
+    } else {
+        event.invitados = [ event.invitados.forEach(el => el), nuevoInvitado ]
+        console.log(event.invitados, " Invitados else");
+
+    } */
+
+    /* if(!event.invitados) {
+        event.invitados = [];
+    }
+    event.invitados.push(nuevoInvitado); */
+    // Agregar el nuevo invitado al array de invitados del evento
+    
+    
+  // Guardar los cambios en la base de datos
+
+  /*  try {
+    await event.save();
+    res.json(event.invitados);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error al agregar el invitado' });
+  }  */
+  res.send(event.invitados)
+}
+
+
 
 
