@@ -164,6 +164,97 @@ export const agregarInvitado = async(req, res) => {
   
 }
 
+export const getEventById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const event = await Event.findOne({
+            where: {
+                id: id,
+            }
+        })
+        if (!event) {
+            return res.status(404).json({ message: "Evento no encontrado" });
+          }
+
+        res.status(200).json(event);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export const addOrganizadores = async(req, res) => {
+    const {nombre, apellido, username, foto} = req.body;
+    const { id } = req.params;
+
+    try {
+        const event = await Event.findOne({
+            where: {
+                id: id
+            }
+        })
+
+        if (!event) {
+            return res.status(404).json({ message: "Evento no encontrado" });
+          }
+        const data = {
+            nombre: nombre,
+            apellido: apellido,
+            username: username,
+            foto: foto
+        }
+        if (!event.organizadores) {
+            event.organizadores = [];
+            event.organizadores.push(data);
+            console.log(event.organizadores, " Invitados if");
+        } else {
+            event.organizadores = [ ...event.organizadores, data]
+            console.log(event.organizadores, " Invitados else");
+    
+        } 
+
+        await event.save();
+        res.json(event.organizadores);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export const deleteOrganizador  = async(req, res) => {
+    const { username } = req.body;
+    const { id } = req.params;
+
+    try {
+        const event = await Event.findOne({
+            where: {
+                id: id
+            }
+        })
+
+        if (!event) {
+            return res.status(404).json({ message: "Evento no encontrado" });
+          }
+           const result = event.organizadores.filter(e => e.username !== username); 
+            
+          event.organizadores = result;
+
+          event.save();
+          res.send(event.organizadores)
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+} 
 
 
+
+/* 
+events by id
+
+*/
+
+/* 
+update event 
+toda la info q no sea ni organizadores o inviitados
+
+*/
 

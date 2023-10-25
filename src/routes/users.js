@@ -8,6 +8,7 @@ router.get('/users/mail', correoReset);
 router.put('/users/:id', updateUser);
 router.delete('/users/:id', deleteUser);
 router.get('/users/:id', getUserById);
+router.put('/usuarios/eventos')
 
 
 export default router;
