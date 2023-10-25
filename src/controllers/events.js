@@ -131,26 +131,19 @@ export const agregarInvitado = async(req, res) => {
   if (!event) {
         return res.status(404).json({ message: 'Evento no encontrado' });
       } 
-
-      let newArray = Object.assign([], instance.event.invitados);
-
-      newArray.push(nuevoInvitado);
-      await instance.update(
-        event.invitados = newArray
-      )
       
      
 
        // Asegurarse de que el evento tenga un array de invitados
-    /* if (!event.invitados) {
+     if (!event.invitados) {
         event.invitados = [];
         event.invitados.push(nuevoInvitado);
         console.log(event.invitados, " Invitados if");
     } else {
-        event.invitados = [ event.invitados.forEach(el => el), nuevoInvitado ]
+        event.invitados = [ ...event.invitados, nuevoInvitado]
         console.log(event.invitados, " Invitados else");
 
-    } */
+    } 
 
     /* if(!event.invitados) {
         event.invitados = [];
@@ -161,14 +154,14 @@ export const agregarInvitado = async(req, res) => {
     
   // Guardar los cambios en la base de datos
 
-  /*  try {
+    try {
     await event.save();
     res.json(event.invitados);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error al agregar el invitado' });
-  }  */
-  res.send(event.invitados)
+  }  
+  
 }
 
 

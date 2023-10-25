@@ -8,38 +8,42 @@ export const getFirstCode = async (req, res) => {
   // Primera data recibida desde el frontend
   const code = req.body.code;
   const redirectUri = req.body.redirectUrl;
-  const idUser = req.body.id;
+  //const idUser = req.body.id;
+
+
+
+
   let accessToken = null;
   const INSTA_APP_ID = process.env.INSTA_APP_ID;
   const INSTA_APP_SECRET = process.env.INSTA_APP_SECRET;
 console.log(code,"CODE")
 console.log(redirectUri,"redirectUri")
-console.log(idUser,"idUser")
+//console.log(idUser,"idUser")
 console.log(INSTA_APP_ID,"INSTA_APP_ID")
 console.log(INSTA_APP_SECRET,"INSTA_APP_SECRET")
 
 
 
-  try {
-    // send form based request to Instagram API
-    let result = await axios.post({
-      url: "https://api.instagram.com/oauth/access_token",
-      form: {
-        client_id: INSTA_APP_ID,
-        client_secret: INSTA_APP_SECRET,
-        grant_type: "authorization_code",
-        redirect_uri: redirectUri,
-        code: code,
-      },
-    });
-console.log(result, "RESULTTTT")
-    // Got access token. Parse string response to JSON
-    accessToken = JSON.parse(result).access_token;
-    //res.json(accessToken);
-  } catch (e) {
-    return res.send(e,"Fallo en el primer paso");
-  }
-  try {
+try {
+  // En lugar de pasar un objeto con 'url' y 'form', utiliza una URL directa y envía los datos como un objeto.
+  const url = "https://api.instagram.com/oauth/access_token";
+  const data = {
+    client_id: 1036428654475318,
+    client_secret: "7b106edaf98ed16042632a487dfa10f7",
+    grant_type: "authorization_code",
+    redirect_uri: "https://datefrontendpruebas.onrender.com/instagramCode/",
+    code: code,
+  };
+
+  const response = await axios.post(url, data);
+
+  // Accede al cuerpo de la respuesta y analízalo como JSON
+  accessToken = response.data.access_token;
+  res.json(accessToken);
+} catch (e) {
+  return res.status(500).json({ error: "Fallo en el primer paso", error2: e });
+}
+   /* try {
     let resp = await axios.get(
       `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${process.env.INSTA_APP_SECRET}&access_token=${accessToken}`
     );
@@ -47,10 +51,10 @@ console.log(result, "RESULTTTT")
     console.log(colors.black.bgRed(accessToken, "En la capa de desarrollo"));
     // save accessToken  to Database
   } catch (e) {
-    return res.send(res,"Fallo en el segundo paso");
-  }
+    return res.status(500).json({ error: "Fallo en el primer paso" });
+  } */
 
-  try {
+ /*  try {
     const user = await User.findOne({
       where: {
         id: idUser,
@@ -68,5 +72,5 @@ console.log(result, "RESULTTTT")
     res.send({ infoTotal: resp, fotos: instaPhotos });
   } catch (e) {
     return res.send(res,"Fallo en el tercer paso");
-  }
+  }   */
 };
