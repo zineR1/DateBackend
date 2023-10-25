@@ -51,7 +51,7 @@ export const User = sequelize.define('users', {
         type: DataTypes.STRING
     },
     events: {
-        type: DataTypes.ARRAY(DataTypes.JSON)
+        type: DataTypes.JSON
     }
 
 }
