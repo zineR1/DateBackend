@@ -179,7 +179,8 @@ export const resetPassword = async (req, res) => {
 };
 
 export const correoReset = async (req, res) => {
-  const { email } = req.body;
+  const  {email}  = req.body;
+  console.log(req.body);
   try {
     const user = await User.findOne({
       where: {
