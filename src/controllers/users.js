@@ -30,7 +30,7 @@ export const getUserById = async (req, res) => {
       },
     });
 
-    res.status(200).json({ usuario: user, entradas: tickets });
+    res.status(200).json({ usuario: user});
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -74,7 +74,7 @@ export const updateUser = async (req, res) => {
     name,
     lastName,
     email,
-    password,
+    //password,
     description,
     userName,
     pictures,
@@ -84,7 +84,7 @@ export const updateUser = async (req, res) => {
     city,
     sentimentalSituation,
     phone,
-  } = req.body;
+  } = req.body.payload
 
   try {
     let user = await User.findByPk(id);
@@ -92,7 +92,7 @@ export const updateUser = async (req, res) => {
     user.name = name;
     user.lastName = lastName;
     user.email = email;
-    user.password = password;
+    //user.password = password;
     user.description = description;
      user.userName = userName;
      user.pictures = pictures;
@@ -103,8 +103,9 @@ export const updateUser = async (req, res) => {
     user.sentimentalSituation = sentimentalSituation;
     user.phone = phone;
 
+    console.log(req.body.payload);
     await user.save();
-
+    
     res.json(user);
   } catch (error) {
     return res.status(500).json({ message: error.message });
