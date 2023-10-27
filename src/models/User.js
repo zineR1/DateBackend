@@ -25,9 +25,9 @@ export const User = sequelize.define('users', {
     description: {
         type: DataTypes.STRING
     },
-   /*  pictures: {
-        type: DataTypes.ARRAY
-    }, */
+     pictures: {
+        type: DataTypes.JSON
+    }, 
     age: {
         type: DataTypes.INTEGER
     },

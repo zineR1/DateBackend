@@ -1,7 +1,12 @@
+import  multer from 'multer';
 import { Ticket } from "../models/Ticket.js";
 import { User } from "../models/User.js";
 import Utils from "../utils/index.js";
 import emailService from "../services/email.service.js";
+import { uploader } from '../utils.js';
+import FormData from 'form-data';
+import fs from 'fs';
+import axios from 'axios';
 
 export const getUsers = async (req, res) => {
   try {
@@ -211,3 +216,31 @@ export const correoReset = async (req, res) => {
   }
   //
 };
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    return cb(null, "../public/imgs")
+  },
+  filename: function(req, file, cb) {
+    return cb(null, `${Date.now()}_${file.originalname}`)
+  }
+})
+
+ const upload = multer({storage})
+
+export const uploadImages = async(req, res) => {
+  const formData = new FormData();
+  const { file } = req.body;
+  // Agrega las imágenes al formulario
+  formData.append('profileImage', file);
+  upload.single(file)
+  console.log(formData, "Form Data")
+    console.log(req.body, "Body");
+    console.log(req.file, "File");
+}
+
+
+export const editEvent = async(req, res) => {
+    const { id } = req.params;
+    const { flyer, nombreEvento, } = req.body;
+}
