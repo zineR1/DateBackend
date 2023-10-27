@@ -82,7 +82,7 @@ export const updateUser = async (req, res) => {
     //password,
     description,
     userName,
-    // pictures,
+    pictures,
     age,
     dateOfBirth,
     genre,
@@ -100,7 +100,7 @@ export const updateUser = async (req, res) => {
     //user.password = password;
     user.description = description;
      user.userName = userName;
-    //  user.pictures = pictures;
+     user.pictures = pictures;
     user.age = age;
     user.dateOfBirth = dateOfBirth;
     user.genre = genre;
