@@ -1,24 +1,31 @@
 import { Router } from 'express';
-import { getEvents, 
-         createEvent, 
+import { getEvents,
          deleteEvent, 
          soldTickets, 
          agregarInvitado,
          getEventById,
          addOrganizadores,
-         deleteOrganizador
+         deleteOrganizador,
+         upload,
+         addInvitado,
+         addComprobantes,
+         editEvent
         } from '../controllers/events.js';
+import { createEvent, uploadEvent } from '../controllers/eventCreator.js'
 
 const router = Router();
 
 router.get('/events', getEvents);
 router.get('/events/:id', getEventById);
-router.post('/events', createEvent);
+router.post('/events',uploadEvent.single('file'), createEvent);
+router.post('/events/:id/guests', upload.single('file') ,addInvitado);
+router.post('events/:id/comprobantes', upload.single('file'), addComprobantes);
 router.delete('/events/:id', deleteEvent);
 router.put('/events', soldTickets);
 router.put('/events/invitados', agregarInvitado);
 router.put('/events/:id/organizadores', addOrganizadores);
 router.put('/events/:id/delete-organizador', deleteOrganizador);
+router.put('/events/:id/updateEvent', editEvent)
 
 
 

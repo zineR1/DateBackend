@@ -5,8 +5,8 @@ import Utils from "../utils/index.js";
 import emailService from "../services/email.service.js";
 import { uploader } from '../utils.js';
 import FormData from 'form-data';
-import fs from 'fs';
-import axios from 'axios';
+import path from 'path';
+
 
 export const getUsers = async (req, res) => {
   try {
@@ -155,7 +155,7 @@ export const login = async (req, res) => {
       httpOnly: true,
     })
     .status(200)
-    .json({ success: true, token: token });
+    .json({ id: user.id, success: true, token: token });
 };
 
 export const logout = async (req, res) => {
@@ -218,29 +218,86 @@ export const correoReset = async (req, res) => {
 };
 
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    return cb(null, "../public/imgs")
+  destination: (req, file, cb) => {
+      cb(null, 'src/public/imgs')
   },
-  filename: function(req, file, cb) {
-    return cb(null, `${Date.now()}_${file.originalname}`)
+  filename: (req, file, cb) => {
+      cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname))
   }
+});
+
+export const upload = multer({
+  storage: storage
 })
 
- const upload = multer({storage})
 
-export const uploadImages = async(req, res) => {
-  const formData = new FormData();
-  const { file } = req.body;
-  // Agrega las imágenes al formulario
-  formData.append('profileImage', file);
-  upload.single(file)
-  console.log(formData, "Form Data")
-    console.log(req.body, "Body");
-    console.log(req.file, "File");
+export const uploadImage = async(req, res) => {
+  const { id } = req.params
+  try {
+    const user = await User.findOne({
+      where: {
+        id: id
+      }
+    })
+
+    if(!user.pictures) {
+      user.pictures = [];
+      user.pictures.push(req.file.filename);
+    } 
+
+    if(user.pictures.length < 3) {
+      user.pictures = [...user.pictures, req.file.filename]
+    }
+
+    await user.save();
+    console.log(user.pictures);
+    console.log(req.file.filename);
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });   
+  }
 }
 
+export const deletePicture = async(req, res) => {
+  const {id} = req.params;
+  const { posicion } = req.body;
 
-export const editEvent = async(req, res) => {
-    const { id } = req.params;
-    const { flyer, nombreEvento, } = req.body;
+  try {
+    const user = await User.findOne({
+      where: {
+        id: id
+      }
+    });
+
+    user.pictures[posicion] = "";
+    
+    await user.save()
+
+    res.send(user.pictures)
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });   
+  }
+}
+
+export const updatePicture = async(req, res) => {
+  const { id } = req.params;
+  const { posicion }  = req.body;
+
+  try {
+    const user = await User.findOne({
+      where: {
+        id: id
+      }
+    });
+
+    if(!user.pictures[posicion]) {
+      return res.status(500).json({ message: "No hay imagen" }); 
+    }
+    user.pictures[posicion] = req.file.filename
+
+    res.json(user.pictures);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });   
+  }
 }

@@ -2,6 +2,8 @@ import { Event } from '../models/Event.js';
 import { Ticket } from '../models/Ticket.js';
 import { User } from '../models/User.js';
 import Utils from '../utils/index.js';
+import multer from 'multer';
+import path from 'path';
 
 export const getEvents = async(req, res) => {
     try {
@@ -12,49 +14,7 @@ export const getEvents = async(req, res) => {
     }
 }
 
-export const createEvent = async(req, res) => {
-    
-    /* 
-        El campo entrada va a ser enviado desde el front. el id debereia ser generado por aqui
-        El cmpo organizadores tambien sera enviado desde el front
-        el campor invitados 
-    */
 
-
-    const {
-        flyer,
-        nombreEvento,
-        fechaEvento,
-        horaInicio,
-        horaFin,
-        descripcion,
-        ubicacion,
-        tipoEntrada,
-        entradas,
-        organizadores,
-        invitados
-    } = req.body;
-    
-    try {
-        const newEvent = await Event.create({
-            flyer,
-            nombreEvento,
-            fechaEvento,
-            horaInicio,
-            horaFin,
-            ubicacion,
-            descripcion,
-            tipoEntrada,
-            entradas,
-            organizadores,
-            invitados
-        });
-        console.log(newEvent.organizadores)
-        res.json(newEvent);
-    } catch (error) {
-        return res.status(500).json({message: error.message});
-    }
-}
 
 export const deleteEvent = async(req, res) => {
     
@@ -246,15 +206,127 @@ export const deleteOrganizador  = async(req, res) => {
 } 
 
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'src/public/comprobantes')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname))
+    }
+  });
 
-/* 
-events by id
+  export const upload = multer({
+    storage: storage
+  })
 
-*/
+  export const addInvitado = async(req, res) => {
+    const { id } = req.params;
+    const { invitado } = req.body;
 
-/* 
-update event 
-toda la info q no sea ni organizadores o inviitados
+    try {
+        const event = await Event.findOne({
+            where: {
+                id: id
+            }
+        })
 
-*/
 
+        if(!event.invitados) {
+            event.invitados = [];
+            event.invitados.push(invitado)
+        }else {
+            event.invitados = [...event.invitados, invitado]
+        }
+
+
+
+        await event.save()
+        console.log(event.invitados)
+    } catch (error) {
+        return res.status(500).json({ message: error.message });   
+    }
+  }
+  
+
+export const addComprobantes = async(req, res) => {
+    const { id } = req.params;
+    const { userName } = req.body;
+
+    try {
+        const event = Event.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        if(!event) {
+            return res.status(404).json({ message: 'Evento no encontrado' });
+        }
+
+        const invitado = event.invitados.find(e => e.userName === userName)
+
+        if(!invitado.comprobante) {
+            invitado.comprobante = [];
+            invitado.comprobante.push(req.file.filename);
+        } else {
+            invitado.comprobante = [...invitado.comprobante, req.file.filename];
+        }
+
+        event.invitados.forEach((e) => {
+            if(e.userName === userName) {
+                e = invitado
+            }
+        });
+
+        await event.save();
+        res.send(event.invitados)
+
+    } catch (error) {
+        
+    }
+}
+
+export const editEvent = async(req, res) => {
+    const { id } = req.params;
+    const {flyer, 
+           nombreEvento, 
+           fechaEvento,
+           horaInicio,
+           horaFin,
+           descripcion,
+           ubicacion,
+           url,
+           tipoEntrada,
+           entradas
+        } = req.body;
+
+        try {
+            const event = await Event.findOne({
+                where: {
+                    id: id
+                }
+            });
+
+        event.flyer = flyer
+        event.nombreEvento = nombreEvento
+        event.fechaEvento = fechaEvento
+        event.horaInicio = horaInicio
+        event.horaFin = horaFin
+        event.descripcion = descripcion
+        event.ubicacion = ubicacion
+        event.url = url
+        event.tipoEntrada = tipoEntrada
+        event.entradas = entradas
+
+        await event.save();
+
+        res.json(event)
+
+
+        } catch (error) {
+            return res.status(500).json({ message: error.message })         
+        }
+
+
+        
+}

@@ -33,6 +33,9 @@ export const Event = sequelize.define('events', {
     descripcion: {
         type: DataTypes.STRING
     },
+    state: {
+        type: DataTypes.STRING
+    },
     ubicacion: {
         type: DataTypes.STRING
     },
@@ -47,6 +50,9 @@ export const Event = sequelize.define('events', {
         type: DataTypes.JSON
     },
     invitados: {
+        type: DataTypes.JSON
+    },
+    datosBanco: {
         type: DataTypes.JSON
     }
 })
