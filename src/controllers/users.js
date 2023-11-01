@@ -6,6 +6,9 @@ import emailService from "../services/email.service.js";
 import { uploader } from '../utils.js';
 import FormData from 'form-data';
 import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 
 export const getUsers = async (req, res) => {
@@ -285,6 +288,10 @@ export const deletePicture = async(req, res) => {
 
 export const updatePicture = async (req, res) => {
   const { id, posicion } = req.params;
+  const URL_API_DATE = process.env.NODE_ENV === 'production'
+   ? "https://datebackendpruebas.onrender.com"
+   : "http://localhost:3001";
+//const URL_API_DATE = "https://datebackendpruebas.onrender.com";
 
   try {
     const user = await User.findOne({
@@ -311,13 +318,13 @@ export const updatePicture = async (req, res) => {
     if (req.file && req.file.filename) {
       // user.pictures[posicion] = req.file.filename;
       if (posicion == 0) {
-        user.pictures = [req.file.filename, user.pictures[1], user.pictures[2]];
+        user.pictures = [`http://localhost:3001/public/imgs/${req.file.filename}`, user.pictures[1], user.pictures[2]];
       }
       if (posicion == 1) {
-        user.pictures = [user.pictures[0], req.file.filename, user.pictures[2]];
+        user.pictures = [user.pictures[0], `http://localhost:3001/public/imgs/${req.file.filename}`, user.pictures[2]];
       }
       if (posicion == 2) {
-        user.pictures = [user.pictures[0], user.pictures[1], req.file.filename];
+        user.pictures = [user.pictures[0], user.pictures[1], `http://localhost:3001/public/imgs/${req.file.filename}`];
       }
       
     
