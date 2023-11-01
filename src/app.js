@@ -31,7 +31,8 @@ const corsOptions = {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.static('public'))
+//app.use(express.static('public'))
+app.use('/public', express.static('src/public'));
 
 initPassport();
 app.use(passport.initialize());

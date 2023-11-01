@@ -233,6 +233,7 @@ export const upload = multer({
 
 export const uploadImage = async(req, res) => {
   const { id } = req.params
+  //const {}
   try {
     const user = await User.findOne({
       where: {
@@ -252,6 +253,8 @@ export const uploadImage = async(req, res) => {
     await user.save();
     console.log(user.pictures);
     console.log(req.file.filename);
+
+    res.send(`/public/imgs/${req.file.filename}`)
 
   } catch (error) {
     return res.status(500).json({ message: error.message });   
@@ -281,8 +284,8 @@ export const deletePicture = async(req, res) => {
 }
 
 export const updatePicture = async(req, res) => {
-  const { id } = req.params;
-  const { posicion }  = req.body;
+  const { id, posicion } = req.params;
+  
 
   try {
     const user = await User.findOne({
@@ -291,13 +294,33 @@ export const updatePicture = async(req, res) => {
       }
     });
 
-    if(!user.pictures[posicion]) {
-      return res.status(500).json({ message: "No hay imagen" }); 
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    user.pictures[posicion] = req.file.filename
 
-    res.json(user.pictures);
+    if (!Array.isArray(user.pictures)) {
+      user.pictures = [];
+    }
+
+    // Verifica que la posición sea válida (1, 2 o 3)
+    if (posicion < 0 || posicion > 2) {
+      return res.status(400).send('Posición no válida');
+    }
+    console.log(user.pictures[posicion], "user.pictures[posicion]")
+    console.log(user.pictures, "user.pictures")
+    // Verifica si la subida de la imagen se ha realizado correctamente
+    if (req.file && req.file.filename) {
+      user.pictures[posicion] = req.file.filename;
+      await user.save(); // Guarda el usuario actualizado en la base de datos
+      res.json({ img: `/public/imgs/${req.file.filename}`, posicion });
+    } else {
+      return res.status(400).send('Error en la subida de la imagen');
+    }
+    
   } catch (error) {
-    return res.status(500).json({ message: error.message });   
+    return res.status(500).json({ message: error.message });
   }
-}
+};
+    
+
+
