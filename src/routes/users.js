@@ -6,7 +6,7 @@ import { getUsers,
          deleteUser, 
          correoReset, 
          upload, 
-         uploadImage, 
+         //uploadImage, 
          deletePicture,
          updatePicture
         } from '../controllers/users.js'
@@ -18,8 +18,8 @@ const router = Router();
 
 router.get('/users', getUsers);
 router.post('/users/mail', correoReset);
-router.post('/users/:id/upload', upload.single('file'), uploadImage);
-router.post('/users/:id/updateImage', upload.single('file', updatePicture))
+router.post('/users/:id/upload/:posicion', upload.single('file'), updatePicture);
+//router.post('/users/:id/updateImage', upload.single('file', updatePicture))
 router.put('/users/:id', updateUser);
 router.delete('/users/:id', deleteUser);
 router.delete('/users/:id/deleteImage', deletePicture)
