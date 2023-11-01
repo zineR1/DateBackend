@@ -283,15 +283,14 @@ export const deletePicture = async(req, res) => {
   }
 }
 
-export const updatePicture = async(req, res) => {
+export const updatePicture = async (req, res) => {
   const { id, posicion } = req.params;
-  
 
   try {
     const user = await User.findOne({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
 
     if (!user) {
@@ -304,23 +303,32 @@ export const updatePicture = async(req, res) => {
 
     // Verifica que la posición sea válida (1, 2 o 3)
     if (posicion < 0 || posicion > 2) {
-      return res.status(400).send('Posición no válida');
+      return res.status(400).send("Posición no válida");
     }
-    console.log(user.pictures[posicion], "user.pictures[posicion]")
-    console.log(user.pictures, "user.pictures")
+    
+    
     // Verifica si la subida de la imagen se ha realizado correctamente
     if (req.file && req.file.filename) {
-      user.pictures[posicion] = req.file.filename;
+      // user.pictures[posicion] = req.file.filename;
+      if (posicion == 0) {
+        user.pictures = [req.file.filename, user.pictures[1], user.pictures[2]];
+      }
+      if (posicion == 1) {
+        user.pictures = [user.pictures[0], req.file.filename, user.pictures[2]];
+      }
+      if (posicion == 2) {
+        user.pictures = [user.pictures[0], user.pictures[1], req.file.filename];
+      }
+      
+    
       await user.save(); // Guarda el usuario actualizado en la base de datos
       res.json({ img: `/public/imgs/${req.file.filename}`, posicion });
     } else {
-      return res.status(400).send('Error en la subida de la imagen');
+      return res.status(400).send("Error en la subida de la imagen");
     }
-    
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
-    
 
 
