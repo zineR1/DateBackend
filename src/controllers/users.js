@@ -283,11 +283,11 @@ export const deletePicture = async (req, res) => {
 
 
 export const updatePicture = async (req, res) => {
-  const { id, posicion } = req.params;
-  const URL_API_DATE = process.env.NODE_ENV === 'production'
-   ? "https://datebackendpruebas.onrender.com"
-   : "http://localhost:3001";
-//const URL_API_DATE = "https://datebackendpruebas.onrender.com";
+    const { id, posicion } = req.params;
+    const URL_API_DATE = process.env.NODE_ENV === 'production'
+    ? "https://datebackendpruebas.onrender.com"
+    : "http://localhost:3001";
+  //const URL_API_DATE = "https://datebackendpruebas.onrender.com";
 
   try {
     const user = await User.findOne({

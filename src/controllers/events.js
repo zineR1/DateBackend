@@ -286,8 +286,104 @@ export const addComprobantes = async(req, res) => {
     }
 }
 
+export const updateComprobante = async(req, res) => {
+    const { id, posicion } = req.params;
+    const { userName } = req.body;
+    const URL_API_DATE = process.env.NODE_ENV === 'production'
+    ? "https://datebackendpruebas.onrender.com"
+    : "http://localhost:3001";
+  //const URL_API_DATE = "https://datebackendpruebas.onrender.com";
+
+  try {
+    const event = await Event.findOne({
+        where: {
+            id: id
+        }
+    });
+
+    if (!event) {
+        return res.status(404).json({ message: "Evento no encontrado" });
+    }
+
+    if (!Array.isArray(event.invitados)) {
+        event.invitados = [];
+    }
+    if (posicion < 0 || posicion > 1) {
+        return res.status(400).send("Posición no válida");
+    }
+
+    event.invitados.forEach((e) => {
+        if(e.userName === userName) {
+            if(posicion == 0) {
+                e.comprobante = [`http://localhost:3001/public/comprobantes/${req.file.filename}`, e.comprobante[1]]
+            }
+            if(posicion == 1) {
+                e.comprobante = [e.comprobante[0],`http://localhost:3001/public/comprobantes/${req.file.filename}`]
+            }
+        } else {
+            return res.status(400).send("Error en la subida de la imagen");
+        }
+        
+    });
+    await event.save(); // Guarda el evento actualizado en la base de datos
+      res.json({ img: `/public/comprobantes/${req.file.filename}`, posicion });
+} catch (error) {
+    return res.status(500).json({ message: error.message });
+}
+}
+
 
 
 export const deleteComprobante = async(req, res) => {
-    
+    const { id, posicion } = req.params;
+    const { userName } = req.body;
+
+    try {
+        const event = await Event.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        if(!event) {
+            return res.status(404).json({ message: "Evento no encontrado" });
+        }
+
+        //Verifica que la posición sea válida (1, 2)
+    if (posicion < 0 || posicion > 1) {
+        return res.status(400).send("Posición no válida");
+      }
+
+    //   event.invitados.forEach((e) => {
+    //     if(e.userName == userName) {
+    //         if(posicion == 0) {
+    //             e.comprobante = [null, e.comprobante[1]]   
+                 
+    //         }
+    //         if(posicion == 1) {
+    //             e.comprobante = [e.comprobante[0],null]   
+                
+    //         }
+    //     }else {
+    //         return res.status(400).send("Error al borrar la imagen");
+    //     }
+    //   });
+
+    const invitadoIndex = event.invitados.findIndex(e => e.userName === userName);
+
+    if(invitadoIndex === -1) {
+        return res.status(400).send("No se encontro el invitado");
+    }
+
+    const invitado = event.invitados[invitadoIndex];
+
+    invitado.comprobante[posicion] = null;
+      
+      await event.save();   
+      res.send(invitado.comprobante)
+      
+      
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
 }
