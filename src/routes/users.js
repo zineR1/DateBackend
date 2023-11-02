@@ -8,7 +8,8 @@ import { getUsers,
          upload, 
          //uploadImage, 
          deletePicture,
-         updatePicture
+         updatePicture, 
+         
         } from '../controllers/users.js'
 import multer from 'multer';
 import path from 'path';

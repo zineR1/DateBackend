@@ -354,30 +354,22 @@ export const deleteComprobante = async(req, res) => {
         return res.status(400).send("Posición no válida");
       }
 
-    //   event.invitados.forEach((e) => {
-    //     if(e.userName == userName) {
-    //         if(posicion == 0) {
-    //             e.comprobante = [null, e.comprobante[1]]   
+      event.invitados.forEach((e) => {
+        if(e.userName == userName) {
+            if(posicion == 0) {
+                e.comprobante = [null, e.comprobante[1]]   
                  
-    //         }
-    //         if(posicion == 1) {
-    //             e.comprobante = [e.comprobante[0],null]   
+            }
+            if(posicion == 1) {
+                e.comprobante = [e.comprobante[0],null]   
                 
-    //         }
-    //     }else {
-    //         return res.status(400).send("Error al borrar la imagen");
-    //     }
-    //   });
+            }
+        }else {
+            return res.status(400).send("Error al borrar la imagen");
+        }
+      });
 
-    const invitadoIndex = event.invitados.findIndex(e => e.userName === userName);
-
-    if(invitadoIndex === -1) {
-        return res.status(400).send("No se encontro el invitado");
-    }
-
-    const invitado = event.invitados[invitadoIndex];
-
-    invitado.comprobante[posicion] = null;
+   
       
       await event.save();   
       res.send(invitado.comprobante)
