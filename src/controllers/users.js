@@ -10,10 +10,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const URL_API_DATE =
-    process.env.NODE_ENV === "production"
-      ? "https://datebackendpruebas.onrender.com"
-      : "http://localhost:3001";
-      
+  process.env.NODE_ENV === "production"
+    ? "https://datebackendpruebas.onrender.com"
+    : "http://localhost:3001";
+
 export const getUsers = async (req, res) => {
   try {
     const users = await User.findAll();
@@ -262,14 +262,26 @@ export const deletePicture = async (req, res) => {
     // Establece la imagen en la posición especificada como null para eliminarla
 
     if (posicion == 0) {
-      user.pictures = [null, user.pictures[1], user.pictures[2]];
+      user.pictures = [
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        user.pictures[1],
+        user.pictures[2],
+      ];
     }
 
     if (posicion == 1) {
-      user.pictures = [user.pictures[0], null, user.pictures[2]];
+      user.pictures = [
+        user.pictures[0],
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        user.pictures[2],
+      ];
     }
     if (posicion == 2) {
-      user.pictures = [user.pictures[0], user.pictures[1], null];
+      user.pictures = [
+        user.pictures[0],
+        user.pictures[1],
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+      ];
     }
 
     // Guarda el usuario actualizado en la base de datos
@@ -297,9 +309,9 @@ export const updatePicture = async (req, res) => {
 
     if (!Array.isArray(user.pictures)) {
       user.pictures = [
-        `${URL_API_DATE}/public/imagen/imagenPorDefecto.jpg}`,
-        `${URL_API_DATE}/public/imagen/imagenPorDefecto.jpg`,
-        `${URL_API_DATE}/public/imagen/imagenPorDefecto.jpg`,
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
       ];
     }
 
