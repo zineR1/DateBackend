@@ -1,15 +1,18 @@
-import  multer from 'multer';
+import multer from "multer";
 import { Ticket } from "../models/Ticket.js";
 import { User } from "../models/User.js";
 import Utils from "../utils/index.js";
 import emailService from "../services/email.service.js";
-import { uploader } from '../utils.js';
-import FormData from 'form-data';
-import path from 'path';
-import dotenv from 'dotenv';
+import { uploader } from "../utils.js";
+import FormData from "form-data";
+import path from "path";
+import dotenv from "dotenv";
 
 dotenv.config();
-
+const URL_API_DATE =
+  process.env.NODE_ENV === "production"
+    ? "https://datebackendpruebas.onrender.com"
+    : "http://localhost:3001";
 
 export const getUsers = async (req, res) => {
   try {
@@ -45,14 +48,9 @@ export const getUserById = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-  const {
-    email,
-    password,
-    events,
-    
-  } = req.body;
+  const { email, password, events } = req.body;
 
- /*  const nwAge = (date) => {
+  /*  const nwAge = (date) => {
     const fechaNac = new Date(date);
     const fechaActual = new Date();
     const diferenciaTiempo = fechaActual - fechaNac;
@@ -66,10 +64,14 @@ export const createUser = async (req, res) => {
     const newUSer = await User.create({
       email,
       nwPass,
-      events
+      events,
     });
     newUSer.password = nwPass;
-    newUSer.pictures =['http://localhost:3001/public/imagen/defaultPic.png', 'http://localhost:3001/public/imagen/defaultPic.png', 'http://localhost:3001/public/imagen/defaultPic.png'];
+    newUSer.pictures = [
+      `${URL_API_DATE}/public/imagen/defaultPic.png`,
+      `${URL_API_DATE}/public/imagen/defaultPic.png`,
+      `${URL_API_DATE}/public/imagen/defaultPic.png`,
+    ];
     await newUSer.save();
 
     res.json(newUSer);
@@ -94,7 +96,7 @@ export const updateUser = async (req, res) => {
     city,
     sentimentalSituation,
     phone,
-  } = req.body.payload
+  } = req.body.payload;
 
   try {
     let user = await User.findByPk(id);
@@ -104,8 +106,8 @@ export const updateUser = async (req, res) => {
     user.email = email;
     //user.password = password;
     user.description = description;
-     user.userName = userName;
-     user.pictures = pictures;
+    user.userName = userName;
+    user.pictures = pictures;
     user.age = age;
     user.dateOfBirth = dateOfBirth;
     user.genre = genre;
@@ -115,7 +117,7 @@ export const updateUser = async (req, res) => {
 
     console.log(req.body.payload);
     await user.save();
-    
+
     res.json(user);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -189,7 +191,7 @@ export const resetPassword = async (req, res) => {
 };
 
 export const correoReset = async (req, res) => {
-  const  {email}  = req.body;
+  const { email } = req.body;
   console.log(req.body);
   try {
     const user = await User.findOne({
@@ -224,27 +226,28 @@ export const correoReset = async (req, res) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-      cb(null, 'src/public/imgs')
+    cb(null, "src/public/imgs");
   },
   filename: (req, file, cb) => {
-      cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname))
-  }
+    cb(
+      null,
+      file.fieldname + "_" + Date.now() + path.extname(file.originalname)
+    );
+  },
 });
 
 export const upload = multer({
-  storage: storage
-})
-
-
+  storage: storage,
+});
 
 export const deletePicture = async (req, res) => {
-  const { id, posicion } = req.params;  
+  const { id, posicion } = req.params;
 
   try {
     const user = await User.findOne({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
 
     if (!user) {
@@ -257,37 +260,41 @@ export const deletePicture = async (req, res) => {
     }
 
     // Establece la imagen en la posición especificada como null para eliminarla
-    
+
     if (posicion == 0) {
-      user.pictures = [null, user.pictures[1], user.pictures[2]];
+      user.pictures = [
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        user.pictures[1],
+        user.pictures[2],
+      ];
     }
 
     if (posicion == 1) {
-      user.pictures = [user.pictures[0], null, user.pictures[2]];
+      user.pictures = [
+        user.pictures[0],
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        user.pictures[2],
+      ];
     }
     if (posicion == 2) {
-      user.pictures = [user.pictures[0], user.pictures[1], null];
+      user.pictures = [
+        user.pictures[0],
+        user.pictures[1],
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+      ];
     }
-    
-    
-    
 
     // Guarda el usuario actualizado en la base de datos
     await user.save();
     console.log(user.pictures);
-    res.send(user)
+    res.send(user);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-}
-
+};
 
 export const updatePicture = async (req, res) => {
-    const { id, posicion } = req.params;
-    const URL_API_DATE = process.env.NODE_ENV === 'production'
-    ? "https://datebackendpruebas.onrender.com"
-    : "http://localhost:3001";
-  //const URL_API_DATE = "https://datebackendpruebas.onrender.com";
+  const { id, posicion } = req.params;
 
   try {
     const user = await User.findOne({
@@ -301,29 +308,43 @@ export const updatePicture = async (req, res) => {
     }
 
     if (!Array.isArray(user.pictures)) {
-      user.pictures = ['http://localhost:3001/public/imagen/imagenPorDefecto.jpg', 'http://localhost:3001/public/imagen/imagenPorDefecto.jpg', 'http://localhost:3001/public/imagen/imagenPorDefecto.jpg'];
+      user.pictures = [
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+      ];
     }
 
     // Verifica que la posición sea válida (1, 2 o 3)
     if (posicion < 0 || posicion > 2) {
       return res.status(400).send("Posición no válida");
     }
-    
-    
+
     // Verifica si la subida de la imagen se ha realizado correctamente
     if (req.file && req.file.filename) {
       // user.pictures[posicion] = req.file.filename;
       if (posicion == 0) {
-        user.pictures = [`http://localhost:3001/public/imgs/${req.file.filename}`, user.pictures[1], user.pictures[2]];
+        user.pictures = [
+          `${URL_API_DATE}/public/imgs/${req.file.filename}`,
+          user.pictures[1],
+          user.pictures[2],
+        ];
       }
       if (posicion == 1) {
-        user.pictures = [user.pictures[0], `http://localhost:3001/public/imgs/${req.file.filename}`, user.pictures[2]];
+        user.pictures = [
+          user.pictures[0],
+          `${URL_API_DATE}/public/imgs/${req.file.filename}`,
+          user.pictures[2],
+        ];
       }
       if (posicion == 2) {
-        user.pictures = [user.pictures[0], user.pictures[1], `http://localhost:3001/public/imgs/${req.file.filename}`];
+        user.pictures = [
+          user.pictures[0],
+          user.pictures[1],
+          `${URL_API_DATE}/public/imgs/${req.file.filename}`,
+        ];
       }
-      
-    
+
       await user.save(); // Guarda el usuario actualizado en la base de datos
       res.json({ img: `/public/imgs/${req.file.filename}`, posicion });
     } else {
@@ -333,5 +354,3 @@ export const updatePicture = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
-
