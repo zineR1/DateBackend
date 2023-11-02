@@ -9,9 +9,8 @@ import { getEvents,
          upload,
          addInvitado,
          addComprobantes,
-         editEvent
         } from '../controllers/events.js';
-import { createEvent, uploadEvent } from '../controllers/eventCreator.js'
+import { createEvent, uploadEvent, editEvent } from '../controllers/eventCreator.js'
 
 const router = Router();
 

@@ -22,7 +22,7 @@ router.post('/users/:id/upload/:posicion', upload.single('file'), updatePicture)
 //router.post('/users/:id/updateImage', upload.single('file', updatePicture))
 router.put('/users/:id', updateUser);
 router.delete('/users/:id', deleteUser);
-router.delete('/users/:id/deleteImage', deletePicture)
+router.delete('/users/:id/deleteImage/:posicion', deletePicture)
 router.get('/users/:id', getUserById);
 router.put('/users/:id/events');
 

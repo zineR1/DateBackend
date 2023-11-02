@@ -38,7 +38,7 @@ export const getUserById = async (req, res) => {
       },
     });
 
-    res.status(200).json({ usuario: user});
+    res.status(200).send(user);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -48,7 +48,8 @@ export const createUser = async (req, res) => {
   const {
     email,
     password,
-    events
+    events,
+    
   } = req.body;
 
  /*  const nwAge = (date) => {
@@ -59,6 +60,7 @@ export const createUser = async (req, res) => {
     return edad;
   }; */
   const nwPass = Utils.createHash(password);
+
   console.log(nwPass);
   try {
     const newUSer = await User.create({
@@ -67,7 +69,7 @@ export const createUser = async (req, res) => {
       events
     });
     newUSer.password = nwPass;
-
+    newUSer.pictures =['http://localhost:3001/public/imagen/defaultPic.png', 'http://localhost:3001/public/imagen/defaultPic.png', 'http://localhost:3001/public/imagen/defaultPic.png'];
     await newUSer.save();
 
     res.json(newUSer);
@@ -234,39 +236,9 @@ export const upload = multer({
 })
 
 
-export const uploadImage = async(req, res) => {
-  const { id } = req.params
-  //const {}
-  try {
-    const user = await User.findOne({
-      where: {
-        id: id
-      }
-    })
 
-    if(!user.pictures) {
-      user.pictures = [];
-      user.pictures.push(req.file.filename);
-    } 
-
-    if(user.pictures.length < 3) {
-      user.pictures = [...user.pictures, req.file.filename]
-    }
-
-    await user.save();
-    console.log(user.pictures);
-    console.log(req.file.filename);
-
-    res.send(`/public/imgs/${req.file.filename}`)
-
-  } catch (error) {
-    return res.status(500).json({ message: error.message });   
-  }
-}
-
-export const deletePicture = async(req, res) => {
-  const {id} = req.params;
-  const { posicion } = req.body;
+export const deletePicture = async (req, res) => {
+  const { id, posicion } = req.params;  
 
   try {
     const user = await User.findOne({
@@ -275,16 +247,40 @@ export const deletePicture = async(req, res) => {
       }
     });
 
-    user.pictures[posicion] = "";
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Verifica que la posición sea válida (1, 2 o 3)
+    if (posicion < 0 || posicion > 2) {
+      return res.status(400).send("Posición no válida");
+    }
+
+    // Establece la imagen en la posición especificada como null para eliminarla
     
-    await user.save()
+    if (posicion == 0) {
+      user.pictures = [null, user.pictures[1], user.pictures[2]];
+    }
 
-    res.send(user.pictures)
+    if (posicion == 1) {
+      user.pictures = [user.pictures[0], null, user.pictures[2]];
+    }
+    if (posicion == 2) {
+      user.pictures = [user.pictures[0], user.pictures[1], null];
+    }
+    
+    
+    
 
+    // Guarda el usuario actualizado en la base de datos
+    await user.save();
+    console.log(user.pictures);
+    res.send(user)
   } catch (error) {
-    return res.status(500).json({ message: error.message });   
+    return res.status(500).json({ message: error.message });
   }
 }
+
 
 export const updatePicture = async (req, res) => {
   const { id, posicion } = req.params;
@@ -305,7 +301,7 @@ export const updatePicture = async (req, res) => {
     }
 
     if (!Array.isArray(user.pictures)) {
-      user.pictures = [];
+      user.pictures = ['http://localhost:3001/public/imagen/imagenPorDefecto.jpg', 'http://localhost:3001/public/imagen/imagenPorDefecto.jpg', 'http://localhost:3001/public/imagen/imagenPorDefecto.jpg'];
     }
 
     // Verifica que la posición sea válida (1, 2 o 3)
