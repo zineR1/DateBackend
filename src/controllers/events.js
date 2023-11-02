@@ -5,6 +5,11 @@ import Utils from '../utils/index.js';
 import multer from 'multer';
 import path from 'path';
 
+const URL_API_DATE =
+    process.env.NODE_ENV === "production"
+      ? "https://datebackendpruebas.onrender.com"
+      : "http://localhost:3001";
+
 export const getEvents = async(req, res) => {
     try {
         const events = await Event.findAll();
@@ -289,10 +294,6 @@ export const addComprobantes = async(req, res) => {
 export const updateComprobante = async(req, res) => {
     const { id, posicion } = req.params;
     const { userName } = req.body;
-    const URL_API_DATE = process.env.NODE_ENV === 'production'
-    ? "https://datebackendpruebas.onrender.com"
-    : "http://localhost:3001";
-  //const URL_API_DATE = "https://datebackendpruebas.onrender.com";
 
   try {
     const event = await Event.findOne({
@@ -315,10 +316,10 @@ export const updateComprobante = async(req, res) => {
     event.invitados.forEach((e) => {
         if(e.userName === userName) {
             if(posicion == 0) {
-                e.comprobante = [`http://localhost:3001/public/comprobantes/${req.file.filename}`, e.comprobante[1]]
+                e.comprobante = [`${URL_API_DATE}/public/comprobantes/${req.file.filename}`, e.comprobante[1]]
             }
             if(posicion == 1) {
-                e.comprobante = [e.comprobante[0],`http://localhost:3001/public/comprobantes/${req.file.filename}`]
+                e.comprobante = [e.comprobante[0],`${URL_API_DATE}/public/comprobantes/${req.file.filename}`]
             }
         } else {
             return res.status(400).send("Error en la subida de la imagen");
