@@ -286,47 +286,8 @@ export const addComprobantes = async(req, res) => {
     }
 }
 
-export const editEvent = async(req, res) => {
-    const { id } = req.params;
-    const {flyer, 
-           nombreEvento, 
-           fechaEvento,
-           horaInicio,
-           horaFin,
-           descripcion,
-           ubicacion,
-           url,
-           tipoEntrada,
-           entradas
-        } = req.body;
-
-        try {
-            const event = await Event.findOne({
-                where: {
-                    id: id
-                }
-            });
-
-        event.flyer = flyer
-        event.nombreEvento = nombreEvento
-        event.fechaEvento = fechaEvento
-        event.horaInicio = horaInicio
-        event.horaFin = horaFin
-        event.descripcion = descripcion
-        event.ubicacion = ubicacion
-        event.url = url
-        event.tipoEntrada = tipoEntrada
-        event.entradas = entradas
-
-        await event.save();
-
-        res.json(event)
 
 
-        } catch (error) {
-            return res.status(500).json({ message: error.message })         
-        }
-
-
-        
+export const deleteComprobante = async(req, res) => {
+    
 }

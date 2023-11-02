@@ -58,3 +58,49 @@ export const createEvent = async(req, res) => {
         return res.status(500).json({message: error.message});
     }
 }
+
+export const editEvent = async(req, res) => {
+    const { id } = req.params;
+    const {flyer, 
+           nombreEvento, 
+           fechaEvento,
+           horaInicio,
+           horaFin,
+           descripcion,
+           ubicacion,
+           url,
+           tipoEntrada,
+           entradas,
+           datosBanco
+        } = req.body;
+
+        try {
+            const event = await Event.findOne({
+                where: {
+                    id: id
+                }
+            });
+
+        event.flyer = req.file.filename
+        event.nombreEvento = nombreEvento
+        event.fechaEvento = fechaEvento
+        event.horaInicio = horaInicio
+        event.horaFin = horaFin
+        event.descripcion = descripcion
+        event.ubicacion = ubicacion
+        event.url = url
+        event.tipoEntrada = tipoEntrada
+        event.entradas = entradas
+        event.datosBanco = datosBanco
+        await event.save();
+
+        res.json(event)
+
+
+        } catch (error) {
+            return res.status(500).json({ message: error.message })         
+        }
+
+
+        
+}
