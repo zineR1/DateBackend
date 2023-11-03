@@ -8,7 +8,7 @@ import { getEvents,
          deleteOrganizador,
          upload,
          addInvitado,
-         addComprobantes,
+        // addComprobantes,
          deleteComprobante,
          updateComprobante
         } from '../controllers/events.js';
@@ -20,8 +20,8 @@ router.get('/events', getEvents);
 router.get('/events/:id', getEventById);
 router.post('/events',uploadEvent.single('file'), createEvent);
 router.post('/events/:id/guests', upload.single('file') ,addInvitado);
-router.post('events/:id/comprobantes', upload.single('file'), addComprobantes);
-router.post('/events/:id/uploadComprobante/:posicion', updateComprobante)
+//router.post('events/:id/comprobantes', upload.single('file'), addComprobantes);
+router.post('/events/:id/:userName/uploadComprobante/:posicion', upload.single('file'),updateComprobante)
 router.delete('/events/:id', deleteEvent);
 router.delete('/events/:id/deleteComprobante/:posicion', deleteComprobante);
 router.put('/events', soldTickets);

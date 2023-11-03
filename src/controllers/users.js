@@ -57,6 +57,18 @@ export const createUser = async (req, res) => {
     const edad = Math.floor(diferenciaTiempo / (365.25 * 24 * 60 * 60 * 1000));
     return edad;
   }; */
+  const user = await User.findOne({
+    where: {
+      email: email
+    }
+  });
+  
+  if(user) {
+    return res
+      .status(401)
+      .json({ massage: "Este usuario ya existe"});
+  }
+  
   const nwPass = Utils.createHash(password);
 
   console.log(nwPass);
@@ -143,16 +155,17 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ where: { email: email } });
 
+ try {
   if (!user) {
     return res
       .status(401)
-      .json({ massage: " Usuario o Contraseña Incorrecto" });
+      .json({ massage: "No existe un usuario con este mail"});
   }
 
   if (!Utils.validatePassword(password, user)) {
     return res
       .status(401)
-      .json({ massage: " Usuario o Contraseña Incorrecto" });
+      .json({ massage: "Contraseña Incorrecta" });
   }
 
   const token = Utils.tokenGenerator(user);
@@ -163,6 +176,9 @@ export const login = async (req, res) => {
     })
     .status(200)
     .json({ id: user.id, success: true, token: token });
+ } catch (error) {
+    res.status(404).json({message: error.message})
+ }
 };
 
 export const logout = async (req, res) => {
@@ -344,7 +360,7 @@ export const updatePicture = async (req, res) => {
           `${URL_API_DATE}/public/imgs/${req.file.filename}`,
         ];
       }
-
+      console.log(req.file.filename)
       await user.save(); // Guarda el usuario actualizado en la base de datos
       res.json({ img: `/public/imgs/${req.file.filename}`, posicion });
     } else {
