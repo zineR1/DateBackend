@@ -253,50 +253,50 @@ const storage = multer.diskStorage({
   }
   
 
-export const addComprobantes = async(req, res) => {
-    const { id } = req.params;
-    const { userName } = req.body;
+// export const addComprobantes = async(req, res) => {
+//     const { id, userName } = req.params;
+//     //const {  } = req.body;
 
-    try {
-        const event = Event.findOne({
-            where: {
-                id: id
-            }
-        });
+//     try {
+//         const event = Event.findOne({
+//             where: {
+//                 id: id
+//             }
+//         });
 
-        if(!event) {
-            return res.status(404).json({ message: 'Evento no encontrado' });
-        }
+//         if(!event) {
+//             return res.status(404).json({ message: 'Evento no encontrado' });
+//         }
 
-        const invitado = event.invitados.find(e => e.userName === userName)
+//         const invitado = event.invitados.find(e => e.userName === userName)
 
-        if(!invitado.comprobante) {
-            invitado.comprobante = [];
-            invitado.comprobante.push(req.file.filename);
-        } else {
-            invitado.comprobante = [...invitado.comprobante, req.file.filename];
-        }
+//         if(!invitado.comprobante) {
+//             invitado.comprobante = [];
+//             invitado.comprobante.push(req.file.filename);
+//         } else {
+//             invitado.comprobante = [...invitado.comprobante, req.file.filename];
+//         }
 
-        event.invitados.forEach((e) => {
-            if(e.userName === userName) {
-                e = invitado
-            }
-        });
+//         event.invitados.forEach((e) => {
+//             if(e.userName === userName) {
+//                 e = invitado
+//             }
+//         });
 
-        await event.save();
-        res.send(event.invitados)
+//         await event.save();
+//         res.send(event.invitados)
 
-    } catch (error) {
+//     } catch (error) {
         
-    }
-}
+//     }
+// }
 
 export const updateComprobante = async(req, res) => {
-    const { id, posicion } = req.params;
-    const { userName } = req.body;
+    const { id, posicion, userName  } = req.params;
+    //const {  } = req.body;
 
   try {
-    const event = await Event.findOne({
+    let event = await Event.findOne({
         where: {
             id: id
         }
@@ -306,17 +306,32 @@ export const updateComprobante = async(req, res) => {
         return res.status(404).json({ message: "Evento no encontrado" });
     }
 
-    if (!Array.isArray(event.invitados)) {
-        event.invitados = [];
-    }
+    
     if (posicion < 0 || posicion > 1) {
         return res.status(400).send("Posición no válida");
     }
+
+    let arr = [];
+
+    // if(posicion == 0) {
+    //     arr = [`${URL_API_DATE}/public/comprobantes/${req.file.filename}`, null]
+    // }
+
+    // if(posicion == 1) {
+    //     arr = [null, `${URL_API_DATE}/public/comprobantes/${req.file.filename}`]
+    // }
+
+    // event.invitados.forEach((e) => {
+    //     if(e.userName == userName) {
+    //         e.comprobante = arr;
+    //     }
+    // });
 
     event.invitados.forEach((e) => {
         if(e.userName === userName) {
             if(posicion == 0) {
                 e.comprobante = [`${URL_API_DATE}/public/comprobantes/${req.file.filename}`, e.comprobante[1]]
+                
             }
             if(posicion == 1) {
                 e.comprobante = [e.comprobante[0],`${URL_API_DATE}/public/comprobantes/${req.file.filename}`]
@@ -326,12 +341,17 @@ export const updateComprobante = async(req, res) => {
         }
         
     });
+    let hola = event.invitados[0]
+    event.invitados = event.invitados[0].comprobante
+    console.log(event.invitados);
     await event.save(); // Guarda el evento actualizado en la base de datos
       res.json({ img: `/public/comprobantes/${req.file.filename}`, posicion });
 } catch (error) {
     return res.status(500).json({ message: error.message });
 }
 }
+
+
 
 
 
@@ -355,30 +375,22 @@ export const deleteComprobante = async(req, res) => {
         return res.status(400).send("Posición no válida");
       }
 
-    //   event.invitados.forEach((e) => {
-    //     if(e.userName == userName) {
-    //         if(posicion == 0) {
-    //             e.comprobante = [null, e.comprobante[1]]   
+      event.invitados.forEach((e) => {
+        if(e.userName == userName) {
+            if(posicion == 0) {
+                e.comprobante = [null, e.comprobante[1]]   
                  
-    //         }
-    //         if(posicion == 1) {
-    //             e.comprobante = [e.comprobante[0],null]   
+            }
+            if(posicion == 1) {
+                e.comprobante = [e.comprobante[0],null]   
                 
-    //         }
-    //     }else {
-    //         return res.status(400).send("Error al borrar la imagen");
-    //     }
-    //   });
+            }
+        }else {
+            return res.status(400).send("Error al borrar la imagen");
+        }
+      });
 
-    const invitadoIndex = event.invitados.findIndex(e => e.userName === userName);
-
-    if(invitadoIndex === -1) {
-        return res.status(400).send("No se encontro el invitado");
-    }
-
-    const invitado = event.invitados[invitadoIndex];
-
-    invitado.comprobante[posicion] = null;
+   
       
       await event.save();   
       res.send(invitado.comprobante)

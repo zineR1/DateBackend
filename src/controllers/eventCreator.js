@@ -81,7 +81,7 @@ export const editEvent = async(req, res) => {
                 }
             });
 
-        event.flyer = req.file.filename
+        //event.flyer = req.file.filename
         event.nombreEvento = nombreEvento
         event.fechaEvento = fechaEvento
         event.horaInicio = horaInicio
