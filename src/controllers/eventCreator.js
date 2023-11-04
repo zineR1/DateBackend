@@ -2,6 +2,11 @@ import { Event } from '../models/Event.js';
 import multer from 'multer';
 import path from 'path';
 
+const URL_API_DATE =
+    process.env.NODE_ENV === "production"
+      ? "https://datebackendpruebas.onrender.com"
+      : "http://localhost:3001";
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'src/public/events')
@@ -53,6 +58,11 @@ export const createEvent = async(req, res) => {
             invitados,
             datosBanco
         });
+
+        if(!newEvent.flyer) {
+            newEvent.flyer = `${URL_API_DATE}/public/imagen/defaultEventPic.png`
+        }
+
         res.json(newEvent);
     } catch (error) {
         return res.status(500).json({message: error.message});
@@ -104,3 +114,34 @@ export const editEvent = async(req, res) => {
 
         
 }
+
+export const changeEventPicture = async(req, res) => {
+    const { id } = req.params;
+
+    try {
+        let event = await Event.findOne({
+            where: {
+                id: id
+            }
+    
+             
+        });
+    
+        if(!event) {
+            return res.status(404).json({message: "Evento no encontrado"});
+        }
+    
+        if(req.file && req.file.filename) {
+            event.flyer = req.file.filename;
+        }else {
+            return res.status(400).send("Error al subir la imagen");
+        }
+    
+        await event.save();
+    
+        res.status(200).send(event);
+    } catch (error) {
+        return res.status(400).send(error.message);
+    }
+
+};

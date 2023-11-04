@@ -5,6 +5,8 @@ import Utils from '../utils/index.js';
 import multer from 'multer';
 import path from 'path';
 
+
+
 const URL_API_DATE =
     process.env.NODE_ENV === "production"
       ? "https://datebackendpruebas.onrender.com"
@@ -301,7 +303,7 @@ export const updateComprobante = async(req, res) => {
             id: id
         }
     });
-
+    
     if (!event) {
         return res.status(404).json({ message: "Evento no encontrado" });
     }
@@ -311,26 +313,12 @@ export const updateComprobante = async(req, res) => {
         return res.status(400).send("Posición no válida");
     }
 
-    let arr = [];
-
-    // if(posicion == 0) {
-    //     arr = [`${URL_API_DATE}/public/comprobantes/${req.file.filename}`, null]
-    // }
-
-    // if(posicion == 1) {
-    //     arr = [null, `${URL_API_DATE}/public/comprobantes/${req.file.filename}`]
-    // }
-
-    // event.invitados.forEach((e) => {
-    //     if(e.userName == userName) {
-    //         e.comprobante = arr;
-    //     }
-    // });
-
+  
     event.invitados.forEach((e) => {
         if(e.userName === userName) {
             if(posicion == 0) {
                 e.comprobante = [`${URL_API_DATE}/public/comprobantes/${req.file.filename}`, e.comprobante[1]]
+                
                 
             }
             if(posicion == 1) {
@@ -341,11 +329,16 @@ export const updateComprobante = async(req, res) => {
         }
         
     });
-    let hola = event.invitados[0]
-    event.invitados = event.invitados[0].comprobante
+
+//     event.invitados.forEach((e) => {
+//        if(e.userName === userName) {
+//             e.comprobante.push(req.file.filename)
+//     }
+// });
+
     console.log(event.invitados);
     await event.save(); // Guarda el evento actualizado en la base de datos
-      res.json({ img: `/public/comprobantes/${req.file.filename}`, posicion });
+     // res.json({ img: `/public/comprobantes/${req.file.filename}`, posicion });
 } catch (error) {
     return res.status(500).json({ message: error.message });
 }
@@ -400,3 +393,5 @@ export const deleteComprobante = async(req, res) => {
         return res.status(500).json({ message: error.message });
     }
 }
+
+
