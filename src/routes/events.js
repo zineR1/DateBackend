@@ -10,9 +10,9 @@ import { getEvents,
          addInvitado,
         // addComprobantes,
          deleteComprobante,
-         updateComprobante
-        } from '../controllers/events.js';
-import { createEvent, uploadEvent, editEvent } from '../controllers/eventCreator.js'
+         updateComprobante,
+         } from '../controllers/events.js';
+import { createEvent, uploadEvent, editEvent, changeEventPicture } from '../controllers/eventCreator.js'
 
 const router = Router();
 
@@ -21,7 +21,8 @@ router.get('/events/:id', getEventById);
 router.post('/events',uploadEvent.single('file'), createEvent);
 router.post('/events/:id/guests', upload.single('file') ,addInvitado);
 //router.post('events/:id/comprobantes', upload.single('file'), addComprobantes);
-router.post('/events/:id/:userName/uploadComprobante/:posicion', upload.single('file'),updateComprobante)
+router.post('/events/:id/:userName/uploadComprobante/:posicion', upload.single('file'),updateComprobante);
+router.post('/events/:id/changePicture', uploadEvent.single('file'), changeEventPicture);
 router.delete('/events/:id', deleteEvent);
 router.delete('/events/:id/deleteComprobante/:posicion', deleteComprobante);
 router.put('/events', soldTickets);

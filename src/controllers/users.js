@@ -84,6 +84,7 @@ export const createUser = async (req, res) => {
       `${URL_API_DATE}/public/imagen/defaultPic.png`,
       `${URL_API_DATE}/public/imagen/defaultPic.png`,
     ];
+    newUSer.events = [];
     await newUSer.save();
 
     res.json(newUSer);
@@ -108,10 +109,23 @@ export const updateUser = async (req, res) => {
     city,
     sentimentalSituation,
     phone,
+    events
   } = req.body.payload;
+
+  
 
   try {
     let user = await User.findByPk(id);
+
+    let existe = user.events.includes((event) => event.id === events.id);
+
+    if(existe) {
+      let eventUser = user.events.find((event) => event.id === events.id);
+      let filtrados = user.events.filter((event) => event !== eventUser);
+      user.events = filtrados.push(events); 
+    } else {
+      user.events = user.events.push(events);
+    }
 
     user.name = name;
     user.lastName = lastName;
@@ -126,7 +140,7 @@ export const updateUser = async (req, res) => {
     user.city = city;
     user.sentimentalSituation = sentimentalSituation;
     user.phone = phone;
-
+    //user.events = user.events.find((event) => event.id === events.id) ? user.eve 
     console.log(req.body.payload);
     await user.save();
 
