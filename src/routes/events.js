@@ -7,7 +7,7 @@ import { getEvents,
          addOrganizadores,
          deleteOrganizador,
          upload,
-         addInvitado,
+        // addInvitado,
         // addComprobantes,
          deleteComprobante,
          updateComprobante,
@@ -19,7 +19,7 @@ const router = Router();
 router.get('/events', getEvents);
 router.get('/events/:id', getEventById);
 router.post('/events',uploadEvent.single('file'), createEvent);
-router.post('/events/:id/guests', upload.single('file') ,addInvitado);
+//router.post('/events/:id/guests', upload.single('file') ,addInvitado);
 //router.post('events/:id/comprobantes', upload.single('file'), addComprobantes);
 router.post('/events/:id/:userName/uploadComprobante/:posicion', upload.single('file'),updateComprobante);
 router.post('/events/:id/changePicture', uploadEvent.single('file'), changeEventPicture);
