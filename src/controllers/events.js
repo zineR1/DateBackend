@@ -74,7 +74,7 @@ export const soldTickets = async(req, res) => {
 
 
 export const agregarInvitado = async(req, res) => {
-    const { id, nombre, apellido, userName, foto, comprobante, confirmado, entrada, total} = req.body;
+    const { id, nombre, apellido, userName, foto, comprobante, confirmado, state, entradas, total} = req.body;
 
 
     const nuevoInvitado = {
@@ -84,7 +84,8 @@ export const agregarInvitado = async(req, res) => {
         foto,
         comprobante,
         confirmado,
-        entrada,
+        state,
+        entradas,
         total
       };
 
@@ -226,73 +227,7 @@ const storage = multer.diskStorage({
     storage: storage
   })
 
-  export const addInvitado = async(req, res) => {
-    const { id } = req.params;
-    const { invitado } = req.body;
-
-    try {
-        const event = await Event.findOne({
-            where: {
-                id: id
-            }
-        })
-
-
-        if(!event.invitados) {
-            event.invitados = [];
-            event.invitados.push(invitado)
-        }else {
-            event.invitados = [...event.invitados, invitado]
-        }
-
-
-
-        await event.save()
-        console.log(event.invitados)
-    } catch (error) {
-        return res.status(500).json({ message: error.message });   
-    }
-  }
   
-
-// export const addComprobantes = async(req, res) => {
-//     const { id, userName } = req.params;
-//     //const {  } = req.body;
-
-//     try {
-//         const event = Event.findOne({
-//             where: {
-//                 id: id
-//             }
-//         });
-
-//         if(!event) {
-//             return res.status(404).json({ message: 'Evento no encontrado' });
-//         }
-
-//         const invitado = event.invitados.find(e => e.userName === userName)
-
-//         if(!invitado.comprobante) {
-//             invitado.comprobante = [];
-//             invitado.comprobante.push(req.file.filename);
-//         } else {
-//             invitado.comprobante = [...invitado.comprobante, req.file.filename];
-//         }
-
-//         event.invitados.forEach((e) => {
-//             if(e.userName === userName) {
-//                 e = invitado
-//             }
-//         });
-
-//         await event.save();
-//         res.send(event.invitados)
-
-//     } catch (error) {
-        
-//     }
-// }
-
 export const updateComprobante = async(req, res) => {
     const { id, posicion, userName  } = req.params;
     //const {  } = req.body;

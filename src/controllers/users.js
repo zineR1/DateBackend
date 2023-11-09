@@ -7,6 +7,7 @@ import { uploader } from "../utils.js";
 import FormData from "form-data";
 import path from "path";
 import dotenv from "dotenv";
+import fs from 'fs';
 
 dotenv.config();
 const URL_API_DATE =
@@ -116,12 +117,14 @@ export const updateUser = async (req, res) => {
 
   try {
     let user = await User.findByPk(id);
+    if(user.events) {
 
+    }
     let existe = user.events.includes((event) => event.id === events.id);
 
     if(existe) {
-      let eventUser = user.events.find((event) => event.id === events.id);
-      let filtrados = user.events.filter((event) => event !== eventUser);
+      //let eventUser = user.events.find((event) => event.id === events.id);
+      let filtrados = user.events.filter((event) => event.id !== events.id);
       user.events = filtrados.push(events); 
     } else {
       user.events = user.events.push(events);
@@ -140,7 +143,9 @@ export const updateUser = async (req, res) => {
     user.city = city;
     user.sentimentalSituation = sentimentalSituation;
     user.phone = phone;
-    //user.events = user.events.find((event) => event.id === events.id) ? user.eve 
+    //user.events = user.events.find((event) => event.id === events.id) ? user.events 
+    //user.events = !user.events 
+    
     console.log(req.body.payload);
     await user.save();
 
@@ -313,6 +318,18 @@ export const deletePicture = async (req, res) => {
         `${URL_API_DATE}/public/imagen/defaultPic.png`,
       ];
     }
+
+    const imagePath = user.pictures[posicion];
+    let arr = imagePath.split('/');
+
+    console.log(arr[5]);
+   
+    
+    fs.unlink(`../DateBackend/src/public/imgs/${arr[5]}`, function (err) {
+      if (err) throw err;
+      // if no error, file has been deleted successfully
+      console.log('File deleted!');
+  });
 
     // Guarda el usuario actualizado en la base de datos
     await user.save();
