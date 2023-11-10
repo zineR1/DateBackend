@@ -325,7 +325,7 @@ export const deletePicture = async (req, res) => {
     console.log(arr[5]);
    
     
-    fs.unlink(`../DateBackend/src/public/imgs/${arr[5]}`, function (err) {
+    fs.unlink(`src/public/imgs/${arr[5]}`, function (err) {
       if (err) throw err;
       // if no error, file has been deleted successfully
       console.log('File deleted!');
