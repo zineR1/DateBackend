@@ -7,7 +7,7 @@ import { uploader } from "../utils.js";
 import FormData from "form-data";
 import path from "path";
 import dotenv from "dotenv";
-import fs from 'fs';
+import fs from "fs";
 
 dotenv.config();
 const URL_API_DATE =
@@ -60,16 +60,14 @@ export const createUser = async (req, res) => {
   }; */
   const user = await User.findOne({
     where: {
-      email: email
-    }
+      email: email,
+    },
   });
-  
-  if(user) {
-    return res
-      .status(401)
-      .json({ massage: "Este usuario ya existe"});
+
+  if (user) {
+    return res.status(401).json({ massage: "Este usuario ya existe" });
   }
-  
+
   const nwPass = Utils.createHash(password);
 
   console.log(nwPass);
@@ -110,30 +108,30 @@ export const updateUser = async (req, res) => {
     city,
     sentimentalSituation,
     phone,
-    events
+    events,
   } = req.body.payload;
 
-  
+  console.log(events, "Events");
 
   try {
     let user = await User.findByPk(id);
-    if(user.events) {
 
-    }
     let existe = user.events.includes((event) => event.id === events.id);
-
-    if(existe) {
-      //let eventUser = user.events.find((event) => event.id === events.id);
+    if (existe) {
       let filtrados = user.events.filter((event) => event.id !== events.id);
-      user.events = filtrados.push(events); 
+
+      user.events = filtrados.push(events);
     } else {
-      user.events = user.events.push(events);
+      if (!user.events[0]) {
+        user.events = [events];
+      } else {
+        user.events = [...user.events, events];
+      }
     }
 
     user.name = name;
     user.lastName = lastName;
     user.email = email;
-    //user.password = password;
     user.description = description;
     user.userName = userName;
     user.pictures = pictures;
@@ -143,10 +141,7 @@ export const updateUser = async (req, res) => {
     user.city = city;
     user.sentimentalSituation = sentimentalSituation;
     user.phone = phone;
-    //user.events = user.events.find((event) => event.id === events.id) ? user.events 
-    //user.events = !user.events 
     
-    console.log(req.body.payload);
     await user.save();
 
     res.json(user);
@@ -174,30 +169,28 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ where: { email: email } });
 
- try {
-  if (!user) {
-    return res
-      .status(401)
-      .json({ massage: "No existe un usuario con este mail"});
-  }
+  try {
+    if (!user) {
+      return res
+        .status(401)
+        .json({ massage: "No existe un usuario con este mail" });
+    }
 
-  if (!Utils.validatePassword(password, user)) {
-    return res
-      .status(401)
-      .json({ massage: "Contraseña Incorrecta" });
-  }
+    if (!Utils.validatePassword(password, user)) {
+      return res.status(401).json({ massage: "Contraseña Incorrecta" });
+    }
 
-  const token = Utils.tokenGenerator(user);
-  res
-    .cookie("token", token, {
-      maxAge: 60 * 60 * 1000,
-      httpOnly: true,
-    })
-    .status(200)
-    .json({ id: user.id, success: true, token: token });
- } catch (error) {
-    res.status(404).json({message: error.message})
- }
+    const token = Utils.tokenGenerator(user);
+    res
+      .cookie("token", token, {
+        maxAge: 60 * 60 * 1000,
+        httpOnly: true,
+      })
+      .status(200)
+      .json({ id: user.id, success: true, token: token });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };
 
 export const logout = async (req, res) => {
@@ -320,16 +313,15 @@ export const deletePicture = async (req, res) => {
     }
 
     const imagePath = user.pictures[posicion];
-    let arr = imagePath.split('/');
+    let arr = imagePath.split("/");
 
     console.log(arr[5]);
-   
-    
+
     fs.unlink(`src/public/imgs/${arr[5]}`, function (err) {
       if (err) throw err;
       // if no error, file has been deleted successfully
-      console.log('File deleted!');
-  });
+      console.log("File deleted!");
+    });
 
     // Guarda el usuario actualizado en la base de datos
     await user.save();
@@ -391,7 +383,7 @@ export const updatePicture = async (req, res) => {
           `${URL_API_DATE}/public/imgs/${req.file.filename}`,
         ];
       }
-      console.log(req.file.filename)
+      console.log(req.file.filename);
       await user.save(); // Guarda el usuario actualizado en la base de datos
       res.json({ img: `/public/imgs/${req.file.filename}`, posicion });
     } else {
