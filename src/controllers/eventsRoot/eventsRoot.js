@@ -68,7 +68,14 @@ export const createEventRoot = async () => {
           vendidas: 4,
         },
       ],
-      organizadores: ["root1"],
+      organizadores: [
+        {
+          id: 1,
+          nombre: "root1",
+          apellido: "Root",
+          foto: "http://localhost:3001/public/imagen/defaultPic.png",
+        },
+      ],
       invitados: [
         {
           nombre: "root2",
@@ -82,7 +89,13 @@ export const createEventRoot = async () => {
             {
               idEntrada: 1,
               asignada: true,
-              dueño: "root1",
+              dueño: {
+                id: 2,
+                nombre: "root2",
+                apellido: "Root",
+                foto: "http://localhost:3001/public/imagen/defaultPic.png",
+                nacimiento: "1987-09-02",
+              },
               estado: { texto: "pendiente", hora: null },
               codigo: "282G",
             },
@@ -173,7 +186,14 @@ export const createEventRoot = async () => {
           vendidas: 4,
         },
       ],
-      organizadores: ["root2"],
+      organizadores: [
+        {
+          id: 2,
+          nombre: "root2",
+          apellido: "Root",
+          foto: "http://localhost:3001/public/imagen/defaultPic.png",
+        },
+      ],
       invitados: [
         {
           nombre: "root1",
@@ -187,7 +207,13 @@ export const createEventRoot = async () => {
             {
               idEntrada: 1,
               asignada: true,
-              dueño: "root1",
+              dueño: {
+                id: 1,
+                nombre: "root1",
+                apellido: "Root",
+                foto: "http://localhost:3001/public/imagen/defaultPic.png",
+                nacimiento: "1997-02-04"
+            },
               estado: { texto: "pendiente", hora: null },
               codigo: "282T",
             },
