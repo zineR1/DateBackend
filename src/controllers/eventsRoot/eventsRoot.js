@@ -76,8 +76,8 @@ export const createEventRoot = async () => {
           userName: "root2",
           foto: `${URL_API_DATE}/public/imagen/defaultPic.png`,
           comprobante: [],
-          confirmado: false,
-          state: 'pendiente',
+          pago: true,
+          state: "pendiente",
           entradas: [
             {
               idEntrada: 1,
@@ -181,8 +181,8 @@ export const createEventRoot = async () => {
           userName: "root1",
           foto: `${URL_API_DATE}/public/imagen/defaultPic.png`,
           comprobante: [],
-          confirmado: false,
-          state: 'pendiente',
+          pago: true,
+          state: "pendiente",
           entradas: [
             {
               idEntrada: 1,

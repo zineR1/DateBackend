@@ -74,7 +74,7 @@ export const soldTickets = async(req, res) => {
 
 
 export const agregarInvitado = async(req, res) => {
-    const { id, nombre, apellido, userName, foto, comprobante, confirmado, state, entradas, total} = req.body;
+    const { id, nombre, apellido, userName, foto, comprobante, pago, state, entradas, total} = req.body;
 
 
     const nuevoInvitado = {
@@ -83,7 +83,8 @@ export const agregarInvitado = async(req, res) => {
         userName,
         foto,
         comprobante,
-        confirmado,
+        pago,
+        // confirmado,
         state,
         entradas,
         total
@@ -152,7 +153,7 @@ export const getEventById = async (req, res) => {
 }
 
 export const addOrganizadores = async(req, res) => {
-    const {nombre, apellido, username, foto} = req.body;
+    const {nombre, apellido, userName, foto} = req.body;
     const { id } = req.params;
 
     try {
@@ -168,7 +169,7 @@ export const addOrganizadores = async(req, res) => {
         const data = {
             nombre: nombre,
             apellido: apellido,
-            username: username,
+            userName: userName,
             foto: foto
         }
         if (!event.organizadores) {
@@ -189,7 +190,7 @@ export const addOrganizadores = async(req, res) => {
 }
 
 export const deleteOrganizador  = async(req, res) => {
-    const { username } = req.body;
+    const { userName } = req.body;
     const { id } = req.params;
 
     try {
@@ -202,7 +203,7 @@ export const deleteOrganizador  = async(req, res) => {
         if (!event) {
             return res.status(404).json({ message: "Evento no encontrado" });
           }
-           const result = event.organizadores.filter(e => e.username !== username); 
+           const result = event.organizadores.filter(e => e.userName !== userName); 
             
           event.organizadores = result;
 
