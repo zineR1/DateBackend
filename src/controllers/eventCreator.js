@@ -20,6 +20,32 @@ export const uploadEvent = multer({
     storage: storage
 });
 
+export const uploadEventImage = async(req, res) => {
+    const { id } = req.params;
+
+    try {
+        const event = await Event.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        if(!event) {
+            return res.status(404).json({ message: "Evento no encontrado" });
+        }
+
+        event.flyer = `${URL_API_DATE}/public/events/${req.file.filename}`
+
+        event.save();
+
+        res.send(event);
+
+
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
 export const createEvent = async(req, res) => {
     
     /* 

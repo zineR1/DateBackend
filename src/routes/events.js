@@ -12,7 +12,7 @@ import { getEvents,
          deleteComprobante,
          updateComprobante,
          } from '../controllers/events.js';
-import { createEvent, uploadEvent, editEvent, changeEventPicture } from '../controllers/eventCreator.js'
+import { createEvent, uploadEvent, editEvent, changeEventPicture, uploadEventImage } from '../controllers/eventCreator.js'
 
 const router = Router();
 
@@ -29,7 +29,8 @@ router.put('/events', soldTickets);
 router.put('/events/invitados', agregarInvitado);
 router.put('/events/:id/organizadores', addOrganizadores);
 router.put('/events/:id/delete-organizador', deleteOrganizador);
-router.put('/events/:id/updateEvent', editEvent)
+router.put('/events/:id/updateEvent', editEvent);
+router.put('/events/:id/uploadImage', uploadEventImage);
 
 
 
