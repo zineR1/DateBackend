@@ -19,16 +19,23 @@ export const getComprobantes = async(req, res) => {
 }
 
 export const getComprobanteById = async(req, res) => {
-    const { id } = req.params;
+    const { userId } = req.params;
 
     try {
         const comprobante = await Comprobante.findOne({
             where: {
-                id: id
+                userId: userId
             }
         });
-    } catch (error) {
         
+        if (!comprobante) {
+            return res.status(404).json({ message: "Comprobante no encontrado" });
+        }
+
+        res.send(comprobante);
+
+    } catch (error) {
+        return res.status(500).json({ message: error.message });   
     }
 }
 
@@ -95,4 +102,44 @@ export const createComprobante = async(req, res) => {
     }
 }
 
- 
+export const deleteComprobante = async(req, res) => {
+    const { posicion, userId } = req.params;
+    
+
+    try {
+        const comprobante = await Comprobante.findOne({
+            where: {
+                userId: userId
+            }
+        });
+
+        if(!comprobante) {
+            return res.status(404).json({ message: "comprobante no encontrado" });
+        }
+
+        //Verifica que la posición sea válida (1, 2)
+    if (posicion < 0 || posicion > 1) {
+        return res.status(400).send("Posición no válida");
+      }
+
+  
+            if(posicion == 0) {
+                comprobante.comprobante = [null, comprobante.comprobante[1]]   
+                 
+            }
+            if(posicion == 1) {
+                comprobante.comprobante = [comprobante.comprobante[0],null]   
+                
+            }
+       
+
+   
+      
+      await comprobante.save();   
+      res.send(comprobante)
+      
+      
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
