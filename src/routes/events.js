@@ -30,7 +30,7 @@ router.put('/events/invitados', agregarInvitado);
 router.put('/events/:id/organizadores', addOrganizadores);
 router.put('/events/:id/delete-organizador', deleteOrganizador);
 router.put('/events/:id/updateEvent', editEvent);
-router.put('/events/:id/uploadImage', uploadEventImage);
+router.put('/events/:id/uploadImage',uploadEvent.single('file'), uploadEventImage);
 
 
 

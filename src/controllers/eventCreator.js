@@ -113,7 +113,7 @@ export const editEvent = async(req, res) => {
         try {
             const event = await Event.findOne({
                 where: {
-                    id: id
+                    id: parseInt(id)
                 }
             });
 
@@ -147,7 +147,7 @@ export const changeEventPicture = async(req, res) => {
     try {
         let event = await Event.findOne({
             where: {
-                id: id
+                id:parseInt(id)
             }
     
              
