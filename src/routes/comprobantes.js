@@ -12,6 +12,6 @@ const router = Router();
 router.get('/comprobantes', getComprobantes);
 router.get('/comprobantes/:id', getComprobanteById);
 router.post('/comprobantes/:eventId/uploadComprobante/:userId', upload.single('file'), createComprobante);
-router.delete('/comprobantes/:userId/deleteComprobante:/posicion', deleteComprobante);
+router.delete('/comprobantes/:eventId/deleteComprobante/:userId/:posicion', deleteComprobante);
 
 export default router;
