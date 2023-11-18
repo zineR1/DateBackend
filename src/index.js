@@ -9,7 +9,7 @@ import colors from 'colors';
 const PORT = process.env.PORT || 3001;
 
 async function main() {
-  await sequelize.sync({ force: false });
+  await sequelize.sync({ force: true });
   const server = http.createServer(app);
   const io = new Server();
   io.on("connection", (socket) => {
