@@ -88,6 +88,7 @@ export const createEventRoot = async () => {
             {
               idEntrada: 1,
               asignada: true,
+              nombreEntrada: "Entrada general",
               dueño: {
                 id: 2,
                 nombre: "root2",
@@ -101,6 +102,7 @@ export const createEventRoot = async () => {
             {
               idEntrada: 1,
               asignada: false,
+              nombreEntrada: "Entrada general",
               dueño: "",
               estado: { texto: "pendiente", hora: null },
               codigo: "628C",
@@ -108,6 +110,7 @@ export const createEventRoot = async () => {
             {
               idEntrada: 1,
               asignada: false,
+              nombreEntrada: "Entrada general",
               dueño: "",
               estado: { texto: "pendiente", hora: null },
               codigo: "862X",
@@ -205,6 +208,7 @@ export const createEventRoot = async () => {
             {
               idEntrada: 1,
               asignada: true,
+              nombreEntrada: "Entrada general",
               dueño: {
                 id: 1,
                 nombre: "root1",
@@ -218,6 +222,7 @@ export const createEventRoot = async () => {
             {
               idEntrada: 1,
               asignada: false,
+              nombreEntrada: "Entrada general",
               dueño: "",
               estado: { texto: "pendiente", hora: null },
               codigo: "628B",
@@ -225,6 +230,7 @@ export const createEventRoot = async () => {
             {
               idEntrada: 1,
               asignada: false,
+              nombreEntrada: "Entrada general",
               dueño: "",
               estado: { texto: "pendiente", hora: null },
               codigo: "862V",
