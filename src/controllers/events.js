@@ -90,12 +90,10 @@ export const agregarInvitado = async (req, res) => {
     foto,
     comprobante,
     pago,
-    // confirmado,
     state,
     entradas,
     total,
   };
-console.log(nuevoInvitado,"NUEVOINVITADO///////////")
   const event = await Event.findOne({
     where: {
       id: id,
@@ -105,21 +103,17 @@ console.log(nuevoInvitado,"NUEVOINVITADO///////////")
   if (!event) {
     return res.status(404).json({ message: "Evento no encontrado" });
   }
-  console.log(userName, "USERNAMEEEEEEE//////////");
   let existe = event.invitados.find(
     (invitado) => invitado.userName === userName
   )
     ? true
     : false;
 
-  console.log(existe, "EXISTEEEEEEE//////////////");
   if (existe) {
     let filtrados = event.invitados.filter(
       (invitado) => invitado.userName !== userName
     );
-    console.log(filtrados, "FILTRADOSSS /////////");
     event.invitados = [...filtrados, nuevoInvitado];
-    console.log(event.invitados, "EVENT.INVITADOS ////////");
   } else {
     if (!event.invitados) {
       event.invitados = [];
