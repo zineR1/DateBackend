@@ -53,7 +53,7 @@ export const createRootUser = async () => {
                 apellido: "Root",
                 foto: "http://localhost:3001/public/imagen/defaultPic.png",
                 nacimiento: "1997-02-04",
-                telefono: "123456789"
+                telefono: "987654321"
               },
               estado: { texto: "pendiente", hora: null },
               codigo: "282T",
@@ -124,11 +124,11 @@ export const createRootUser = async () => {
               asignada: true,
               nombreEntrada: "Entrada general",
               dueño: {
-                id: 1,
-                nombre: "root1",
+                id: 2,
+                nombre: "root2",
                 apellido: "Root",
                 foto: "http://localhost:3001/public/imagen/defaultPic.png",
-                nacimiento: "1997-02-04",
+                nacimiento: "1987-09-02",
                 telefono: "987654321"
               },
               estado: { texto: "pendiente", hora: null },
