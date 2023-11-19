@@ -95,6 +95,7 @@ export const createEventRoot = async () => {
                 apellido: "Root",
                 foto: "http://localhost:3001/public/imagen/defaultPic.png",
                 nacimiento: "1987-09-02",
+                telefono: "987654321"
               },
               estado: { texto: "pendiente", hora: null },
               codigo: "282G",
@@ -215,6 +216,7 @@ export const createEventRoot = async () => {
                 apellido: "Root",
                 foto: "http://localhost:3001/public/imagen/defaultPic.png",
                 nacimiento: "1997-02-04",
+                telefono: "123456789"
               },
               estado: { texto: "pendiente", hora: null },
               codigo: "282T",
