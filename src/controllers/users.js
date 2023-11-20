@@ -115,14 +115,16 @@ export const updateUser = async (req, res) => {
 
   try {
     let user = await User.findByPk(id);
-
-    let existe = user.events.includes((event) => event.id === events.id);
+    let existe = (user.events[0] && user.events[0] !== null) && user.events.find((event) => event.id === events.id)
+      ? true
+      : false;
+      console.log(existe,"EXISTEE //////////////////")
     if (existe) {
       let filtrados = user.events.filter((event) => event.id !== events.id);
 
-      user.events = filtrados.push(events);
+      user.events = [...filtrados, events];
     } else {
-      if (!user.events[0]) {
+      if (!user.events[0] || user.events[0] === null) {
         user.events = [events];
       } else {
         user.events = [...user.events, events];
@@ -141,7 +143,7 @@ export const updateUser = async (req, res) => {
     user.city = city;
     user.sentimentalSituation = sentimentalSituation;
     user.phone = phone;
-    
+
     await user.save();
 
     res.json(user);
