@@ -92,6 +92,7 @@ export const createEventRoot = async () => {
               dueño: {
                 id: 2,
                 nombre: "root2",
+                userName: "root2",
                 apellido: "Root",
                 foto: "http://localhost:3001/public/imagen/defaultPic.png",
                 nacimiento: "1987-09-02",
@@ -214,6 +215,7 @@ export const createEventRoot = async () => {
                 id: 1,
                 nombre: "root1",
                 apellido: "Root",
+                userName: "root1",
                 foto: "http://localhost:3001/public/imagen/defaultPic.png",
                 nacimiento: "1997-02-04",
                 telefono: "123456789"
