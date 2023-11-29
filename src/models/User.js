@@ -1,68 +1,66 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../database/database.js';
+import { DataTypes } from "sequelize";
+import { sequelize } from "../database/database.js";
 
-export const User = sequelize.define('users', {
-    id: {
-        type: DataTypes.INTEGER, 
-        primaryKey: true,
-        autoIncrement: true
-    },
-    name: {
-        type: DataTypes.STRING
-    },
-    lastName: {
-        type: DataTypes.STRING
-    },
-    userName: {
-        type: DataTypes.STRING
-    }, 
-    email: {
-        type: DataTypes.STRING
-    },
-    password: {
-        type: DataTypes.STRING
-    },
-    description: {
-        type: DataTypes.STRING
-    },
-     pictures: {
-        type: DataTypes.JSON
-    }, 
-    age: {
-        type: DataTypes.INTEGER
-    },
-    dateOfBirth: {
-        type: DataTypes.STRING
-    },
-      genre: {
-        type: DataTypes.STRING
-    }, 
-    city: {
-        type: DataTypes.STRING
-    },
-    sentimentalSituation: {
-        type: DataTypes.STRING
-    },
-    phone: {
-        type: DataTypes.STRING
-
-    },
-    instagramToken: {
-        type: DataTypes.STRING
-    },
-    events: {
-        type: DataTypes.JSON
-    }
-
-}
-);
-
-/* User.hasMany(Ticket, {
-    foreignKey: 'userId',
-    sourceKey: 'id'
+export const User = sequelize.define("User", {
+  userId: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoincrement: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  userName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.STRING,
+  },
+  profilePictures: {
+    type: DataTypes.JSON,
+  },
+  age: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  dateOfBirth: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  genre: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  city: {
+    type: DataTypes.STRING,
+  },
+  sentimentalSituation: {
+    type: DataTypes.STRING,
+  },
+  phone: {
+    type: DataTypes.STRING,
+  },
+  instagramToken: {
+    type: DataTypes.STRING,
+  },
+  events: {
+    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    defaultValue: [],
+  },
 });
-
-Ticket.belongsTo(User, {
-    foreignKey: 'userId',
-    targetId: 'id'
-}) */

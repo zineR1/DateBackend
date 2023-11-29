@@ -20,12 +20,13 @@ export const getComprobantes = async (req, res) => {
 };
 
 export const getComprobanteById = async (req, res) => {
-  const { userId } = req.params;
-
+  const { userId, eventId } = req.params;
+console.log(userId,"USERID")
   try {
     const comprobante = await Comprobante.findOne({
       where: {
         userId: userId,
+        eventId: eventId
       },
     });
 
