@@ -1,9 +1,9 @@
-import { Ticket } from '../models/Ticket.js'
+import { PurchasedTicket } from '../models/PurchasedTicket.js'
 import { User } from '../models/User.js'
 
 export const getTickets = async(req, res) => {
     try {
-        const tickets = await Ticket.findAll();
+        const tickets = await PurchasedTicket.findAll();
         res.json(tickets);
     } catch (error) {
         return res.status(500).json({message: error.message});
@@ -13,7 +13,7 @@ export const getTickets = async(req, res) => {
 export const getTicketById = async(req, res) => {
     const { id } = req.params;
     try {
-        const ticket = await Ticket.findOne({
+        const ticket = await PurchasedTicket.findOne({
             where: {
                 id: id
             }
@@ -31,7 +31,7 @@ export const createTicket = async(req, res) => {
     try {
         const { price, sold, userId, eventId } = req.body;
 
-        const newTicket = await Ticket.create({
+        const newTicket = await PurchasedTicket.create({
             price,
             sold,
             userId,
@@ -48,7 +48,7 @@ export const updateTicket = async(req, res) => {
     const { id } = req.params;
     const { price, sold, userId } = req.body;
     try {
-        const ticket = await Ticket.findOne({
+        const ticket = await PurchasedTicket.findOne({
             where: {id}
         })
 
@@ -68,7 +68,7 @@ export const updateTicket = async(req, res) => {
 export const deleteTicket = async(req, res) => {
     try {
         const { id } = req.params
-        const result = await Ticket.destroy({
+        const result = await PurchasedTicket.destroy({
             where: {id}
         })
         console.log(result);

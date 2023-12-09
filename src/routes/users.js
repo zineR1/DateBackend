@@ -11,9 +11,9 @@ import { getUsers,
          updatePicture, 
          
         } from '../controllers/users.js'
-import multer from 'multer';
-import path from 'path';
-import { where } from 'sequelize';
+// import multer from 'multer';
+// import path from 'path';
+// import { where } from 'sequelize';
 
 const router = Router();
 

@@ -1,5 +1,5 @@
 import multer from "multer";
-import { Ticket } from "../models/Ticket.js";
+// import { Ticket } from "../models/Ticket.js";
 import { User } from "../models/User.js";
 import Utils from "../utils/index.js";
 import emailService from "../services/email.service.js";

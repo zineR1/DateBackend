@@ -5,7 +5,7 @@ export const User = sequelize.define("User", {
   userId: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    autoincrement: true,
+    autoIncrement: true,
   },
   name: {
     type: DataTypes.STRING,
@@ -59,8 +59,12 @@ export const User = sequelize.define("User", {
   instagramToken: {
     type: DataTypes.STRING,
   },
+  ownedTickets: {
+    type: DataTypes.JSON, // COPIA DE LOS TICKETS QUE EL USER FUE OWNER
+  },
   events: {
-    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    // type: DataTypes.ARRAY(DataTypes.INTEGER),
+    type: DataTypes.JSON,
     defaultValue: [],
   },
 });

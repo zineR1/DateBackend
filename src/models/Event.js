@@ -1,12 +1,15 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
-import { User } from './User.js';
+import { User } from "./User.js";
 
 export const Event = sequelize.define("Event", {
   eventId: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
+  },
+  flyer: {
+    type: DataTypes.STRING,
   },
   eventName: {
     type: DataTypes.STRING,
@@ -36,13 +39,14 @@ export const Event = sequelize.define("Event", {
     type: DataTypes.JSON, // Guardar aquí los detalles de las entradas disponibles
   },
   organizers: {
-    type: DataTypes.ARRAY(DataTypes.INTEGER),
-    references: {
-      model: User,
-      key: "userId",
-    },
-    bankDetails: {
-      type: DataTypes.JSON,
-    },
+        type: DataTypes.JSON,
+    // type: DataTypes.ARRAY(DataTypes.INTEGER),
+    // references: {
+    //   model: User,
+    //   key: "userId",
+    // },
+  },
+  bankDetails: {
+    type: DataTypes.JSON,
   },
 });

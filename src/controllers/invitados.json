@@ -1,1 +1,0 @@
-{"id":1,"nombre":"Agustín","apellido":"Dalvit","userName":null,"foto":"","pago":true,"comprobante":[],"confirmado":false,"entrada":[{"id":1,"asignada":true,"dueño":"Agustín","estado":{"texto":"Disponible","hora":null},"codigo":"560H"},{"id":1,"asignada":false,"dueño":"","estado":{"texto":"Disponible","hora":null},"codigo":"284O"}],"total":5000}

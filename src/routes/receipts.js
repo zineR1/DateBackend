@@ -5,7 +5,7 @@ import {
     createComprobante,
     deleteComprobante,
     upload
-} from '../controllers/comprobantes.js';
+} from '../controllers/receipts.js';
 
 const router = Router();
 

@@ -1,5 +1,5 @@
 import multer from "multer";
-import { Comprobante } from "../models/Comprobante.js";
+import { Receipt } from "../models/Receipt.js";
 import path from "path";
 import dotenv from "dotenv";
 import fs from "fs";
@@ -12,7 +12,7 @@ const URL_API_DATE =
 
 export const getComprobantes = async (req, res) => {
   try {
-    const comprobantes = await Comprobante.findAll();
+    const comprobantes = await Receipt.findAll();
     res.json(comprobantes);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -23,7 +23,7 @@ export const getComprobanteById = async (req, res) => {
   const { userId, eventId } = req.params;
 console.log(userId,"USERID")
   try {
-    const comprobante = await Comprobante.findOne({
+    const comprobante = await Receipt.findOne({
       where: {
         userId: userId,
         eventId: eventId
@@ -60,7 +60,7 @@ export const createComprobante = async (req, res) => {
   const { userId, eventId } = req.params;
 
   try {
-    const comprobante = await Comprobante.findOne({
+    const comprobante = await Receipt.findOne({
       where: {
         userId: parseInt(userId),
         eventId: parseInt(eventId),
@@ -68,7 +68,7 @@ export const createComprobante = async (req, res) => {
     });
 
     if (!comprobante) {
-      let newComprobante = await Comprobante.create({
+      let newComprobante = await Receipt.create({
         eventId: parseInt(eventId),
         userId: parseInt(userId),
         comprobantes: [],
@@ -105,7 +105,7 @@ export const deleteComprobante = async (req, res) => {
   console.log(eventId, "eventID");
 
   try {
-    const comprobante = await Comprobante.findOne({
+    const comprobante = await Receipt.findOne({
       where: {
         userId: parseInt(userId),
         eventId: parseInt(eventId),

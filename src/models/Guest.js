@@ -1,39 +1,26 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../database/database.js';
-import { Receipt } from './receiptModel.js'; // Asegúrate de importar correctamente el modelo de Receipt
+import { DataTypes } from "sequelize";
+import { sequelize } from "../database/database.js";
+import { User } from "./User.js";
+import { Event } from "./Event.js";
 
-export const Guest = sequelize.define('Guest', {
-    guestId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
+export const Guest = sequelize.define("Guest", {
+  guestId: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: User,
+      key: "userId",
     },
-    name: {
-        type: DataTypes.STRING,
+  },
+  eventId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Event,
+      key: "eventId",
     },
-    lastName: {
-        type: DataTypes.STRING,
-    },
-    userName: {
-        type: DataTypes.STRING,
-        unique: true,
-    },
-    profilePictures: {
-        type: DataTypes.STRING,
-    },
-    receipts: {
-        type: DataTypes.JSON,
-        references: {
-            model: Receipt,
-            key: 'receiptId'
-        }
-    },
-    status: {
-        type: DataTypes.STRING, // STATUS DE LA COMPRA
-    },
-    totalAmount: {
-        type: DataTypes.INTEGER, //TOTAL ENTRADAS
-    },
+  },
 });
-
-// Guest.belongsTo(User, { foreignKey: 'userId', targetKey: 'userId' });

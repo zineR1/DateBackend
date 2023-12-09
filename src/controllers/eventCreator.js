@@ -57,33 +57,33 @@ export const createEvent = async(req, res) => {
 
 
     const {
-        nombreEvento,
-        fechaEvento,
-        horaInicio,
-        horaFin,
-        descripcion,
-        ubicacion,
-        tipoEntrada,
-        entradas,
-        organizadores,
-        invitados,
-        datosBanco
+        eventName, 
+        eventDate,
+        startTime,
+        endTime,
+        description,
+        status,
+        location,
+        ticketType,
+        tickets,
+        organizers,
+        bankDetails
     } = req.body;
     
     try {
         const newEvent = await Event.create({
             flyer: req.filename,
-            nombreEvento,
-            fechaEvento,
-            horaInicio,
-            horaFin,
-            ubicacion,
-            descripcion,
-            tipoEntrada,
-            entradas,
-            organizadores,
-            invitados,
-            datosBanco
+            eventName, 
+            eventDate,
+            startTime,
+            endTime,
+            description,
+            status,
+            location,
+            ticketType,
+            tickets,
+            organizers,
+            bankDetails
         });
 
         if(!newEvent.flyer) {
@@ -98,17 +98,18 @@ export const createEvent = async(req, res) => {
 
 export const editEvent = async(req, res) => {
     const { id } = req.params;
-    const {flyer, 
-           nombreEvento, 
-           fechaEvento,
-           horaInicio,
-           horaFin,
-           descripcion,
-           ubicacion,
-           url,
-           tipoEntrada,
-           entradas,
-           datosBanco
+    const { 
+        eventName, 
+        eventDate,
+        startTime,
+        endTime,
+        description,
+        status,
+        location,
+        ticketType,
+        tickets,
+        organizers,
+        bankDetails
         } = req.body;
 
         try {
@@ -118,17 +119,17 @@ export const editEvent = async(req, res) => {
                 }
             });
 
-        //event.flyer = req.file.filename
-        event.nombreEvento = nombreEvento
-        event.fechaEvento = fechaEvento
-        event.horaInicio = horaInicio
-        event.horaFin = horaFin
-        event.descripcion = descripcion
-        event.ubicacion = ubicacion
-        event.url = url
-        event.tipoEntrada = tipoEntrada
-        event.entradas = entradas
-        event.datosBanco = datosBanco
+        event.eventName = eventName
+        event.eventDate = eventDate
+        event.startTime = startTime
+        event.endTime = endTime
+        event.description = description
+        event.status = status
+        event.location = location
+        event.ticketType = ticketType
+        event.tickets = tickets
+        event.organizers = organizers
+        event.bankDetail = bankDetails
         await event.save();
 
         res.json(event)

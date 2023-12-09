@@ -10,13 +10,13 @@ import { Receipt } from './Receipt.js';
 
 //RELACIONES MIAS
 User.hasMany(PurchasedTicket, { foreignKey: 'userId' });
+Event.hasMany(PurchasedTicket, { foreignKey: 'eventId' });
+Event.hasMany(Guest, { foreignKey: 'eventId' });
 
 PurchasedTicket.belongsTo(User, { foreignKey: 'userId' });
 PurchasedTicket.belongsTo(Event, { foreignKey: 'eventId' });
 PurchasedTicket.belongsTo(Receipt, { foreignKey: 'receiptId' });
 
-Event.hasMany(PurchasedTicket, { foreignKey: 'eventId' });
-Event.hasMany(Guest, { foreignKey: 'eventId' });
 
 Guest.belongsTo(Event, { foreignKey: 'eventId' });
 Guest.belongsTo(User, { foreignKey: 'userId' })
