@@ -3,6 +3,9 @@ import { Receipt } from "../models/Receipt.js";
 import path from "path";
 import dotenv from "dotenv";
 import fs from "fs";
+import { PurchasedTicket } from "../models/PurchasedTicket.js";
+import { Event } from "../models/Event.js";
+import { User } from "../models/User.js";
 
 dotenv.config();
 const URL_API_DATE =
@@ -21,12 +24,14 @@ export const getComprobantes = async (req, res) => {
 
 export const getComprobanteById = async (req, res) => {
   const { userId, eventId } = req.params;
-console.log(userId,"USERID")
+console.log(userId, "USEERRRRRID")
+console.log(eventId, "EVENTIDDDDDDDDDD")
+
   try {
     const comprobante = await Receipt.findOne({
       where: {
         userId: userId,
-        eventId: eventId
+        eventId: eventId,
       },
     });
 
@@ -34,7 +39,59 @@ console.log(userId,"USERID")
       return res.status(404).json({ message: "Comprobante no encontrado" });
     }
 
-    res.send(comprobante);
+    const eventInfo = await Event.findOne({
+      where: {
+        eventId: eventId,
+      },
+    });
+
+    const purchasedTickets = await PurchasedTicket.findAll({
+      where: {
+        userId: userId,
+        eventId: eventId,
+      },
+    });
+
+    const data = {
+      receiptId: comprobante.receiptId,
+      eventInfo: {
+        eventId: eventInfo.eventId,
+        flyer: eventInfo.flyer,
+        eventName: eventInfo.eventName,
+        eventDate: eventInfo.eventDate,
+        startTime: eventInfo.startTime,
+        endTime: eventInfo.endTime,
+        description: eventInfo.description,
+        location: eventInfo.location,
+      },
+      status: comprobante.status,
+      totalAmount: comprobante.totalAmount,
+      receipts: comprobante.receipts,
+      purchasedTickets: await Promise.all(
+        purchasedTickets.map(async (ticket) => {
+          const ticketInfo = {
+            ticketId: ticket.ticketIdEntry,
+            assigned: ticket.assigned,
+            status: ticket.status,
+            code: ticket.code,
+          };
+          const ownerInfo = await User.findByPk(ticket.owner);
+          if (ownerInfo) {
+            ticketInfo.owner = {
+              userId: ownerInfo.userId,
+              name: ownerInfo.name,
+              lastName: ownerInfo.lastName,
+              userName: ownerInfo.userName,
+              profilePictures: ownerInfo.profilePictures[0],
+              phone: ownerInfo.phone,
+            };
+          }
+          return ticketInfo;
+        })
+      ),
+    };
+
+    res.send(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -58,6 +115,7 @@ export const upload = multer({
 
 export const createComprobante = async (req, res) => {
   const { userId, eventId } = req.params;
+  const { purchasedTickets, totalAmount } = req.body;
 
   try {
     const comprobante = await Receipt.findOne({
@@ -71,27 +129,63 @@ export const createComprobante = async (req, res) => {
       let newComprobante = await Receipt.create({
         eventId: parseInt(eventId),
         userId: parseInt(userId),
-        comprobantes: [],
+        purchasedTickets: purchasedTickets,
+        totalAmount: totalAmount,
+        // receipts: [],
       });
 
-      if (req.file && req.file.filename) {
-        newComprobante.comprobantes = [
-          `${URL_API_DATE}/public/comprobantes/${req.file.filename}`,
-        ];
+      // if (req.file && req.file.filename) {
+      //   newComprobante.comprobantes = [
+      //     `${URL_API_DATE}/public/comprobantes/${req.file.filename}`,
+      //   ];
 
-        await newComprobante.save();
-        res.json(newComprobante);
+      //     await newComprobante.save();
+      //     res.json(newComprobante);
+      //   } else {
+      //     return res.status(400).send("Error en la subida de la imagen");
+      //   }
+      // } else {
+      //   comprobante.comprobantes = [
+      //     comprobante.comprobantes[0],
+      //     `${URL_API_DATE}/public/comprobantes/${req.file.filename}`,
+      //   ];
+
+      // await comprobante.save();
+      res.json(newComprobante);
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const uploadComprobante = async (req, res) => {
+  const { userId, eventId } = req.params;
+  try {
+    const comprobante = await Receipt.findOne({
+      where: {
+        userId: parseInt(userId),
+        eventId: parseInt(eventId),
+      },
+    });
+    if (!comprobante) {
+      return res.status(500).json({ message: "El comprobante no existe" });
+    } else {
+      if (req.file && req.file.filename) {
+        if (!comprobante.receipts[0]) {
+          comprobante.receipts = [
+            `${URL_API_DATE}/public/comprobantes/${req.file.filename}`,
+          ];
+        } else {
+          comprobante.receipts = [
+            comprobante.receipts[0],
+            `${URL_API_DATE}/public/comprobantes/${req.file.filename}`,
+          ];
+        }
+        await comprobante.save();
+        res.json(comprobante);
       } else {
         return res.status(400).send("Error en la subida de la imagen");
       }
-    } else {
-      comprobante.comprobantes = [
-        comprobante.comprobantes[0],
-        `${URL_API_DATE}/public/comprobantes/${req.file.filename}`,
-      ];
-
-      await comprobante.save();
-      res.json(comprobante);
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -100,9 +194,6 @@ export const createComprobante = async (req, res) => {
 
 export const deleteComprobante = async (req, res) => {
   const { posicion, userId, eventId } = req.params;
-  console.log(posicion, "posicion");
-  console.log(userId, "userId");
-  console.log(eventId, "eventID");
 
   try {
     const comprobante = await Receipt.findOne({
@@ -116,39 +207,32 @@ export const deleteComprobante = async (req, res) => {
       return res.status(404).json({ message: "comprobante no encontrado" });
     }
 
-    console.log(comprobante);
-    //Verifica que la posición sea válida (1, 2)
     if (parseInt(posicion) < 0 || parseInt(posicion) > 1) {
       return res.status(400).send("Posición no válida");
     }
 
-    if (comprobante.comprobantes[0] || comprobante.comprobantes[1]) {
-      const imagePath = comprobante.comprobantes[posicion];
+    if (comprobante.receipts[0] || comprobante.receipts[1]) {
+      const imagePath = comprobante.receipts[posicion];
       let arr = imagePath.split("/");
 
       fs.unlink(`src/public/comprobantes/${arr[5]}`, function (err) {
         if (err) throw err;
-        // if no error, file has been deleted successfully
         console.log("File deleted!");
       });
     }
 
-    if (parseInt(posicion) == 0 && !comprobante.comprobantes[1]) {
-      //comprobante.comprobantes = [];
+    if (parseInt(posicion) == 0 && !comprobante.receipts[1]) {
       await comprobante.destroy();
     }
-    if (parseInt(posicion) == 0 && comprobante.comprobantes[1]) {
-      comprobante.comprobantes = [comprobante.comprobantes[1]];
+    if (parseInt(posicion) == 0 && comprobante.receipts[1]) {
+      comprobante.receipts = [comprobante.receipts[1]];
     }
     if (parseInt(posicion) == 1) {
-      comprobante.comprobantes = [comprobante.comprobantes[0]];
+      comprobante.receipts = [comprobante.receipts[0]];
     }
 
     comprobante.save();
-
-    // if(!comprobante.comprobantes[0] || !comprobante.comprobantes[1]) {
-    //     
-    // }
+    res.send("Comprobante borrado");
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

@@ -28,6 +28,7 @@ export const Event = sequelize.define("Event", {
   },
   status: {
     type: DataTypes.STRING,
+    defaultValue: "pendiente"
   },
   location: {
     type: DataTypes.STRING,

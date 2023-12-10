@@ -2,7 +2,6 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
 import { User } from "./User.js";
 import { Event } from "./Event.js";
-import { PurchasedTicket } from "./PurchasedTicket.js";
 
 export const Receipt = sequelize.define("Receipt", {
   receiptId: {

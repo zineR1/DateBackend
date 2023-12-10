@@ -9,15 +9,12 @@ export const User = sequelize.define("User", {
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
   lastName: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
   userName: {
     type: DataTypes.STRING,
-    allowNull: false,
     unique: true,
   },
   email: {
@@ -37,15 +34,12 @@ export const User = sequelize.define("User", {
   },
   age: {
     type: DataTypes.INTEGER,
-    allowNull: false,
   },
   dateOfBirth: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
   genre: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
   city: {
     type: DataTypes.STRING,

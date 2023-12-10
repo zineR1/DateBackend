@@ -1,7 +1,8 @@
 import { Event } from "../models/Event.js";
-// import { Ticket } from "../models/Ticket.js";
 import { User } from "../models/User.js";
-import Utils from "../utils/index.js";
+import { PurchasedTicket } from "../models/PurchasedTicket.js";
+import { Receipt } from "../models/Receipt.js";
+import { Guest } from "../models/Guest.js";
 import multer from "multer";
 import path from "path";
 
@@ -23,9 +24,33 @@ export const deleteEvent = async (req, res) => {
   const { id } = req.params;
 
   try {
+    await PurchasedTicket.destroy({
+      where: { eventId: id },
+    });
+    await Receipt.destroy({
+      where: { eventId: id },
+    });
+    await Guest.destroy({
+      where: { eventId: id },
+    });
+    //Elimina el id del evento eliminado de los events de los users
+    const users = await User.findAll();
+    const usersWithEvent = users.filter((user) =>
+      user.events.includes(parseInt(id))
+    );
+    const updatedUsers = usersWithEvent.map((user) => ({
+      ...user,
+      events: user.events.filter((eventId) => eventId !== parseInt(id)),
+    }));
+    for (const user of updatedUsers) {
+      await User.update(
+        { events: user.events },
+        { where: { userId: user.dataValues.userId } }
+      );
+    }
     await Event.destroy({
       where: {
-        id: id,
+        eventId: id,
       },
     });
     res.status(204).json({ message: "Evento Borrado" });
@@ -140,7 +165,7 @@ export const getEventById = async (req, res) => {
   try {
     const event = await Event.findOne({
       where: {
-        id: id,
+        eventId: id,
       },
     });
     if (!event) {
@@ -153,62 +178,80 @@ export const getEventById = async (req, res) => {
   }
 };
 
-export const addOrganizadores = async (req, res) => {
-  const { nombre, apellido, userName, foto } = req.body;
-  const { id } = req.params;
+export const getOrganizadores = async (req, res) => {
+  const { eventId } = req.params;
 
   try {
     const event = await Event.findOne({
       where: {
-        id: id,
+        eventId: eventId,
       },
     });
 
     if (!event) {
       return res.status(404).json({ message: "Evento no encontrado" });
     }
-    const data = {
-      nombre: nombre,
-      apellido: apellido,
-      userName: userName,
-      foto: foto,
-    };
-    if (!event.organizadores) {
-      event.organizadores = [];
-      event.organizadores.push(data);
-      console.log(event.organizadores, " Invitados if");
-    } else {
-      event.organizadores = [...event.organizadores, data];
-      console.log(event.organizadores, " Invitados else");
+
+    res.json(event.organizers);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const addOrganizadores = async (req, res) => {
+  const { eventId, userId } = req.params;
+
+  try {
+    const event = await Event.findOne({
+      where: {
+        eventId: eventId,
+      },
+    });
+
+    if (!event) {
+      return res.status(404).json({ message: "Evento no encontrado" });
+    }
+    // const data = {
+    //   nombre: nombre,
+    //   apellido: apellido,
+    //   userName: userName,
+    //   foto: foto,
+    // };
+
+    if (!event.organizers) {
+      event.organizers = [];
+      event.organizers.push(userId);
+    }
+    if (event.organizers && !event.organizers.includes(userId)) {
+      event.organizers = [...event.organizers, userId];
     }
 
     await event.save();
-    res.json(event.organizadores);
+    res.json(event.organizers);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
 
 export const deleteOrganizador = async (req, res) => {
-  const { userName } = req.body;
-  const { id } = req.params;
+  const { userId, eventId } = req.params;
 
   try {
     const event = await Event.findOne({
       where: {
-        id: id,
+        eventId: eventId,
       },
     });
 
     if (!event) {
       return res.status(404).json({ message: "Evento no encontrado" });
     }
-    const result = event.organizadores.filter((e) => e.userName !== userName);
+    const result = event.organizers.filter((id) => id !== parseInt(userId));
 
-    event.organizadores = result;
+    event.organizers = result;
 
     event.save();
-    res.send(event.organizadores);
+    res.send(event.organizers);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

@@ -37,11 +37,13 @@ export const createRootUser = async () => {
       city: "Ciudad de Córdoba",
       sentimentalSituation: "Soltero",
       phone: "123456789",
-      ownedTickets: [{
-        eventId: 2,
-        ticketIdEntry: 2,
-      }],
-      events: [2],
+      ownedTickets: [
+        {
+          eventId: 2,
+          ticketIdEntry: 2,
+        },
+      ],
+      events: [1, 2],
     });
 
     if (user1) {
@@ -70,11 +72,13 @@ export const createRootUser = async () => {
       city: "La Plata",
       sentimentalSituation: "Soltero",
       phone: "987654321",
-      ownedTickets: [{
-        eventId: 1,
-        ticketIdEntry: 3,
-      }],
-      events: [1],
+      ownedTickets: [
+        {
+          eventId: 1,
+          ticketIdEntry: 3,
+        },
+      ],
+      events: [1, 2],
     });
 
     if (user2) {
