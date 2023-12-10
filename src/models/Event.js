@@ -1,58 +1,53 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../database/database.js';
+import { DataTypes } from "sequelize";
+import { sequelize } from "../database/database.js";
+import { User } from "./User.js";
 
-
-/* 
-    la tabla tickets va a tener todas las entradas compradas
-    esas entradas van a estar relacionadas con un usuario y con un evento
-    es decir que cuando un usuario compre una entrada de un evento esto se va a registrar
-    en la tabla Tickets
-*/
-
-export const Event = sequelize.define('events', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    flyer: {
-        type: DataTypes.STRING
-    },
-    nombreEvento: {
-        type: DataTypes.STRING,
-    },
-    fechaEvento: {
-        type: DataTypes.STRING
-    },
-    horaInicio: {
-        type: DataTypes.STRING
-    },
-    horaFin: {
-        type: DataTypes.STRING
-    },
-    descripcion: {
-        type: DataTypes.STRING
-    },
-    state: {
-        type: DataTypes.STRING
-    },
-    ubicacion: {
-        type: DataTypes.STRING
-    },
-    tipoEntrada: {
-        type: DataTypes.ENUM('simple', 'multiple'),
-        defaultValue: 'simple'
-    },
-    entradas: {
-        type: DataTypes.JSON
-    },
-    organizadores: {
-        type: DataTypes.JSON
-    },
-    invitados: {
-        type: DataTypes.JSON
-    },
-    datosBanco: {
-        type: DataTypes.JSON
-    }
-})
+export const Event = sequelize.define("Event", {
+  eventId: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  flyer: {
+    type: DataTypes.STRING,
+  },
+  eventName: {
+    type: DataTypes.STRING,
+  },
+  eventDate: {
+    type: DataTypes.STRING,
+  },
+  startTime: {
+    type: DataTypes.STRING,
+  },
+  endTime: {
+    type: DataTypes.STRING,
+  },
+  description: {
+    type: DataTypes.STRING,
+  },
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: "pendiente"
+  },
+  location: {
+    type: DataTypes.STRING,
+  },
+  ticketType: {
+    type: DataTypes.STRING, // Cambiar si hay un tipo específico de entradas
+  },
+  tickets: {
+    type: DataTypes.JSON, // Guardar aquí los detalles de las entradas disponibles
+  },
+  organizers: {
+        type: DataTypes.JSON,
+    // type: DataTypes.ARRAY(DataTypes.INTEGER),
+    // references: {
+    //   model: User,
+    //   key: "userId",
+    // },
+  },
+  bankDetails: {
+    type: DataTypes.JSON,
+  },
+});

@@ -1,6 +1,8 @@
 import multer from "multer";
-import { Ticket } from "../models/Ticket.js";
+// import { Ticket } from "../models/Ticket.js";
 import { User } from "../models/User.js";
+import { Event } from "../models/Event.js";
+import { Receipt } from "../models/Receipt.js";
 import Utils from "../utils/index.js";
 import emailService from "../services/email.service.js";
 import { uploader } from "../utils.js";
@@ -30,17 +32,12 @@ export const getUserById = async (req, res) => {
   try {
     const user = await User.findOne({
       where: {
-        id: id,
+        userId: id,
       },
     });
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    const tickets = await Ticket.findAll({
-      where: {
-        userId: user.id,
-      },
-    });
 
     res.status(200).send(user);
   } catch (error) {
@@ -48,16 +45,50 @@ export const getUserById = async (req, res) => {
   }
 };
 
+export const getUserEvents = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    } else {
+      const eventsId = user.events;
+      const events = await Event.findAll({
+        where: {
+          eventId: eventsId,
+        },
+      });
+
+      const eventsWithOpStatus = [];
+      for (const event of events) {
+        let opStatus = null;
+        // Verificar si el usuario es organizador del evento
+        if (event.organizers.includes(parseInt(userId))) {
+          opStatus = "owner";
+        } else {
+          const receipt = await Receipt.findOne({
+            where: { eventId: event.eventId },
+          });
+          opStatus = receipt ? receipt.status : null;
+        }
+
+        const eventWithOpStatus = {
+          ...event.toJSON(),
+          opStatus,
+        };
+        eventsWithOpStatus.push(eventWithOpStatus);
+      }
+
+      res.status(200).send(eventsWithOpStatus );
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error al buscar los eventos del usuario" });
+  }
+};
+
 export const createUser = async (req, res) => {
   const { email, password, events } = req.body;
 
-  /*  const nwAge = (date) => {
-    const fechaNac = new Date(date);
-    const fechaActual = new Date();
-    const diferenciaTiempo = fechaActual - fechaNac;
-    const edad = Math.floor(diferenciaTiempo / (365.25 * 24 * 60 * 60 * 1000));
-    return edad;
-  }; */
   const user = await User.findOne({
     where: {
       email: email,
@@ -65,20 +96,17 @@ export const createUser = async (req, res) => {
   });
 
   if (user) {
-    return res.status(401).json({ massage: "Este usuario ya existe" });
+    return res.status(401).json({ message: "Este usuario ya existe" });
   }
 
   const nwPass = Utils.createHash(password);
-
-  console.log(nwPass);
   try {
     const newUSer = await User.create({
-      email,
-      nwPass,
-      events,
+      email: email,
+      password: nwPass,
+      events: events,
     });
-    newUSer.password = nwPass;
-    newUSer.pictures = [
+    newUSer.profilePictures = [
       `${URL_API_DATE}/public/imagen/defaultPic.png`,
       `${URL_API_DATE}/public/imagen/defaultPic.png`,
       `${URL_API_DATE}/public/imagen/defaultPic.png`,
@@ -101,7 +129,7 @@ export const updateUser = async (req, res) => {
     //password,
     description,
     userName,
-    pictures,
+    // profilePictures,
     age,
     dateOfBirth,
     genre,
@@ -111,39 +139,38 @@ export const updateUser = async (req, res) => {
     events,
   } = req.body.payload;
 
-  console.log(events, "Events");
-
   try {
     let user = await User.findByPk(id);
-    let existe = (user.events[0] && user.events[0] !== null) && user.events.find((event) => event.id === events.id)
-      ? true
-      : false;
-      console.log(existe,"EXISTEE //////////////////")
-    if (existe) {
-      let filtrados = user.events.filter((event) => event.id !== events.id);
+    // let existe = (user.events[0] && user.events[0] !== null) && user.events.find((event) => event.id === events.id)
+    //   ? true
+    //   : false;
+    // if (existe) {
+    //   let filtrados = user.events.filter((event) => event.id !== events.id);
 
-      user.events = [...filtrados, events];
+    //   user.events = [...filtrados, events];
+    // } else {
+    if (!user.events[0] || user.events[0] === null) {
+      user.events = [events];
     } else {
-      if (!user.events[0] || user.events[0] === null) {
-        user.events = [events];
-      } else {
-        user.events = [...user.events, events];
-      }
+      user.events = [...user.events, events];
     }
+    // }
 
     user.name = name;
     user.lastName = lastName;
-    user.email = email;
-    user.description = description;
     user.userName = userName;
-    user.pictures = pictures;
+    user.email = email;
+    user.password = user.password;
+    user.description = description;
+    user.profilePictures = user.profilePictures;
     user.age = age;
     user.dateOfBirth = dateOfBirth;
     user.genre = genre;
     user.city = city;
     user.sentimentalSituation = sentimentalSituation;
     user.phone = phone;
-
+    user.instagramToken = user.instagramToken;
+    console.log(user, "USERRRRRRR");
     await user.save();
 
     res.json(user);
