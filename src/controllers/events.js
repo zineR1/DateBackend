@@ -143,10 +143,8 @@ export const agregarInvitado = async (req, res) => {
     if (!event.invitados) {
       event.invitados = [];
       event.invitados.push(nuevoInvitado);
-      console.log(event.invitados, " Invitados if");
     } else {
       event.invitados = [...event.invitados, nuevoInvitado];
-      console.log(event.invitados, " Invitados else");
     }
   }
 
@@ -317,7 +315,6 @@ export const updateComprobante = async (req, res) => {
     //     }
     // });
 
-    console.log(event.invitados);
     await event.save(); // Guarda el evento actualizado en la base de datos
     // res.json({ img: `/public/comprobantes/${req.file.filename}`, posicion });
   } catch (error) {

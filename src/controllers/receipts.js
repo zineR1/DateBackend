@@ -24,8 +24,6 @@ export const getComprobantes = async (req, res) => {
 
 export const getComprobanteById = async (req, res) => {
   const { userId, eventId } = req.params;
-console.log(userId, "USEERRRRRID")
-console.log(eventId, "EVENTIDDDDDDDDDD")
 
   try {
     const comprobante = await Receipt.findOne({
@@ -34,16 +32,57 @@ console.log(eventId, "EVENTIDDDDDDDDDD")
         eventId: eventId,
       },
     });
-
-    if (!comprobante) {
-      return res.status(404).json({ message: "Comprobante no encontrado" });
-    }
-
     const eventInfo = await Event.findOne({
       where: {
         eventId: eventId,
       },
     });
+    if (!comprobante) {
+      const entradaTransferida = await PurchasedTicket.findOne({
+        where: {
+          userId: userId,
+          eventId: eventId,
+        },
+      });
+      if (entradaTransferida) {
+        const purchasedTickets = {
+          ticketId: entradaTransferida.ticketId,
+          assigned: entradaTransferida.assigned,
+          status: entradaTransferida.status,
+          code: entradaTransferida.code,
+          ticketName: eventInfo.tickets.find(
+            (tickets) => tickets.id === entradaTransferida.ticketIdEntry
+          ).ticketName,
+        };
+        const ownerInfo = await User.findByPk(entradaTransferida.owner);
+        if (ownerInfo) {
+          purchasedTickets.owner = {
+            userId: ownerInfo.userId,
+            name: ownerInfo.name,
+            lastName: ownerInfo.lastName,
+            userName: ownerInfo.userName,
+            profilePictures: ownerInfo.profilePictures[0],
+            phone: ownerInfo.phone,
+          };
+        }
+        const data = {
+          eventInfo: {
+            eventId: eventInfo.eventId,
+            flyer: eventInfo.flyer,
+            eventName: eventInfo.eventName,
+            eventDate: eventInfo.eventDate,
+            startTime: eventInfo.startTime,
+            endTime: eventInfo.endTime,
+            description: eventInfo.description,
+            location: eventInfo.location,
+          },
+          purchasedTickets: [purchasedTickets],
+        };
+        return res.send(data);
+      } else {
+        return res.status(404).json({ message: "Comprobante no encontrado" });
+      }
+    }
 
     const purchasedTickets = await PurchasedTicket.findAll({
       where: {
@@ -70,10 +109,13 @@ console.log(eventId, "EVENTIDDDDDDDDDD")
       purchasedTickets: await Promise.all(
         purchasedTickets.map(async (ticket) => {
           const ticketInfo = {
-            ticketId: ticket.ticketIdEntry,
+            ticketId: ticket.ticketId,
             assigned: ticket.assigned,
             status: ticket.status,
             code: ticket.code,
+            ticketName: eventInfo.tickets.find(
+              (tickets) => tickets.id === ticket.ticketIdEntry
+            ).ticketName,
           };
           const ownerInfo = await User.findByPk(ticket.owner);
           if (ownerInfo) {
@@ -91,7 +133,7 @@ console.log(eventId, "EVENTIDDDDDDDDDD")
       ),
     };
 
-    res.send(data);
+    return res.send(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

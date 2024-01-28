@@ -10,6 +10,7 @@ import FormData from "form-data";
 import path from "path";
 import dotenv from "dotenv";
 import fs from "fs";
+import { Console } from "console";
 
 dotenv.config();
 const URL_API_DATE =
@@ -28,7 +29,6 @@ export const getUsers = async (req, res) => {
 
 export const getUserById = async (req, res) => {
   const { id } = req.params;
-
   try {
     const user = await User.findOne({
       where: {
@@ -38,7 +38,6 @@ export const getUserById = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
-
     res.status(200).send(user);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -79,10 +78,12 @@ export const getUserEvents = async (req, res) => {
         eventsWithOpStatus.push(eventWithOpStatus);
       }
 
-      res.status(200).send(eventsWithOpStatus );
+      res.status(200).send(eventsWithOpStatus);
     }
   } catch (error) {
-    res.status(500).json({ message: "Error al buscar los eventos del usuario" });
+    res
+      .status(500)
+      .json({ message: "Error al buscar los eventos del usuario" });
   }
 };
 
@@ -138,7 +139,6 @@ export const updateUser = async (req, res) => {
     phone,
     events,
   } = req.body.payload;
-
   try {
     let user = await User.findByPk(id);
     // let existe = (user.events[0] && user.events[0] !== null) && user.events.find((event) => event.id === events.id)
@@ -156,23 +156,23 @@ export const updateUser = async (req, res) => {
     }
     // }
 
-    user.name = name;
-    user.lastName = lastName;
-    user.userName = userName;
-    user.email = email;
-    user.password = user.password;
-    user.description = description;
-    user.profilePictures = user.profilePictures;
-    user.age = age;
-    user.dateOfBirth = dateOfBirth;
-    user.genre = genre;
-    user.city = city;
-    user.sentimentalSituation = sentimentalSituation;
-    user.phone = phone;
+    user.name = name ? name : user.name;
+    user.lastName = lastName ? lastName : user.lastName;
+    user.userName = userName ? userName : user.userName;
+    user.email = email ? email : user.email;
+    // user.password = user.password;
+    user.description = description ? description : user.description;
+    // user.profilePictures = user.profilePictures;
+    user.age = age ? age : user.age;
+    user.dateOfBirth = dateOfBirth ? dateOfBirth : user.dateOfBirth;
+    user.genre = genre ? genre : user.genre;
+    user.city = city ? city : user.city;
+    user.sentimentalSituation = sentimentalSituation
+      ? sentimentalSituation
+      : user.sentimentalSituation;
+    user.phone = phone ? phone : user.phone;
     user.instagramToken = user.instagramToken;
-    console.log(user, "USERRRRRRR");
     await user.save();
-
     res.json(user);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -197,7 +197,6 @@ export const deleteUser = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ where: { email: email } });
-
   try {
     if (!user) {
       return res
@@ -216,7 +215,7 @@ export const login = async (req, res) => {
         httpOnly: true,
       })
       .status(200)
-      .json({ id: user.id, success: true, token: token });
+      .json({ id: user.userId, success: true, token: token });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -249,7 +248,6 @@ export const resetPassword = async (req, res) => {
 
 export const correoReset = async (req, res) => {
   const { email } = req.body;
-  console.log(req.body);
   try {
     const user = await User.findOne({
       where: {
@@ -303,7 +301,7 @@ export const deletePicture = async (req, res) => {
   try {
     const user = await User.findOne({
       where: {
-        id: id,
+        userId: id,
       },
     });
 
@@ -318,43 +316,38 @@ export const deletePicture = async (req, res) => {
 
     // Establece la imagen en la posición especificada como null para eliminarla
 
-    if (posicion == 0) {
-      user.pictures = [
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
-        user.pictures[1],
-        user.pictures[2],
-      ];
-    }
-
-    if (posicion == 1) {
-      user.pictures = [
-        user.pictures[0],
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
-        user.pictures[2],
-      ];
-    }
-    if (posicion == 2) {
-      user.pictures = [
-        user.pictures[0],
-        user.pictures[1],
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
-      ];
-    }
-
-    const imagePath = user.pictures[posicion];
+    const imagePath = user.profilePictures[posicion];
     let arr = imagePath.split("/");
-
-    console.log(arr[5]);
-
     fs.unlink(`src/public/imgs/${arr[5]}`, function (err) {
       if (err) throw err;
       // if no error, file has been deleted successfully
       console.log("File deleted!");
     });
 
-    // Guarda el usuario actualizado en la base de datos
+    if (posicion == 0) {
+      user.profilePictures = [
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        user.profilePictures[1],
+        user.profilePictures[2],
+      ];
+    }
+
+    if (posicion == 1) {
+      user.profilePictures = [
+        user.profilePictures[0],
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        user.profilePictures[2],
+      ];
+    }
+    if (posicion == 2) {
+      user.profilePictures = [
+        user.profilePictures[0],
+        user.profilePictures[1],
+        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+      ];
+    }
+
     await user.save();
-    console.log(user.pictures);
     res.send(user);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -367,7 +360,7 @@ export const updatePicture = async (req, res) => {
   try {
     const user = await User.findOne({
       where: {
-        id: id,
+        userId: id,
       },
     });
 
@@ -375,8 +368,8 @@ export const updatePicture = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    if (!Array.isArray(user.pictures)) {
-      user.pictures = [
+    if (!Array.isArray(user.profilePictures)) {
+      user.profilePictures = [
         `${URL_API_DATE}/public/imagen/defaultPic.png`,
         `${URL_API_DATE}/public/imagen/defaultPic.png`,
         `${URL_API_DATE}/public/imagen/defaultPic.png`,
@@ -390,29 +383,38 @@ export const updatePicture = async (req, res) => {
 
     // Verifica si la subida de la imagen se ha realizado correctamente
     if (req.file && req.file.filename) {
+      // Establece la imagen en la posición especificada como null para eliminarla
+      const imagePath = user.profilePictures[posicion];
+      let arr = imagePath.split("/");
+      if (arr[5] !== "defaultPic.png") {
+        fs.unlink(`src/public/imgs/${arr[5]}`, function (err) {
+          if (err) throw err;
+          // if no error, file has been deleted successfully
+          console.log("File deleted to change!");
+        });
+      }
       // user.pictures[posicion] = req.file.filename;
       if (posicion == 0) {
-        user.pictures = [
+        user.profilePictures = [
           `${URL_API_DATE}/public/imgs/${req.file.filename}`,
-          user.pictures[1],
-          user.pictures[2],
+          user.profilePictures[1],
+          user.profilePictures[2],
         ];
       }
       if (posicion == 1) {
-        user.pictures = [
-          user.pictures[0],
+        user.profilePictures = [
+          user.profilePictures[0],
           `${URL_API_DATE}/public/imgs/${req.file.filename}`,
-          user.pictures[2],
+          user.profilePictures[2],
         ];
       }
       if (posicion == 2) {
-        user.pictures = [
-          user.pictures[0],
-          user.pictures[1],
+        user.profilePictures = [
+          user.profilePictures[0],
+          user.profilePictures[1],
           `${URL_API_DATE}/public/imgs/${req.file.filename}`,
         ];
       }
-      console.log(req.file.filename);
       await user.save(); // Guarda el usuario actualizado en la base de datos
       res.json({ img: `/public/imgs/${req.file.filename}`, posicion });
     } else {
