@@ -82,7 +82,7 @@ export const deleteTicket = async (req, res) => {
 export const transferTicket = async (req, res) => {
   const { eventId, ticketId, userIdBuyer, userIdReceiver } = req.params;
   try {
-    //TRAERME LA ENTRADA NO ASIGNADA A TRANSFERIR
+    //VERIFICO QUE AMBOS USUARIOS EXISTAN
     const userBuyerExist = await User.findOne({
       where: {
         userId: parseInt(userIdBuyer),
@@ -93,8 +93,7 @@ export const transferTicket = async (req, res) => {
         userId: parseInt(userIdReceiver),
       },
     });
-    console.log(userBuyerExist, "BUYERRRRRRRRRRRRRR");
-    console.log(userReceiverExist, "RECEIVER EXISTTTTTTTT");
+    //TRAIGO LA ENTRADA NO ASIGNADA A TRANSFERIR
     if (userBuyerExist && userReceiverExist) {
       const ticketNA = await PurchasedTicket.findOne({
         where: {
@@ -103,13 +102,12 @@ export const transferTicket = async (req, res) => {
           eventId: parseInt(eventId),
         },
       });
-      //MODIFICAR EL USERID, EL OWNER Y EL ASSIGNED EN LA ENTRADA
-      //NO MODIFICO EL USERID PARA CONSERVAR QUIEN LA COMPRÓ Y PONER EN OWNER EL NUEVO DUEÑO
+      //MODIFICO TICKET NO ASIGNADO
       ticketNA.assigned = true;
       ticketNA.owner = parseInt(userIdReceiver);
       ticketNA.userId = parseInt(userIdReceiver);
       ticketNA.save();
-      //AGREGAR LA ENTRADA Y EL EVENTO AL USUARIO A TRANSFERIR Y GUARDAR
+      //AGREGO LA ENTRADA Y EL EVENTO AL USUARIO A TRANSFERIR
       const userReceiver = await User.findOne({
         where: {
           userId: parseInt(userIdReceiver),
@@ -141,7 +139,7 @@ export const transferTicket = async (req, res) => {
           userReceiver.events = [...userReceiver.events, parseInt(eventId)];
         }
         userReceiver.save();
-        //AGREGAR AL USUARIO A TRANSFERIR A LOS INVITADOS DEL EVENTO
+        //AGREGO A LOS INVITADOS DEL EVENTO  AL USUARIO A TRANSFERIR
         const newGuest = await Guest.create({
           userId: parseInt(userIdReceiver),
           eventId: parseInt(eventId),
