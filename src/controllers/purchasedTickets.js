@@ -1,6 +1,8 @@
 import { PurchasedTicket } from "../models/PurchasedTicket.js";
 import { User } from "../models/User.js";
 import { Guest } from "../models/Guest.js";
+import { Receipt } from "../models/Receipt.js";
+import { Event } from "../models/Event.js";
 
 export const getTickets = async (req, res) => {
   try {
@@ -28,18 +30,133 @@ export const getTicketById = async (req, res) => {
   }
 };
 
+const createCode = async (eventId) => {
+  const tickets = await PurchasedTicket.findAll({
+    where: {
+      eventId: eventId,
+    },
+  });
+  const existingCodes = tickets.map((ticket) => ticket.code);
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let newCode;
+  do {
+    const number = Math.floor(Math.random() * 1000); // Número aleatorio de 0 a 999
+    const letter = letters[Math.floor(Math.random() * letters.length)]; // Letra aleatoria del abecedario
+    newCode = `${number.toString().padStart(3, "0")}${letter}`;
+  } while (existingCodes.includes(newCode)); // Verificar si el código ya existe
+  return newCode;
+};
+
 export const createTicket = async (req, res) => {
   try {
-    const { price, sold, userId, eventId } = req.body;
-
-    const newTicket = await PurchasedTicket.create({
-      price,
-      sold,
-      userId,
-      eventId,
+    const { ticketId, eventId, userId, quantity } = req.body;
+    const userInfo = await User.findOne({
+      where: {
+        userId: userId,
+      },
     });
+    const alreadyGuest = await Guest.findOne({
+      where: {
+        userId: userId,
+        eventId: eventId,
+      },
+    });
+    const ticketsInfo = await PurchasedTicket.findAll({
+      where: {
+        eventId: eventId,
+        userId: userId,
+      },
+    });
+    const eventInfo = await Event.findOne({
+      where: {
+        eventId: eventId,
+      },
+    });
+    const alreadyTicket = ticketsInfo.length > 0;
+    const alreadyEventUser =
+      userInfo.events && userInfo.events.includes(eventId);
 
-    res.json(newTicket);
+    if (!alreadyGuest && !alreadyEventUser && !alreadyTicket) {
+      //Crea todos los tickets
+      var createdTickets = [];
+      for (let i = 0; i < quantity; i++) {
+        const newCode = await createCode(eventId);
+        const newTicket = {
+          userId: userId,
+          eventId: eventId,
+          ticketIdEntry: ticketId,
+          assigned: false,
+          status: { text: "pending", time: null },
+          code: newCode,
+        };
+
+        //Modifica todos menos el primer ticket
+        if (i === 0) {
+          newTicket.assigned = true;
+          newTicket.owner = userId;
+        }
+        const dbTicket = await PurchasedTicket.create({
+          userId: newTicket.userId,
+          eventId: newTicket.eventId,
+          ticketIdEntry: newTicket.ticketIdEntry,
+          assigned: newTicket.assigned,
+          owner: newTicket.owner,
+          status: newTicket.status,
+          code: newTicket.code,
+        });
+        createdTickets.push(dbTicket);
+      }
+      //Modifica la cantidad de tickets vendidos en el evento
+      let updatedTicket = eventInfo.tickets.find(
+        (ticket) => ticket.id === ticketId
+      );
+      updatedTicket.quantitySold += quantity;
+      //Si con la compra llega al total de entradas disponibles, agotarlas.
+      if (updatedTicket.quantitySold === updatedTicket.availableTickets) {
+        updatedTicket.status = "Agotada";
+      }
+      const ticketsFiltered = eventInfo.tickets.filter(
+        (ticket) => ticket.id !== updatedTicket.id
+      );
+      const modifiedTickets = [...ticketsFiltered, updatedTicket];
+      eventInfo.tickets = modifiedTickets;
+      eventInfo.save();
+      //Agregar como guest al usuario comprador
+      await Guest.create({
+        userId: parseInt(userId),
+        eventId: parseInt(eventId),
+      });
+
+      //Agregar al user en su prop events el evento
+      if (userInfo.events && userInfo.events[0] && userInfo.events.length > 0) {
+        userInfo.events = [...userInfo.events, eventId];
+      } else {
+        userInfo.events = [eventId];
+      }
+      userInfo.save();
+      //Crear el recibo de la compra
+      const calcularCostoTotal = (ticketsComprados, ticketsDisponibles) => {
+        let costoTotal = 0;
+        ticketsComprados.forEach((ticketComprado) => {
+          const ticket = ticketsDisponibles.find(
+            (t) => t.id === ticketComprado.ticketIdEntry
+          );
+          if (ticket) {
+            costoTotal += ticket.price;
+          }
+        });
+
+        return costoTotal;
+      };
+      await Receipt.create({
+        userId: userId,
+        eventId: eventId,
+        purchasedTickets: createdTickets.map((ticket) => ticket.ticketId),
+        totalAmount: calcularCostoTotal(createdTickets, eventInfo.tickets),
+        receipts: "",
+      });
+      res.json(createdTickets);
+    }
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -69,10 +186,9 @@ export const updateTicket = async (req, res) => {
 export const deleteTicket = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await PurchasedTicket.destroy({
+    await PurchasedTicket.destroy({
       where: { id },
     });
-    console.log(result);
     return res.status(204).send("Borrado");
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -140,12 +256,10 @@ export const transferTicket = async (req, res) => {
         }
         userReceiver.save();
         //AGREGO A LOS INVITADOS DEL EVENTO  AL USUARIO A TRANSFERIR
-        const newGuest = await Guest.create({
+        await Guest.create({
           userId: parseInt(userIdReceiver),
           eventId: parseInt(eventId),
         });
-
-        newGuest.save();
         res.send("Entrada transferida con éxito");
       } else {
         return res.status(500).json({
