@@ -22,7 +22,7 @@ export const createPurchasedTicketsRoot = async (
       ticketIdEntry: 2,
       assigned: true,
       owner: user1.userId,
-      status: { text: "pendiente", time: null },
+      status: { text: "pending", time: null },
       code: "282G",
     });
 
@@ -31,7 +31,7 @@ export const createPurchasedTicketsRoot = async (
       eventId: event2.eventId,
       ticketIdEntry: 2,
       assigned: false,
-      status: { text: "pendiente", time: null },
+      status: { text: "pending", time: null },
       code: "628C",
     });
 
@@ -40,7 +40,7 @@ export const createPurchasedTicketsRoot = async (
       eventId: event2.eventId,
       ticketIdEntry: 2,
       assigned: false,
-      status: { text: "pendiente", time: null },
+      status: { text: "pending", time: null },
       code: "753G",
     });
     if (created1 && created2 && created3) {
@@ -55,7 +55,7 @@ export const createPurchasedTicketsRoot = async (
       ticketIdEntry: 3,
       assigned: true,
       owner: user2.userId,
-      status: { text: "pendiente", time: null },
+      status: { text: "pending", time: null },
       code: "734K",
     });
 
@@ -64,7 +64,7 @@ export const createPurchasedTicketsRoot = async (
       eventId: event1.eventId,
       ticketIdEntry: 3,
       assigned: false,
-      status: { text: "pendiente", time: null },
+      status: { text: "pending", time: null },
       code: "276X",
     });
 
@@ -73,7 +73,7 @@ export const createPurchasedTicketsRoot = async (
       eventId: event1.eventId,
       ticketIdEntry: 3,
       assigned: false,
-      status: { text: "pendiente", time: null },
+      status: { text: "pending", time: null },
       code: "796L",
     });
     if (created1 && created2 && created3) {
