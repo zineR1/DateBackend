@@ -2,7 +2,7 @@ import { MercadoPagoConfig, Preference } from "mercadopago";
 import axios from "axios";
 
 export const createMPToken = async (req, res) => {
-  const { code } = req.body;
+  const code = req.body.code;
   console.log(code, "CODE");
   try {
     if (code) {
