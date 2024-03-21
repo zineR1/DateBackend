@@ -3,28 +3,28 @@ import axios from "axios";
 
 export const createMPToken = async (req, res) => {
   const { code } = req.body;
-  const data = {
-    client_id: "7016024355594930",
-    client_secret: "JuuSrhW9y4hU7O9oIRv0WU7D6g8yVXEV",
-    code: code,
-    grant_type: "authorization_code",
-    redirect_uri: "https://datefrontend.onrender.com",
-    // refresh_token: "TG-XXXXXXXX-241983636",
-    test_token: true,
-  };
+  console.log(code, "CODE");
+  try {
+    if (code) {
+      const data = {
+        client_id: "7016024355594930",
+        client_secret: "JuuSrhW9y4hU7O9oIRv0WU7D6g8yVXEV",
+        code: code,
+        grant_type: "authorization_code",
+        redirect_uri: "https://datefrontend.onrender.com",
+        // refresh_token: "TG-XXXXXXXX-241983636",
+        test_token: true,
+      };
 
-  axios
-    .post("https://api.mercadopago.com/oauth/token", data, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-    .then((response) => {
-      res.send(response);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+      axios.post("https://api.mercadopago.com/oauth/token", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
+  } catch (error) {
+    res.send(error);
+  }
 };
 
 export const createOrder = async (req, res) => {
