@@ -1,15 +1,16 @@
 import { MercadoPagoConfig, Preference } from "mercadopago";
 import axios from "axios";
 
-export const createToken = async (req, res) => {
+export const createMPToken = async (req, res) => {
+  const { code } = req.body;
   const data = {
-    client_id: "TU_CLIENT_ID",
-    client_secret: "TU_CLIENT_SECRET",
-    code: "TG-XXXXXXXX-241983636",
+    client_id: "7016024355594930",
+    client_secret: "JuuSrhW9y4hU7O9oIRv0WU7D6g8yVXEV",
+    code: code,
     grant_type: "authorization_code",
-    redirect_uri: "APP_USR-4934588586838432-XXXXXXXX-241983636",
-    refresh_token: "TG-XXXXXXXX-241983636",
-    test_token: false,
+    redirect_uri: "https://datefrontend.onrender.com",
+    // refresh_token: "TG-XXXXXXXX-241983636",
+    test_token: true,
   };
 
   axios
@@ -19,7 +20,7 @@ export const createToken = async (req, res) => {
       },
     })
     .then((response) => {
-      console.log(response.data);
+      res.send(response);
     })
     .catch((error) => {
       console.error(error);
