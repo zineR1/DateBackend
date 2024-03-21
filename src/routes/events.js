@@ -2,17 +2,18 @@ import { Router } from "express";
 import {
   getEvents,
   deleteEvent,
-  soldTickets,
-  agregarInvitado,
+  // soldTickets,
+  // agregarInvitado,
   getEventById,
   getOrganizadores,
   addOrganizadores,
   deleteOrganizador,
   upload,
+  getAdminEventInfo,
   // addInvitado,
   // addComprobantes,
-  deleteComprobante,
-  updateComprobante,
+  // deleteComprobante,
+  // updateComprobante,
 } from "../controllers/events.js";
 import {
   createEvent,
@@ -41,10 +42,13 @@ router.delete("/events/:id", deleteEvent);
 router.delete("/events/:id/deleteEventPicture", deleteEventPicture);
 router.put("/events/:id/updateEvent", editEvent);
 router.put(
-        "/events/:id/uploadImage",
+  "/events/:id/uploadImage",
   uploadEvent.single("file"),
   uploadEventImage
 );
+
+//EVENTO ADMIN
+router.get("/events/admin/:eventId", getAdminEventInfo);
 
 //ORGANIZADORES
 router.get("/events/:eventId/organizers", getOrganizadores);
@@ -60,9 +64,9 @@ router.put("/events/:eventId/delete-organizador/:userId", deleteOrganizador);
 // router.delete("/events/:id/deleteComprobante/:posicion", deleteComprobante);
 
 //TICKETS
-router.put("/events", soldTickets);
+// router.put("/events", soldTickets);
 
 //INVITADOS
-router.put("/events/invitados", agregarInvitado);
+// router.put("/events/invitados", agregarInvitado);
 
 export default router;

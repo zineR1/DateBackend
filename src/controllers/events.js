@@ -59,103 +59,103 @@ export const deleteEvent = async (req, res) => {
   }
 };
 
-export const soldTickets = async (req, res) => {
-  const { id, cantidad, organizadoresNomb } = req.body;
+// export const soldTickets = async (req, res) => {
+//   const { id, cantidad, organizadoresNomb } = req.body;
 
-  const event = await Event.findOne({
-    where: {
-      id: id,
-    },
-  });
+//   const event = await Event.findOne({
+//     where: {
+//       id: id,
+//     },
+//   });
 
-  const tickets = await Ticket.findAll();
-  const arr = [];
-  const arrUsrs = [];
+//   const tickets = await Ticket.findAll();
+//   const arr = [];
+//   const arrUsrs = [];
 
-  tickets.forEach((e) => {
-    if (e.eventId == event.id) {
-      arr.push(e);
-    }
-  });
+//   tickets.forEach((e) => {
+//     if (e.eventId == event.id) {
+//       arr.push(e);
+//     }
+//   });
 
-  const users = await User.findAll();
-  users.forEach((e) => {});
+//   const users = await User.findAll();
+//   users.forEach((e) => {});
 
-  const test = arr.map((e) => {
-    return {
-      ...e.dataValues,
-      nombreEntrada: event.nombreEvento,
-      cantidadEntradas: cantidad,
-      descripcion: event.descripcion,
-      invitados: users,
-    };
-  });
-  event.entradas = test;
-  res.send(userEvent);
-};
+//   const test = arr.map((e) => {
+//     return {
+//       ...e.dataValues,
+//       nombreEntrada: event.nombreEvento,
+//       cantidadEntradas: cantidad,
+//       descripcion: event.descripcion,
+//       invitados: users,
+//     };
+//   });
+//   event.entradas = test;
+//   res.send(userEvent);
+// };
 
-export const agregarInvitado = async (req, res) => {
-  const {
-    id,
-    nombre,
-    apellido,
-    userName,
-    foto,
-    comprobante,
-    pago,
-    state,
-    entradas,
-    total,
-  } = req.body;
+// export const agregarInvitado = async (req, res) => {
+//   const {
+//     id,
+//     nombre,
+//     apellido,
+//     userName,
+//     foto,
+//     comprobante,
+//     pago,
+//     state,
+//     entradas,
+//     total,
+//   } = req.body;
 
-  const nuevoInvitado = {
-    nombre,
-    apellido,
-    userName,
-    foto,
-    comprobante,
-    pago,
-    state,
-    entradas,
-    total,
-  };
-  const event = await Event.findOne({
-    where: {
-      id: id,
-    },
-  });
+//   const nuevoInvitado = {
+//     nombre,
+//     apellido,
+//     userName,
+//     foto,
+//     comprobante,
+//     pago,
+//     state,
+//     entradas,
+//     total,
+//   };
+//   const event = await Event.findOne({
+//     where: {
+//       id: id,
+//     },
+//   });
 
-  if (!event) {
-    return res.status(404).json({ message: "Evento no encontrado" });
-  }
-  let existe = event.invitados.find(
-    (invitado) => invitado.userName === userName
-  )
-    ? true
-    : false;
+//   if (!event) {
+//     return res.status(404).json({ message: "Evento no encontrado" });
+//   }
+//   let existe = event.invitados.find(
+//     (invitado) => invitado.userName === userName
+//   )
+//     ? true
+//     : false;
 
-  if (existe) {
-    let filtrados = event.invitados.filter(
-      (invitado) => invitado.userName !== userName
-    );
-    event.invitados = [...filtrados, nuevoInvitado];
-  } else {
-    if (!event.invitados) {
-      event.invitados = [];
-      event.invitados.push(nuevoInvitado);
-    } else {
-      event.invitados = [...event.invitados, nuevoInvitado];
-    }
-  }
+//   if (existe) {
+//     let filtrados = event.invitados.filter(
+//       (invitado) => invitado.userName !== userName
+//     );
+//     event.invitados = [...filtrados, nuevoInvitado];
+//   } else {
+//     if (!event.invitados) {
+//       event.invitados = [];
+//       event.invitados.push(nuevoInvitado);
+//     } else {
+//       event.invitados = [...event.invitados, nuevoInvitado];
+//     }
+//   }
 
-  try {
-    await event.save();
-    res.json(event.invitados);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al agregar el invitado" });
-  }
-};
+//   try {
+//     await event.save();
+//     res.json(event.invitados);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Error al agregar el invitado" });
+//   }
+// };
 
 export const getEventById = async (req, res) => {
   const { id } = req.params;
@@ -171,6 +171,91 @@ export const getEventById = async (req, res) => {
     }
 
     res.status(200).json(event);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAdminEventInfo = async (req, res) => {
+  const { eventId } = req.params;
+  try {
+    const eventInfo = await Event.findOne({
+      where: {
+        eventId: eventId,
+      },
+    });
+    if (!eventInfo) {
+      return res.send("Este evento no existe");
+    }
+    const receiptInfo = await Receipt.findAll({
+      where: {
+        eventId: eventId,
+      },
+    });
+    const tickets = await PurchasedTicket.findAll({
+      where: {
+        eventId: eventId,
+      },
+    });
+    const guestInfo = await Guest.findAll({
+      where: {
+        eventId: eventId,
+      },
+    });
+    const guestList = guestInfo.map((guest) => guest.userId);
+    const userGuestInfo = await User.findAll({
+      where: {
+        userId: guestList,
+      },
+    });
+    const organizerInfo = await User.findAll({
+      where: {
+        userId: eventInfo.organizers,
+      },
+    });
+    const organizerInfoFormated = organizerInfo.map((organizer) => {
+      return {
+        userId: organizer.userId,
+        name: organizer.name,
+        lastName: organizer.lastName,
+        userName: organizer.userName,
+        profilePictures: organizer.profilePictures[0],
+        age: organizer.age,
+        dateOfBirth: organizer.dateOfBirth,
+        genre: organizer.genre,
+        phone: organizer.phone,
+      };
+    });
+    const userGuestInfoFormated = userGuestInfo.map((guest) => {
+      return {
+        userId: guest.userId,
+        name: guest.name,
+        lastName: guest.lastName,
+        userName: guest.userName,
+        profilePictures: guest.profilePictures[0],
+        age: guest.age,
+        dateOfBirth: guest.dateOfBirth,
+        genre: guest.genre,
+        phone: guest.phone,
+        tickets: tickets.filter((ticket) => ticket.userId === guest.userId),
+      };
+    });
+    const totalQuantity = eventInfo.tickets.reduce(
+      (acumulador, elemento) => acumulador + elemento.quantitySold,
+      0
+    );
+    const adminEventInfo = {
+      flyer: eventInfo.flyer,
+      eventName: eventInfo.eventName,
+      guests: userGuestInfoFormated,
+      organizers: organizerInfoFormated,
+      quantity: totalQuantity,
+      totalAmount: receiptInfo.reduce(
+        (acumulador, elemento) => acumulador + elemento.totalAmount,
+        0
+      ),
+    };
+    res.json(adminEventInfo);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -271,93 +356,93 @@ export const upload = multer({
   storage: storage,
 });
 
-export const updateComprobante = async (req, res) => {
-  const { id, posicion, userName } = req.params;
-  //const {  } = req.body;
+// export const updateComprobante = async (req, res) => {
+//   const { id, posicion, userName } = req.params;
+//   //const {  } = req.body;
 
-  try {
-    let event = await Event.findOne({
-      where: {
-        id: id,
-      },
-    });
+//   try {
+//     let event = await Event.findOne({
+//       where: {
+//         id: id,
+//       },
+//     });
 
-    if (!event) {
-      return res.status(404).json({ message: "Evento no encontrado" });
-    }
+//     if (!event) {
+//       return res.status(404).json({ message: "Evento no encontrado" });
+//     }
 
-    if (posicion < 0 || posicion > 1) {
-      return res.status(400).send("Posición no válida");
-    }
+//     if (posicion < 0 || posicion > 1) {
+//       return res.status(400).send("Posición no válida");
+//     }
 
-    event.invitados.forEach((e) => {
-      if (e.userName === userName) {
-        if (posicion == 0) {
-          e.comprobante = [
-            `${URL_API_DATE}/public/comprobantes/${req.file.filename}`,
-            e.comprobante[1],
-          ];
-        }
-        if (posicion == 1) {
-          e.comprobante = [
-            e.comprobante[0],
-            `${URL_API_DATE}/public/comprobantes/${req.file.filename}`,
-          ];
-        }
-      } else {
-        return res.status(400).send("Error en la subida de la imagen");
-      }
-    });
+//     event.invitados.forEach((e) => {
+//       if (e.userName === userName) {
+//         if (posicion == 0) {
+//           e.comprobante = [
+//             `${URL_API_DATE}/public/comprobantes/${req.file.filename}`,
+//             e.comprobante[1],
+//           ];
+//         }
+//         if (posicion == 1) {
+//           e.comprobante = [
+//             e.comprobante[0],
+//             `${URL_API_DATE}/public/comprobantes/${req.file.filename}`,
+//           ];
+//         }
+//       } else {
+//         return res.status(400).send("Error en la subida de la imagen");
+//       }
+//     });
 
-    //     event.invitados.forEach((e) => {
-    //        if(e.userName === userName) {
-    //             e.comprobante.push(req.file.filename)
-    //     }
-    // });
+//     //     event.invitados.forEach((e) => {
+//     //        if(e.userName === userName) {
+//     //             e.comprobante.push(req.file.filename)
+//     //     }
+//     // });
 
-    await event.save(); // Guarda el evento actualizado en la base de datos
-    // res.json({ img: `/public/comprobantes/${req.file.filename}`, posicion });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
+//     await event.save(); // Guarda el evento actualizado en la base de datos
+//     // res.json({ img: `/public/comprobantes/${req.file.filename}`, posicion });
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// };
 
-export const deleteComprobante = async (req, res) => {
-  const { id, posicion } = req.params;
-  const { userName } = req.body;
+// export const deleteComprobante = async (req, res) => {
+//   const { id, posicion } = req.params;
+//   const { userName } = req.body;
 
-  try {
-    const event = await Event.findOne({
-      where: {
-        id: id,
-      },
-    });
+//   try {
+//     const event = await Event.findOne({
+//       where: {
+//         id: id,
+//       },
+//     });
 
-    if (!event) {
-      return res.status(404).json({ message: "Evento no encontrado" });
-    }
+//     if (!event) {
+//       return res.status(404).json({ message: "Evento no encontrado" });
+//     }
 
-    //Verifica que la posición sea válida (1, 2)
-    if (posicion < 0 || posicion > 1) {
-      return res.status(400).send("Posición no válida");
-    }
+//     //Verifica que la posición sea válida (1, 2)
+//     if (posicion < 0 || posicion > 1) {
+//       return res.status(400).send("Posición no válida");
+//     }
 
-    event.invitados.forEach((e) => {
-      if (e.userName == userName) {
-        if (posicion == 0) {
-          e.comprobante = [null, e.comprobante[1]];
-        }
-        if (posicion == 1) {
-          e.comprobante = [e.comprobante[0], null];
-        }
-      } else {
-        return res.status(400).send("Error al borrar la imagen");
-      }
-    });
+//     event.invitados.forEach((e) => {
+//       if (e.userName == userName) {
+//         if (posicion == 0) {
+//           e.comprobante = [null, e.comprobante[1]];
+//         }
+//         if (posicion == 1) {
+//           e.comprobante = [e.comprobante[0], null];
+//         }
+//       } else {
+//         return res.status(400).send("Error al borrar la imagen");
+//       }
+//     });
 
-    await event.save();
-    res.send(invitado.comprobante);
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
+//     await event.save();
+//     res.send(invitado.comprobante);
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// };
