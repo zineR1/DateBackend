@@ -53,6 +53,9 @@ export const User = sequelize.define("User", {
   instagramToken: {
     type: DataTypes.STRING,
   },
+  mercadoPagoToken: {
+    type: DataTypes.JSON,
+  },
   ownedTickets: {
     type: DataTypes.JSON, // COPIA DE LOS TICKETS QUE EL USER FUE OWNER
   },

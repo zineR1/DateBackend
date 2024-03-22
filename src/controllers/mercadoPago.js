@@ -1,8 +1,9 @@
 import { MercadoPagoConfig, Preference } from "mercadopago";
+import { User } from "../models/User.js";
 import axios from "axios";
 
 export const createMPToken = async (req, res) => {
-  const { code } = req.body;
+  const { code, userId } = req.body;
   try {
     if (code) {
       const data = {
@@ -24,10 +25,11 @@ export const createMPToken = async (req, res) => {
           },
         }
       );
+      let user = await User.findByPk(userId);
+      user.mercadoPagoToken = accessTokenResponse.data;
+      await user.save();
       console.log(accessTokenResponse, "ACCESTOKEN MP");
-      const accessToken = accessTokenResponse.data.access_token
-      console.log(accessToken,"ACCES TOKEN FORMATED")
-      res.json({ accessToken: accessToken });
+      res.send({ data: user, msj: "Token de mercado pago guardado con éxito" });
     }
   } catch (error) {
     res.send(error);
