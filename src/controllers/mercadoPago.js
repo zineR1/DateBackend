@@ -2,8 +2,8 @@ import { MercadoPagoConfig, Preference } from "mercadopago";
 import axios from "axios";
 
 export const createMPToken = async (req, res) => {
-  console.log("LLEGUE A LA FUNCION CREATEMPTOKEN()")
-  const {code} = req.body;
+  console.log("LLEGUE A LA FUNCION CREATEMPTOKEN()");
+  const { code } = req.body;
   console.log(code, "CODE");
   try {
     if (code) {
@@ -12,9 +12,9 @@ export const createMPToken = async (req, res) => {
         client_secret: "JuuSrhW9y4hU7O9oIRv0WU7D6g8yVXEV",
         code: code,
         grant_type: "authorization_code",
-        redirect_uri: "https://datefrontend.onrender.com",
+        redirect_uri: "https://datefrontend.onrender.com/",
         // refresh_token: "TG-XXXXXXXX-241983636",
-        test_token: true,
+        // test_token: true,
       };
 
       axios.post("https://api.mercadopago.com/oauth/token", data, {
