@@ -17,11 +17,12 @@ export const createMPToken = async (req, res) => {
         // test_token: true,
       };
 
-      axios.post("https://api.mercadopago.com/oauth/token", data, {
+      const accessToken = axios.post("https://api.mercadopago.com/oauth/token", data, {
         headers: {
           "Content-Type": "application/json",
         },
       });
+      res.send(accessToken.data)
     }
   } catch (error) {
     res.send(error);
