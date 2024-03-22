@@ -29,7 +29,8 @@ export const createMPToken = async (req, res) => {
       user.mercadoPagoToken = accessTokenResponse.data;
       await user.save();
       console.log(accessTokenResponse, "ACCESTOKEN MP");
-      res.json({ data: user, msj: "Token de mercado pago guardado con éxito" });
+      console.log(user,"USER ACTUALIZADO")
+      res.send("Token de mercado pago guardado con éxito");
     }
   } catch (error) {
     res.send(error);
