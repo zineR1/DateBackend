@@ -12,7 +12,7 @@ export const createMPToken = async (req, res) => {
         client_secret: "JuuSrhW9y4hU7O9oIRv0WU7D6g8yVXEV",
         code: code,
         grant_type: "authorization_code",
-        redirect_uri: "https://datefrontend.onrender.com/",
+        redirect_uri: "https://datefrontendpruebas.onrender.com/",
         // refresh_token: "TG-XXXXXXXX-241983636",
         // test_token: true,
       };
