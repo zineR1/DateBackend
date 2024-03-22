@@ -172,6 +172,7 @@ export const updateUser = async (req, res) => {
       : user.sentimentalSituation;
     user.phone = phone ? phone : user.phone;
     user.instagramToken = user.instagramToken;
+    user.mercadoPagoToken = user.mercadoPagoToken;
     await user.save();
     res.json(user);
   } catch (error) {
