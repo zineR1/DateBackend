@@ -22,7 +22,8 @@ export const createMPToken = async (req, res) => {
           "Content-Type": "application/json",
         },
       });
-      res.send(accessToken.data)
+      console.log(accessToken, "ACCESTOKEN MP")
+      res.send(accessToken)
     }
   } catch (error) {
     res.send(error);
