@@ -2,9 +2,7 @@ import { MercadoPagoConfig, Preference } from "mercadopago";
 import axios from "axios";
 
 export const createMPToken = async (req, res) => {
-  console.log("LLEGUE A LA FUNCION CREATEMPTOKEN()");
   const { code } = req.body;
-  console.log(code, "CODE");
   try {
     if (code) {
       const data = {
@@ -17,7 +15,7 @@ export const createMPToken = async (req, res) => {
         // test_token: true,
       };
 
-      const accessToken = await axios.post(
+      const accessTokenResponse = await axios.post(
         "https://api.mercadopago.com/oauth/token",
         data,
         {
@@ -26,7 +24,9 @@ export const createMPToken = async (req, res) => {
           },
         }
       );
-      console.log(accessToken, "ACCESTOKEN MP");
+      console.log(accessTokenResponse, "ACCESTOKEN MP");
+      const accessToken = accessTokenResponse.data.access_token
+      console.log(accessToken,"ACCES TOKEN FORMATED")
       res.json({ accessToken: accessToken });
     }
   } catch (error) {
