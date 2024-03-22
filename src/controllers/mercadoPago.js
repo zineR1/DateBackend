@@ -25,7 +25,7 @@ export const createMPToken = async (req, res) => {
           },
         }
       );
-      let user = await User.findByPk(userId);
+      let user = await User.findByPk(1);
       user.mercadoPagoToken = accessTokenResponse.data;
       await user.save();
       console.log(accessTokenResponse, "ACCESTOKEN MP");
