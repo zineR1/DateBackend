@@ -8,7 +8,6 @@ import path from "path";
 
 const urlBackend = process.env.URL_BACKEND;
 
-
 export const getEvents = async (req, res) => {
   try {
     const events = await Event.findAll();
@@ -243,6 +242,7 @@ export const getAdminEventInfo = async (req, res) => {
       0
     );
     const adminEventInfo = {
+      eventId: eventInfo.eventId,
       flyer: eventInfo.flyer,
       eventName: eventInfo.eventName,
       guests: userGuestInfoFormated,
