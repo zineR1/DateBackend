@@ -1,9 +1,10 @@
 import { MercadoPagoConfig, Preference } from "mercadopago";
-import { User } from "../models/User.js";
+// import { User } from "../models/User.js";
+import { Event } from "../models/Event.js";
 import axios from "axios";
 
 export const createMPToken = async (req, res) => {
-  const { code, userId } = req.body;
+  const { code, eventId } = req.body;
   try {
     if (code) {
       const data = {
@@ -25,11 +26,11 @@ export const createMPToken = async (req, res) => {
           },
         }
       );
-      let user = await User.findByPk(1);
-      user.mercadoPagoToken = accessTokenResponse.data;
-      await user.save();
+      let event = await Event.findByPk(1);
+      event.mercadoPagoToken = accessTokenResponse.data;
+      await event.save();
       console.log(accessTokenResponse, "ACCESTOKEN MP");
-      console.log(user,"USER ACTUALIZADO")
+      console.log(event,"EVENT ACTUALIZADO")
       res.send("Token de mercado pago guardado con éxito");
     }
   } catch (error) {

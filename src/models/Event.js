@@ -50,4 +50,7 @@ export const Event = sequelize.define("Event", {
   bankDetails: {
     type: DataTypes.JSON,
   },
+  mercadoPagoToken: {
+    type: DataTypes.JSON,
+  },
 });
