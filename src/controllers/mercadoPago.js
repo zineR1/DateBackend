@@ -37,7 +37,7 @@ export const createMPToken = async (req, res) => {
 
 export const createOrder = async (req, res) => {
   const { eventId, products } = req.body;
-  const event = await Event.findByPk(eventId);
+  const event = await Event.findByPk(1);
   const accessToken = event.mercadoPagoToken;
   try {
     const client = new MercadoPagoConfig({
@@ -53,8 +53,8 @@ export const createOrder = async (req, res) => {
         //     excluded_payment_types: [],
         //     installments: 12,
         //   },
-        items: products,
-        // items: [{ title: "My product", quantity: 1, unit_price: 2000 }],
+        // items: products,
+        items: [{ title: "My product", quantity: 1, unit_price: 2000 }],
         back_urls: {
           success: `${urlBackend}/success`,
           failure: `${urlBackend}/failure`,
