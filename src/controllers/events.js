@@ -243,6 +243,7 @@ export const getAdminEventInfo = async (req, res) => {
     );
     const adminEventInfo = {
       eventId: eventInfo.eventId,
+      mercadoPagoToken: eventInfo.mercadoPagoToken,
       flyer: eventInfo.flyer,
       eventName: eventInfo.eventName,
       guests: userGuestInfoFormated,
