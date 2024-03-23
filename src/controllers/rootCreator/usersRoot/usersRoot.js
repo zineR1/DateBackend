@@ -12,11 +12,8 @@ export const createRootUser = async () => {
   const pass = Utils.createHash(process.env.PASSWORD_ROOT);
   const dbUser1 = await User.findOne({ where: { email: root1 } });
   const dbUser2 = await User.findOne({ where: { email: root2 } });
+  const urlBackend = process.env.URL_BACKEND;
 
-  const URL_API_DATE =
-    process.env.NODE_ENV === "production"
-      ? "https://datebackendpruebas.onrender.com"
-      : "http://localhost:3001";
 
   if (!dbUser1) {
     const user1 = await User.create({
@@ -27,9 +24,9 @@ export const createRootUser = async () => {
       password: pass,
       description: "De viaje por el mundo",
       profilePictures: [
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
       ],
       age: 26,
       dateOfBirth: "1997-02-04",
@@ -63,9 +60,9 @@ export const createRootUser = async () => {
       description: "Buscando amigos para salir de fiesta",
       age: 36,
       profilePictures: [
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
       ],
       dateOfBirth: "1987-09-02",
       genre: "Masculino",
