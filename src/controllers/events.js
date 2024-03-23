@@ -6,10 +6,8 @@ import { Guest } from "../models/Guest.js";
 import multer from "multer";
 import path from "path";
 
-const URL_API_DATE =
-  process.env.NODE_ENV === "production"
-    ? "https://datebackendpruebas.onrender.com"
-    : "http://localhost:3001";
+const urlBackend = process.env.URL_BACKEND;
+
 
 export const getEvents = async (req, res) => {
   try {

@@ -2,6 +2,7 @@ import { MercadoPagoConfig, Preference } from "mercadopago";
 // import { User } from "../models/User.js";
 import { Event } from "../models/Event.js";
 import axios from "axios";
+const urlBackend = process.env.URL_BACKEND;
 
 export const createMPToken = async (req, res) => {
   const { code, eventId } = req.body;
@@ -13,8 +14,6 @@ export const createMPToken = async (req, res) => {
         code: code,
         grant_type: "authorization_code",
         redirect_uri: "https://datefrontendpruebas.onrender.com/",
-        // refresh_token: "TG-XXXXXXXX-241983636",
-        // test_token: true,
       };
 
       const accessTokenResponse = await axios.post(
@@ -26,11 +25,9 @@ export const createMPToken = async (req, res) => {
           },
         }
       );
-      let event = await Event.findByPk(1);
+      let event = await Event.findByPk(eventId);
       event.mercadoPagoToken = accessTokenResponse.data;
       await event.save();
-      console.log(accessTokenResponse, "ACCESTOKEN MP");
-      console.log(event,"EVENT ACTUALIZADO")
       res.send("Token de mercado pago guardado con éxito");
     }
   } catch (error) {
@@ -39,9 +36,9 @@ export const createMPToken = async (req, res) => {
 };
 
 export const createOrder = async (req, res) => {
-  //ver si el accessToken lo voy a pasar desde el front o directamente
-  //lo recupero desde la base de datos o algo
-  const { accessToken, products, back_urls, notification_url } = req.body;
+  const { eventId, products } = req.body;
+  const event = await Event.findByPk(eventId);
+  const accessToken = event.mercadoPagoToken;
   try {
     const client = new MercadoPagoConfig({
       accessToken: accessToken,
@@ -58,15 +55,12 @@ export const createOrder = async (req, res) => {
         //   },
         items: products,
         // items: [{ title: "My product", quantity: 1, unit_price: 2000 }],
-        back_urls: back_urls,
-        // back_urls: {
-        //   success: "http://localhost:3001/success",
-        //   failure: "http://localhost:3001/failure",
-        //   pending: "http://localhost:3001/pending",
-        // },
-        notification_url: notification_url,
-        //     notification_url:
-        //       "https://3347-2803-9800-9884-ba08-70e6-eba5-59b0-3e20.ngrok-free.app/webhook",
+        back_urls: {
+          success: `${urlBackend}/success`,
+          failure: `${urlBackend}/failure`,
+          pending: `${urlBackend}/pending`,
+        },
+        notification_url: `${urlBackend}/webhook`,
       },
     });
     console.log(result, "RESULTADO000000");
@@ -81,12 +75,10 @@ export const receiveWebHook = async (req, res) => {
   const payment = req.query;
   try {
     if (payment.type === "payment") {
-      const data = await mercadopago.payment.findById(payment["data.id"]);
-      console.log(data, "DATA QUE BUSCOOO");
+      await mercadopago.payment.findById(payment["data.id"]);
     }
     res.sendStatus(204);
   } catch (error) {
-    console.log(error, "ERROR RECEIVEWEBHOOK");
     return res.sendStatus(500).json({ error: error.message });
   }
 };

@@ -8,10 +8,8 @@ import { Event } from "../models/Event.js";
 import { User } from "../models/User.js";
 
 dotenv.config();
-const URL_API_DATE =
-  process.env.NODE_ENV === "production"
-    ? "https://datebackendpruebas.onrender.com"
-    : "http://localhost:3001";
+const urlBackend = process.env.URL_BACKEND;
+
 
 export const getComprobantes = async (req, res) => {
   try {
@@ -215,12 +213,12 @@ export const uploadComprobante = async (req, res) => {
       if (req.file && req.file.filename) {
         if (!comprobante.receipts[0]) {
           comprobante.receipts = [
-            `${URL_API_DATE}/public/comprobantes/${req.file.filename}`,
+            `${urlBackend}/public/comprobantes/${req.file.filename}`,
           ];
         } else {
           comprobante.receipts = [
             comprobante.receipts[0],
-            `${URL_API_DATE}/public/comprobantes/${req.file.filename}`,
+            `${urlBackend}/public/comprobantes/${req.file.filename}`,
           ];
         }
         await comprobante.save();

@@ -3,10 +3,8 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const URL_API_DATE =
-  process.env.NODE_ENV === "production"
-    ? "https://datebackendpruebas.onrender.com"
-    : "http://localhost:3001";
+const urlBackend = process.env.URL_BACKEND;
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -38,7 +36,7 @@ export const uploadEventImage = async (req, res) => {
       return res.status(404).json({ message: "Evento no encontrado" });
     }
 
-    event.flyer = `${URL_API_DATE}/public/events/${req.file.filename}`;
+    event.flyer = `${urlBackend}/public/events/${req.file.filename}`;
 
     event.save();
 
@@ -67,7 +65,7 @@ export const createEvent = async (req, res) => {
     const newEvent = await Event.create({
       flyer: req.filename
         ? req.filename
-        : `${URL_API_DATE}/public/imagen/defaultEventPic.png`,
+        : `${urlBackend}/public/imagen/defaultEventPic.png`,
       eventName,
       eventDate,
       startTime,
@@ -179,7 +177,7 @@ export const deleteEventPicture = async (req, res) => {
       console.log("File deleted!");
     });
 
-    event.flyer = `${URL_API_DATE}/public/imagen/defaultEventPic.png`;
+    event.flyer = `${urlBackend}/public/imagen/defaultEventPic.png`;
     await event.save();
     res.send("Event Picture Deleted!!!");
   } catch (error) {

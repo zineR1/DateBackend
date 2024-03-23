@@ -13,10 +13,8 @@ import fs from "fs";
 import { Console } from "console";
 
 dotenv.config();
-const URL_API_DATE =
-  process.env.NODE_ENV === "production"
-    ? "https://datebackendpruebas.onrender.com"
-    : "http://localhost:3001";
+const urlBackend = process.env.URL_BACKEND;
+
 
 export const getUsers = async (req, res) => {
   try {
@@ -108,9 +106,9 @@ export const createUser = async (req, res) => {
       events: events,
     });
     newUSer.profilePictures = [
-      `${URL_API_DATE}/public/imagen/defaultPic.png`,
-      `${URL_API_DATE}/public/imagen/defaultPic.png`,
-      `${URL_API_DATE}/public/imagen/defaultPic.png`,
+      `${urlBackend}/public/imagen/defaultPic.png`,
+      `${urlBackend}/public/imagen/defaultPic.png`,
+      `${urlBackend}/public/imagen/defaultPic.png`,
     ];
     newUSer.events = [];
     await newUSer.save();
@@ -326,7 +324,7 @@ export const deletePicture = async (req, res) => {
 
     if (posicion == 0) {
       user.profilePictures = [
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
         user.profilePictures[1],
         user.profilePictures[2],
       ];
@@ -335,7 +333,7 @@ export const deletePicture = async (req, res) => {
     if (posicion == 1) {
       user.profilePictures = [
         user.profilePictures[0],
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
         user.profilePictures[2],
       ];
     }
@@ -343,7 +341,7 @@ export const deletePicture = async (req, res) => {
       user.profilePictures = [
         user.profilePictures[0],
         user.profilePictures[1],
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
       ];
     }
 
@@ -370,9 +368,9 @@ export const updatePicture = async (req, res) => {
 
     if (!Array.isArray(user.profilePictures)) {
       user.profilePictures = [
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
-        `${URL_API_DATE}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
       ];
     }
 
@@ -396,7 +394,7 @@ export const updatePicture = async (req, res) => {
       // user.pictures[posicion] = req.file.filename;
       if (posicion == 0) {
         user.profilePictures = [
-          `${URL_API_DATE}/public/imgs/${req.file.filename}`,
+          `${urlBackend}/public/imgs/${req.file.filename}`,
           user.profilePictures[1],
           user.profilePictures[2],
         ];
@@ -404,7 +402,7 @@ export const updatePicture = async (req, res) => {
       if (posicion == 1) {
         user.profilePictures = [
           user.profilePictures[0],
-          `${URL_API_DATE}/public/imgs/${req.file.filename}`,
+          `${urlBackend}/public/imgs/${req.file.filename}`,
           user.profilePictures[2],
         ];
       }
@@ -412,7 +410,7 @@ export const updatePicture = async (req, res) => {
         user.profilePictures = [
           user.profilePictures[0],
           user.profilePictures[1],
-          `${URL_API_DATE}/public/imgs/${req.file.filename}`,
+          `${urlBackend}/public/imgs/${req.file.filename}`,
         ];
       }
       await user.save(); // Guarda el usuario actualizado en la base de datos
