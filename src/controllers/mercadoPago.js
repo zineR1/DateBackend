@@ -37,7 +37,7 @@ export const createMPToken = async (req, res) => {
 
 export const createOrder = async (req, res) => {
   const { eventId, products } = req.body;
-  const event = await Event.findByPk(1);
+  const event = await Event.findByPk(2);
   console.log(event, "event");
   const accessToken =
     event && event.mercadoPagoToken && event.mercadoPagoToken.access_token;
