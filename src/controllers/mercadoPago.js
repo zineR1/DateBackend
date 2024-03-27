@@ -57,7 +57,7 @@ export const createOrder = async (req, res) => {
         //     installments: 12,
         //   },
         // items: products,
-        items: [{ title: "Una productazo", quantity: 1, unit_price: 1 }],
+        items: [{ title: "Una productazo", quantity: 1, unit_price: 100 }],
         back_urls: {
           success: `${urlBackend}/success`,
           failure: `${urlBackend}/failure`,
