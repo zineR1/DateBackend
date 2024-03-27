@@ -3,13 +3,16 @@ import { MercadoPagoConfig, Preference } from "mercadopago";
 import { Event } from "../models/Event.js";
 import axios from "axios";
 const urlBackend = process.env.URL_BACKEND;
-const client_id = process.env.CLIENT_ID_MP;
-const client_secret = process.env.CLIENT_SECRET_MP;
+
 
 export const createMPToken = async (req, res) => {
+  const client_id = process.env.CLIENT_ID_MP;
+const client_secret = process.env.CLIENT_SECRET_MP;
+console.log(client_id,"CLIENT_ID ESTE")
+console.log(client_secret, "CLIENT_SECRET")
   const { code, eventId } = req.body;
   try {
-    if (code) {
+    if (code && client_id && client_secret) {
       const data = {
         client_id: client_id,
         client_secret: client_secret,
@@ -31,7 +34,7 @@ export const createMPToken = async (req, res) => {
       event.mercadoPagoToken = accessTokenResponse.data;
       await event.save();
       res.send("Token de mercado pago guardado con éxito");
-    }
+    }else{console.log("NO EJECUTÉ LA FUNCIÓN PARA LA COMPRA")}
   } catch (error) {
     res.send(error);
   }
@@ -40,10 +43,9 @@ export const createMPToken = async (req, res) => {
 export const createOrder = async (req, res) => {
   const { eventId, products } = req.body;
   const event = await Event.findByPk(2);
-  console.log(event, "event");
+  console.log(event, "eventO BUSCADDO EN CREAR ORADEN");
   const accessToken =
     event && event.mercadoPagoToken && event.mercadoPagoToken.access_token;
-  console.log(accessToken, "ACCESSTOKEN");
   try {
     const client = new MercadoPagoConfig({
       accessToken: accessToken,
