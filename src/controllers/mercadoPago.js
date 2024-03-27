@@ -3,14 +3,16 @@ import { MercadoPagoConfig, Preference } from "mercadopago";
 import { Event } from "../models/Event.js";
 import axios from "axios";
 const urlBackend = process.env.URL_BACKEND;
+const client_id = process.env.CLIENT_ID_MP;
+const client_secret = process.env.CLIENT_SECRET_MP;
 
 export const createMPToken = async (req, res) => {
   const { code, eventId } = req.body;
   try {
     if (code) {
       const data = {
-        client_id: "7016024355594930",
-        client_secret: "JuuSrhW9y4hU7O9oIRv0WU7D6g8yVXEV",
+        client_id: client_id,
+        client_secret: client_secret,
         code: code,
         grant_type: "authorization_code",
         redirect_uri: "https://datefrontendpruebas.onrender.com/",
