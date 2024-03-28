@@ -12,7 +12,7 @@ export const createRootUser = async () => {
   const pass = Utils.createHash(process.env.PASSWORD_ROOT);
   const dbUser1 = await User.findOne({ where: { email: root1 } });
   const dbUser2 = await User.findOne({ where: { email: root2 } });
-  const urlBackend = process.env.URL_BACKEND;
+  const urlBackend = process.env.URL_BACKEND_QA;
 
 
   if (!dbUser1) {

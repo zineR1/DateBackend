@@ -13,7 +13,7 @@ import fs from "fs";
 import { Console } from "console";
 
 dotenv.config();
-const urlBackend = process.env.URL_BACKEND;
+const urlBackend = process.env.URL_BACKEND_QA;
 
 
 export const getUsers = async (req, res) => {

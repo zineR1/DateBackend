@@ -9,7 +9,7 @@ export const createEventRoot = async () => {
   const eventRoot2 = process.env.EVENT_ROOT2;
   const dbEvent1 = await Event.findOne({ where: { eventName: eventRoot1 } });
   const dbEvent2 = await Event.findOne({ where: { eventName: eventRoot2 } });
-  const urlBackend = process.env.URL_BACKEND;
+  const urlBackend = process.env.URL_BACKEND_QA;
 
 
   if (!dbEvent1) {
