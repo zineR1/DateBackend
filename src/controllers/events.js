@@ -6,7 +6,7 @@ import { Guest } from "../models/Guest.js";
 import multer from "multer";
 import path from "path";
 
-const urlBackend = process.env.URL_BACKEND;
+const urlBackend = process.env.URL_BACKEND_QA;
 
 export const getEvents = async (req, res) => {
   try {
