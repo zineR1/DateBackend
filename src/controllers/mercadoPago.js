@@ -42,23 +42,12 @@ export const createOrder = async (req, res) => {
   const calculatePercentage = (number, perc) => {
     return (number * perc) / 100;
   };
-  console.log({
-    quantity: quantity,
-    price: price,
-    title: title,
-    eventId: eventId,
-  });
   const amount = price * quantity;
   const vincufyFee = calculatePercentage(amount, 6);
-  console.log(vincufyFee, "vincufyFeeeeee");
   const mercadoPagoCost = calculatePercentage(amount, 6.99);
-  console.log(mercadoPagoCost, "COSTO MERCADO PAGO");
   const mpIVA = calculatePercentage(mercadoPagoCost, 21);
-  console.log(mpIVA, "MP CON IBAAAA");
   const totalPrice = amount + vincufyFee + mercadoPagoCost + mpIVA;
   const totalUnitPrice = totalPrice / quantity;
-  console.log(totalPrice, "TOTALPRICE");
-  console.log(totalUnitPrice, "TOTALUNITPRICE");
   const fullTitle = `${title} + Costo de servicio`;
   const products = [
     { title: fullTitle, quantity: quantity, unit_price: totalUnitPrice },
@@ -83,9 +72,9 @@ export const createOrder = async (req, res) => {
         items: products,
         // items: [{ title: "Un productazo", quantity: 1, unit_price: 100 }],
         back_urls: {
-          success: `${urlFrontend}/resultMP/success`,
-          failure: `${urlFrontend}/resultMP/failure`,
-          pending: `${urlFrontend}/resultMP/pending`,
+          success: `${urlFrontend}/#/resultMP/success`,
+          failure: `${urlFrontend}/#/resultMP/failure`,
+          pending: `${urlFrontend}/#/resultMP/pending`,
         },
         notification_url: `${urlBackend}/webhook`,
       },
