@@ -55,7 +55,7 @@ export const createOrder = async (req, res) => {
   console.log(mercadoPagoCost, "COSTO MERCADO PAGO");
   const mpIVA = calculatePercentage(mercadoPagoCost, 21);
   console.log(mpIVA, "MP CON IBAAAA");
-  const totalPrice = amount + vincufyFee + mercadoPagoCost + mpIva;
+  const totalPrice = amount + vincufyFee + mercadoPagoCost + mpIVA;
   const totalUnitPrice = totalPrice / 2;
   console.log(totalPrice, "TOTALPRICE");
   console.log(totalUnitPrice, "TOTALUNITPRICE");
