@@ -274,7 +274,20 @@ export const getOrganizadores = async (req, res) => {
       return res.status(404).json({ message: "Evento no encontrado" });
     }
 
-    res.json(event.organizers);
+    const users = await User.findAll();
+    const usersOrganizers = users.filter((user) =>
+      event.organizers.includes(user.userId)
+    );
+    const formatedUsers = usersOrganizers.map((user) => {
+      return {
+        userId: user.userId,
+        name: user.name,
+        lastName: user.lastName,
+        profilePictures: user.profilePictures[0],
+        userName: user.userName,
+      };
+    });
+    res.json(formatedUsers);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

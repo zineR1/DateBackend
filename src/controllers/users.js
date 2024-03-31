@@ -15,7 +15,6 @@ import { Console } from "console";
 dotenv.config();
 const urlBackend = process.env.URL_BACKEND_QA;
 
-
 export const getUsers = async (req, res) => {
   try {
     const users = await User.findAll();
@@ -197,13 +196,17 @@ export const login = async (req, res) => {
   const user = await User.findOne({ where: { email: email } });
   try {
     if (!user) {
-      return res
-        .status(401)
-        .json({ massage: "No existe un usuario con este mail" });
+      return res.json({
+        success: false,
+        message: "No existe un usuario con este mail",
+      });
     }
 
     if (!Utils.validatePassword(password, user)) {
-      return res.status(401).json({ massage: "Contraseña Incorrecta" });
+      return res.json({
+        success: false,
+        message: "La contraseña es incorrecta",
+      });
     }
 
     const token = Utils.tokenGenerator(user);
@@ -212,8 +215,12 @@ export const login = async (req, res) => {
         maxAge: 60 * 60 * 1000,
         httpOnly: true,
       })
-      .status(200)
-      .json({ id: user.userId, success: true, token: token });
+      .json({
+        id: user.userId,
+        success: true,
+        token: token,
+        message: "Logueado con éxito",
+      });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
