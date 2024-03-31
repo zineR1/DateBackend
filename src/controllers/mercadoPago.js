@@ -43,13 +43,14 @@ export const createOrder = async (req, res) => {
     return (number * perc) / 100;
   };
   console.log({quantity: quantity, price: price, title: title, eventId: eventId})
-  const vincufyFee = calculatePercentage(price, 6);
+  const amount = price * quantity;
+  const vincufyFee = calculatePercentage(amount, 6);
   console.log(vincufyFee,"vincufyFeeeeee")
-  const mercadoPagoCost = calculatePercentage(price, 6.99);
+  const mercadoPagoCost = calculatePercentage(amount, 6.99);
   console.log(mercadoPagoCost,"COSTO MERCADO PAGO")
   const mpCostWithIVA = calculatePercentage(mercadoPagoCost, 21);
   console.log(mpCostWithIVA,"MP CON IBAAAA")
-  const totalPrice = price + vincufyFee + mpCostWithIVA;
+  const totalPrice = amount + vincufyFee + mpCostWithIVA;
   const fullTitle = `${title} + Costo de servicio`;
   const products = [
     { title: fullTitle, quantity: quantity, unit_price: totalPrice },
