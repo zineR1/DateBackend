@@ -11,7 +11,6 @@ export const createEventRoot = async () => {
   const dbEvent2 = await Event.findOne({ where: { eventName: eventRoot2 } });
   const urlBackend = process.env.URL_BACKEND_QA;
 
-
   if (!dbEvent1) {
     const event1 = await Event.create({
       flyer: `${urlBackend}/public/imagen/defaultPicEvent.png`,
@@ -37,7 +36,7 @@ export const createEventRoot = async () => {
         {
           id: 1,
           ticketName: "Entrada general",
-          price: 2500,
+          price: 100,
           availableTickets: 200,
           description: "",
           status: "Disponible",
@@ -106,7 +105,7 @@ export const createEventRoot = async () => {
         {
           id: 1,
           ticketName: "Entrada general",
-          price: 2500,
+          price: 100,
           availableTickets: 200,
           description: "",
           status: "Disponible",
