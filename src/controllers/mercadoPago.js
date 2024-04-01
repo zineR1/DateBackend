@@ -80,7 +80,7 @@ export const createOrder = async (req, res) => {
       },
     });
     console.log(result, "RESULTADO000000");
-    return res.send("Pago realizado con éxito");
+    return res.send(result);
   } catch (error) {
     res.send("Se produjo un error al procesar la solicitud");
   }
