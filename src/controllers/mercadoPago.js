@@ -76,7 +76,7 @@ export const createOrder = async (req, res) => {
           failure: `${urlFrontend}/#/resultMP/failure`,
           pending: `${urlFrontend}/#/resultMP/pending`,
         },
-        notification_url: `${urlBackend}/webhook`,
+        // notification_url: `${urlBackend}/webhook`,
       },
     });
     console.log(result, "RESULTADO000000");
