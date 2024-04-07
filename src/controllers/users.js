@@ -94,7 +94,7 @@ export const createUser = async (req, res) => {
   });
 
   if (user) {
-    return res.status(401).json({ message: "Este usuario ya existe" });
+    return res.json({ success: false, message: "Este usuario ya existe" });
   }
 
   const nwPass = Utils.createHash(password);
@@ -112,9 +112,9 @@ export const createUser = async (req, res) => {
     newUSer.events = [];
     await newUSer.save();
 
-    res.json(newUSer);
+    res.json({ success: true, message: "Creado con éxito" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
