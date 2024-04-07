@@ -32,10 +32,7 @@ export const createMPToken = async (req, res) => {
       let event = await Event.findByPk(eventId);
       event.mercadoPagoToken = accessTokenResponse.data;
       await event.save();
-      res.send({
-        msg: "Token de mercado pago guardado con éxito",
-        status: true,
-      });
+      res.send("Token de mercado pago guardado con éxito");
     }
   } catch (error) {
     res.send(error);
