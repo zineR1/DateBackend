@@ -3,6 +3,7 @@ import { User } from "../models/User.js";
 import { Guest } from "../models/Guest.js";
 import { Receipt } from "../models/Receipt.js";
 import { Event } from "../models/Event.js";
+import CryptoJS from "crypto-js";
 
 export const getTickets = async (req, res) => {
   try {
@@ -49,7 +50,11 @@ const createCode = async (eventId) => {
 
 export const createTicket = async (req, res) => {
   try {
-    const { ticketId, eventId, userId, quantity } = req.body;
+    const { encryptedData } = req.body;
+    const encryptionKey = process.env.ENCRYPTION_KEY;
+    const bytes = CryptoJS.AES.decrypt(encryptedData, encryptionKey);
+    const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    const { ticketId, eventId, userId, quantity } = decryptedData;
     const userInfo = await User.findOne({
       where: {
         userId: userId,
@@ -154,6 +159,7 @@ export const createTicket = async (req, res) => {
         purchasedTickets: createdTickets.map((ticket) => ticket.ticketId),
         totalAmount: calcularCostoTotal(createdTickets, eventInfo.tickets),
         receipts: "",
+        status: "confirmado",
       });
       res.json(createdTickets);
     }
