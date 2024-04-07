@@ -27,7 +27,6 @@ class Utils {
                     console.log('error', error);
                     return resolve(false);
                 }
-                console.log('payload', payload);
                 return resolve(payload);
             })
             return token;

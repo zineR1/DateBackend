@@ -1,7 +1,9 @@
 import { MercadoPagoConfig, Preference } from "mercadopago";
 import { Event } from "../models/Event.js";
 import axios from "axios";
-const urlBackend = process.env.URL_BACKEND_QA;
+import CryptoJS from "crypto-js";
+const encryptionKey = process.env.ENCRYPTION_KEY;
+// const urlBackend = process.env.URL_BACKEND_QA;
 const urlFrontend = process.env.URL_FRONTEND_QA;
 
 export const createMPToken = async (req, res) => {
@@ -30,15 +32,31 @@ export const createMPToken = async (req, res) => {
       let event = await Event.findByPk(eventId);
       event.mercadoPagoToken = accessTokenResponse.data;
       await event.save();
-      res.send("Token de mercado pago guardado con éxito");
+      res.send({
+        msg: "Token de mercado pago guardado con éxito",
+        status: true,
+      });
     }
   } catch (error) {
     res.send(error);
   }
 };
 
+export const encryptTicketData = (ticketId, eventId, userId, quantity) => {
+  const encryptedData = CryptoJS.AES.encrypt(
+    JSON.stringify({
+      ticketId: ticketId,
+      eventId: eventId,
+      userId: userId,
+      quantity: quantity,
+    }),
+    encryptionKey
+  ).toString();
+  return encryptedData;
+};
+
 export const createOrder = async (req, res) => {
-  const { eventId, title, quantity, price } = req.body;
+  const { eventId, title, quantity, price, ticketId, userId } = req.body;
   const calculatePercentage = (number, perc) => {
     return (number * perc) / 100;
   };
@@ -55,6 +73,7 @@ export const createOrder = async (req, res) => {
   const event = await Event.findByPk(eventId);
   const accessToken =
     event && event.mercadoPagoToken && event.mercadoPagoToken.access_token;
+  const encryptedData = encryptTicketData(ticketId, eventId, userId, quantity);
   try {
     const client = new MercadoPagoConfig({
       accessToken: accessToken,
@@ -79,8 +98,9 @@ export const createOrder = async (req, res) => {
         // notification_url: `${urlBackend}/webhook`,
       },
     });
-    console.log(result, "RESULTADO000000");
-    return res.send(result);
+    const response = { ...result, encryptedData: encryptedData };
+    console.log(response, "RESULTADO000000");
+    return res.send(response);
   } catch (error) {
     res.send("Se produjo un error al procesar la solicitud");
   }

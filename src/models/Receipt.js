@@ -28,7 +28,7 @@ export const Receipt = sequelize.define("Receipt", {
   },
   status: {
     type: DataTypes.STRING, // STATUS DE LA COMPRA
-    defaultValue: "pendiente",
+    defaultValue: "confirmado",
   },
   totalAmount: {
     type: DataTypes.INTEGER, //TOTAL ENTRADAS

@@ -295,34 +295,41 @@ export const getOrganizadores = async (req, res) => {
 
 export const addOrganizadores = async (req, res) => {
   const { eventId, userId } = req.params;
-
   try {
     const event = await Event.findOne({
       where: {
-        eventId: eventId,
+        eventId: parseInt(eventId),
       },
     });
-
     if (!event) {
       return res.status(404).json({ message: "Evento no encontrado" });
     }
-    // const data = {
-    //   nombre: nombre,
-    //   apellido: apellido,
-    //   userName: userName,
-    //   foto: foto,
-    // };
-
     if (!event.organizers) {
       event.organizers = [];
-      event.organizers.push(userId);
+      event.organizers.push(parseInt(userId));
     }
-    if (event.organizers && !event.organizers.includes(userId)) {
-      event.organizers = [...event.organizers, userId];
+    if (event.organizers && !event.organizers.includes(parseInt(userId))) {
+      event.organizers = [...event.organizers, parseInt(userId)];
     }
-
     await event.save();
-    res.json(event.organizers);
+
+    const user = await User.findOne({
+      where: {
+        userId: parseInt(userId),
+      },
+    });
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    if (!user.events[0] || user.events[0] === null) {
+      user.events = [parseInt(eventId)];
+    } else {
+      user.events = [...user.events, parseInt(eventId)];
+    }
+    await user.save();
+    const response = { organizers: event.organizers, userEvents: user.events };
+    console.log(response, "Response Admin Added");
+    res.json(response);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -345,8 +352,20 @@ export const deleteOrganizador = async (req, res) => {
 
     event.organizers = result;
 
-    event.save();
-    res.send(event.organizers);
+    await event.save();
+    const user = await User.findOne({
+      where: {
+        userId: parseInt(userId),
+      },
+    });
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    if (user.events.includes(parseInt(eventId))) {
+      user.events = user.events.filter((event) => event !== parseInt(eventId));
+    }
+    await user.save();
+    res.send("Organizador eliminado con éxito");
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
