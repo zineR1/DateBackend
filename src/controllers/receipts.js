@@ -22,7 +22,6 @@ export const getComprobantes = async (req, res) => {
 
 export const getComprobanteById = async (req, res) => {
   const { userId, eventId } = req.params;
-
   try {
     const comprobante = await Receipt.findOne({
       where: {
@@ -30,11 +29,13 @@ export const getComprobanteById = async (req, res) => {
         eventId: eventId,
       },
     });
+
     const eventInfo = await Event.findOne({
       where: {
         eventId: eventId,
       },
     });
+
     if (!comprobante) {
       const entradaTransferida = await PurchasedTicket.findOne({
         where: {
@@ -130,10 +131,10 @@ export const getComprobanteById = async (req, res) => {
         })
       ),
     };
-
     return res.send(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
+
   }
 };
 

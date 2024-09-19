@@ -2,7 +2,13 @@ import { PurchasedTicket } from "../../../models/PurchasedTicket.js";
 import { Receipt } from "../../../models/Receipt.js";
 import colors from "colors";
 
-export const createReceiptsRoot = async (user1, user2, event1, event2) => {
+export const createReceiptsRoot = async (
+  user1,
+  user2,
+  user3,
+  event1,
+  event2
+) => {
   const dbTickets1 = await PurchasedTicket.findAll({
     where: { userId: user1.userId, eventId: event2.eventId },
   });
@@ -11,12 +17,19 @@ export const createReceiptsRoot = async (user1, user2, event1, event2) => {
     where: { userId: user2.userId, eventId: event1.eventId },
   });
   const dbTickets2ID = dbTickets2.map((tickets) => tickets.ticketId);
+  const dbTickets3 = await PurchasedTicket.findAll({
+    where: { userId: user3.userId, eventId: event1.eventId },
+  });
+  const dbTickets3ID = dbTickets3.map((tickets) => tickets.ticketId);
 
   const receipt1 = await Receipt.findOne({
     where: { userId: user1.userId, eventId: event2.eventId },
   });
   const receipt2 = await Receipt.findOne({
     where: { userId: user2.userId, eventId: event1.eventId },
+  });
+  const receipt3 = await Receipt.findOne({
+    where: { userId: user3.userId, eventId: event1.eventId },
   });
 
   function calcularCostoTotal(ticketsComprados, ticketsDisponibles) {
@@ -59,6 +72,20 @@ export const createReceiptsRoot = async (user1, user2, event1, event2) => {
 
     if (receipt2) {
       console.log(colors.bold.blue("----> Receipt user2 created"));
+    }
+  }
+
+  if (user3 && event1 && dbTickets3[0] && !receipt3) {
+    const receipt3 = await Receipt.create({
+      userId: user3.userId,
+      eventId: event1.eventId,
+      purchasedTickets: dbTickets3ID,
+      totalAmount: calcularCostoTotal(dbTickets3, event1.tickets),
+      receipts: "",
+    });
+
+    if (receipt3) {
+      console.log(colors.bold.blue("----> Receipt user3 created"));
     }
   }
 };

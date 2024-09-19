@@ -45,7 +45,7 @@ export const User = sequelize.define("User", {
     type: DataTypes.STRING,
   },
   sentimentalSituation: {
-    type: DataTypes.STRING,
+    type: DataTypes.JSON,
   },
   phone: {
     type: DataTypes.STRING,
@@ -57,8 +57,16 @@ export const User = sequelize.define("User", {
     type: DataTypes.JSON, // COPIA DE LOS TICKETS QUE EL USER FUE OWNER
   },
   events: {
-    // type: DataTypes.ARRAY(DataTypes.INTEGER),
     type: DataTypes.JSON,
     defaultValue: [],
+  },
+  contactMethods: {
+    type: DataTypes.JSON,
+    defaultValue: {
+      linkedin: null,
+      instagram: null,
+      whatsapp: null,
+      mail: null,
+    },
   },
 });

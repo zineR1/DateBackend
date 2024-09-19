@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { User } from "../models/User.js";
 import {
   getUsers,
   getUserById,
@@ -12,9 +11,6 @@ import {
   deletePicture,
   updatePicture,
 } from "../controllers/users.js";
-// import multer from 'multer';
-// import path from 'path';
-// import { where } from 'sequelize';
 
 const router = Router();
 
