@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
-import { User } from "./User.js";
 
 export const Event = sequelize.define("Event", {
   eventId: {
@@ -15,20 +14,20 @@ export const Event = sequelize.define("Event", {
     type: DataTypes.STRING,
   },
   eventDate: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
   },
   startTime: {
-    type: DataTypes.STRING,
+    type: DataTypes.TIME,
   },
   endTime: {
-    type: DataTypes.STRING,
+    type: DataTypes.TIME,
   },
   description: {
     type: DataTypes.STRING,
   },
   status: {
     type: DataTypes.STRING,
-    defaultValue: "pendiente"
+    defaultValue: "pendiente",
   },
   location: {
     type: DataTypes.STRING,
@@ -40,12 +39,7 @@ export const Event = sequelize.define("Event", {
     type: DataTypes.JSON, // Guardar aquí los detalles de las entradas disponibles
   },
   organizers: {
-        type: DataTypes.JSON,
-    // type: DataTypes.ARRAY(DataTypes.INTEGER),
-    // references: {
-    //   model: User,
-    //   key: "userId",
-    // },
+    type: DataTypes.JSON,
   },
   bankDetails: {
     type: DataTypes.JSON,

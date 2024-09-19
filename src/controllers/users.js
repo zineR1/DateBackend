@@ -1,19 +1,16 @@
 import multer from "multer";
-// import { Ticket } from "../models/Ticket.js";
 import { User } from "../models/User.js";
 import { Event } from "../models/Event.js";
 import { Receipt } from "../models/Receipt.js";
 import Utils from "../utils/index.js";
 import emailService from "../services/email.service.js";
-import { uploader } from "../utils.js";
-import FormData from "form-data";
 import path from "path";
 import dotenv from "dotenv";
 import fs from "fs";
-import { Console } from "console";
 
 dotenv.config();
 const urlBackend = process.env.URL_BACKEND_QA;
+const urlBackendApp = process.env.URL_BACKEND_FOR_APP;
 
 export const getUsers = async (req, res) => {
   try {
@@ -118,17 +115,31 @@ export const createUser = async (req, res) => {
   }
 };
 
+const calculateExactAge = (birthDate) => {
+  const [day, month, year] = birthDate.split("/").map(Number);
+  const birth = new Date(year, month - 1, day); // Month is 0-indexed in JavaScript
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const currentMonth = today.getMonth();
+  const currentDay = today.getDate();
+
+  if (
+    currentMonth < month - 1 ||
+    (currentMonth === month - 1 && currentDay < day)
+  ) {
+    age--;
+  }
+  return age;
+};
+
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   const {
     name,
     lastName,
     email,
-    //password,
     description,
     userName,
-    // profilePictures,
-    age,
     dateOfBirth,
     genre,
     city,
@@ -159,8 +170,7 @@ export const updateUser = async (req, res) => {
     user.email = email ? email : user.email;
     // user.password = user.password;
     user.description = description ? description : user.description;
-    // user.profilePictures = user.profilePictures;
-    user.age = age ? age : user.age;
+    user.age = dateOfBirth ? calculateExactAge(dateOfBirth) : user.age;
     user.dateOfBirth = dateOfBirth ? dateOfBirth : user.dateOfBirth;
     user.genre = genre ? genre : user.genre;
     user.city = city ? city : user.city;
@@ -302,6 +312,7 @@ export const upload = multer({
 
 export const deletePicture = async (req, res) => {
   const { id, posicion } = req.params;
+  console.log({ id, posicion });
 
   try {
     const user = await User.findOne({
@@ -331,24 +342,24 @@ export const deletePicture = async (req, res) => {
 
     if (posicion == 0) {
       user.profilePictures = [
-        `${urlBackend}/public/imagen/defaultPic.png`,
         user.profilePictures[1],
         user.profilePictures[2],
+        `${urlBackendApp}/public/imagen/defaultPic.png`,
       ];
     }
 
     if (posicion == 1) {
       user.profilePictures = [
         user.profilePictures[0],
-        `${urlBackend}/public/imagen/defaultPic.png`,
         user.profilePictures[2],
+        `${urlBackendApp}/public/imagen/defaultPic.png`,
       ];
     }
     if (posicion == 2) {
       user.profilePictures = [
         user.profilePictures[0],
         user.profilePictures[1],
-        `${urlBackend}/public/imagen/defaultPic.png`,
+        `${urlBackendApp}/public/imagen/defaultPic.png`,
       ];
     }
 
@@ -375,9 +386,9 @@ export const updatePicture = async (req, res) => {
 
     if (!Array.isArray(user.profilePictures)) {
       user.profilePictures = [
-        `${urlBackend}/public/imagen/defaultPic.png`,
-        `${urlBackend}/public/imagen/defaultPic.png`,
-        `${urlBackend}/public/imagen/defaultPic.png`,
+        `${urlBackendApp}/public/imagen/defaultPic.png`,
+        `${urlBackendApp}/public/imagen/defaultPic.png`,
+        `${urlBackendApp}/public/imagen/defaultPic.png`,
       ];
     }
 
@@ -401,7 +412,7 @@ export const updatePicture = async (req, res) => {
       // user.pictures[posicion] = req.file.filename;
       if (posicion == 0) {
         user.profilePictures = [
-          `${urlBackend}/public/imgs/${req.file.filename}`,
+          `${urlBackendApp}/public/imgs/${req.file.filename}`,
           user.profilePictures[1],
           user.profilePictures[2],
         ];
@@ -409,7 +420,7 @@ export const updatePicture = async (req, res) => {
       if (posicion == 1) {
         user.profilePictures = [
           user.profilePictures[0],
-          `${urlBackend}/public/imgs/${req.file.filename}`,
+          `${urlBackendApp}/public/imgs/${req.file.filename}`,
           user.profilePictures[2],
         ];
       }
@@ -417,7 +428,7 @@ export const updatePicture = async (req, res) => {
         user.profilePictures = [
           user.profilePictures[0],
           user.profilePictures[1],
-          `${urlBackend}/public/imgs/${req.file.filename}`,
+          `${urlBackendApp}/public/imgs/${req.file.filename}`,
         ];
       }
       await user.save(); // Guarda el usuario actualizado en la base de datos

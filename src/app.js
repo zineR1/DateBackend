@@ -18,6 +18,10 @@ const allowedOrigins = [
   "https://datefrontendpruebas.onrender.com/#",
   "http://localhost:3000",
   "http://localhost:3001",
+  "http://localhost:8081",
+  "http://localhost:8082",
+  "exp://192.168.100.31:8081",
+  "exp://192.168.100.31:8082",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
