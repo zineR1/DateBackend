@@ -20,8 +20,8 @@ const allowedOrigins = [
   "http://localhost:3001",
   "http://localhost:8081",
   "http://localhost:8082",
-  "exp://192.168.100.31:8081",
-  "exp://192.168.100.31:8082",
+  `exp://${process.env.LOCAL_NETWORK_IP}:8081`,
+  `exp://${process.env.LOCAL_NETWORK_IP}:8082`,
 ];
 const corsOptions = {
   origin: function (origin, callback) {
