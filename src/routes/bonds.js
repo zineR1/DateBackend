@@ -14,10 +14,10 @@ router.get("/bonds/getBonds/:userId", getBondsById);
 
 //Solicitudes de vinculación
 router.get(
-  "/users/:userId/events/:eventId/bondRequests",
+  "/bonds/bondRequests/:userId/:eventId",
   getPendingBondRequests
 );
-router.post("/bonds/request", sendBondRequest);
-router.put("/bonds/respond", respondToBondRequest);
+router.post("/bonds/bondRequests/request", sendBondRequest);
+router.put("/bonds/bondRequests/respond", respondToBondRequest);
 
 export default router;

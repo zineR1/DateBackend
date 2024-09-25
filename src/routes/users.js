@@ -11,7 +11,7 @@ import {
   deletePicture,
   updatePicture,
 } from "../controllers/users.js";
-
+import { createRandomGuestsForEvent } from "../controllers/createMultipleGuests/usersCreator/usersCreator.js";
 const router = Router();
 
 router.get("/users", getUsers);
@@ -28,5 +28,8 @@ router.put("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
 router.delete("/users/:id/deleteImage/:posicion", deletePicture);
 // router.put("/users/:id/events");
+
+//RUTA PARA CREAR MULTIPLES USUARIOS DE PRUEBA
+router.post("/users/randomUsersCreator", createRandomGuestsForEvent);
 
 export default router;

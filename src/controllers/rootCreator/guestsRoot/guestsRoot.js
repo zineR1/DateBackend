@@ -18,13 +18,13 @@ export const createGuestRoot = async () => {
   const dbGuest1 = await Guest.findOne({
     where: {
       userId: dbUser1 && dbUser1.userId,
-      eventId: dbEvent1 && dbEvent1.eventId,
+      eventId: dbEvent2 && dbEvent2.eventId || 2,
     },
   });
   const dbGuest2 = await Guest.findOne({
     where: {
       userId: dbUser2 && dbUser2.userId,
-      eventId: dbEvent2 && dbEvent2.eventId,
+      eventId: dbEvent1 && dbEvent1.eventId || 1,
     },
   });
   const dbGuest3 = await Guest.findOne({
@@ -34,36 +34,48 @@ export const createGuestRoot = async () => {
     },
   });
 
-  if (dbUser1 && dbEvent1 && !dbGuest1 && dbEvent2) {
+  if (dbUser1 && !dbGuest1 && dbEvent2) {
     const guest1 = await Guest.create({
       userId: dbUser1.userId,
-      eventId: dbEvent2.eventId,
+      eventId: 2,
     });
-    if (guest1) {
+    const guest2 = await Guest.create({
+      userId: dbUser1.userId,
+      eventId: dbEvent1.eventId,
+    });
+    if (guest1 && guest2) {
       console.log(colors.bold.cyan("----> guest1 created"));
     } else {
       console.log(colors.bold.cyan("----> guest1 already exists"));
     }
   }
 
-  if (dbUser2 && dbEvent2 && !dbGuest2) {
-    const guest2 = await Guest.create({
+  if (dbUser2 && !dbGuest2 && dbEvent1) {
+    const guest1 = await Guest.create({
       userId: dbUser2.userId,
       eventId: dbEvent1.eventId,
     });
-    if (guest2) {
+    const guest2 = await Guest.create({
+      userId: dbUser2.userId,
+      eventId: 2,
+    });
+    if (guest1 && guest2) {
       console.log(colors.bold.cyan("----> guest2 created"));
     } else {
       console.log(colors.bold.cyan("----> guest2 already exists"));
     }
   }
 
-  if (dbUser3 && dbEvent1 && !dbGuest3) {
-    const guest3 = await Guest.create({
+  if (dbUser3 && !dbGuest3 && dbEvent1) {
+    const guest1 = await Guest.create({
       userId: dbUser3.userId,
       eventId: dbEvent1.eventId,
     });
-    if (guest3) {
+    const guest2 = await Guest.create({
+      userId: dbUser3.userId,
+      eventId: 2,
+    });
+    if (guest1 && guest2) {
       console.log(colors.bold.cyan("----> guest3 created"));
       createPurchasedTicketsRoot(dbUser1, dbUser2, dbUser3, dbEvent1, dbEvent2);
     } else {

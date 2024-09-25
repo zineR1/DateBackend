@@ -6,10 +6,13 @@ import routerEvents from "./routes/events.js";
 import routerMercadoPago from "./routes/mercadoPago.js";
 // import routerInstagram from "./routes/instagramApi.js";
 import routerComprobantes from "./routes/receipts.js";
+import routerBonds from "./routes/bonds.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import initPassport from "./config/passport.config.js";
+import bodyParser from 'body-parser';
 import cors from "cors";
+import "./models/asociations.js";
 
 const app = express();
 
@@ -36,6 +39,7 @@ const corsOptions = {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(bodyParser.json());
 //app.use(express.static('public'))
 app.use("/public", express.static("src/public"));
 
@@ -59,5 +63,6 @@ app.use(routerEvents);
 app.use(routerMercadoPago);
 // app.use(routerInstagram);
 app.use(routerComprobantes);
+app.use(routerBonds);
 
 export default app;
