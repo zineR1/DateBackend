@@ -328,7 +328,6 @@ export const addOrganizadores = async (req, res) => {
     }
     await user.save();
     const response = { organizers: event.organizers, userEvents: user.events };
-    console.log(response, "Response Admin Added");
     res.json(response);
   } catch (error) {
     return res.status(500).json({ message: error.message });
