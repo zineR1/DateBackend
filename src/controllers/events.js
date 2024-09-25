@@ -477,3 +477,62 @@ export const upload = multer({
 //     return res.status(500).json({ message: error.message });
 //   }
 // };
+
+export const getEventGuests = async (req, res) => {
+  const { eventId } = req.params;
+  const currentPage = parseInt(req.query.page) || 1;
+  const limit = 16;
+  const offset = (currentPage - 1) * limit;
+
+  try {
+    const totalGuests = await Guest.count({
+      where: {
+        eventId: eventId,
+      },
+    });
+
+    const guests = await Guest.findAll({
+      where: {
+        eventId: eventId,
+      },
+      include: [
+        {
+          model: User,
+          attributes: [
+            "userId",
+            "profilePictures",
+            "name",
+            "lastName",
+            "description",
+            "age",
+            "genre",
+            "city",
+            "phone",
+            "sentimentalSituation",
+          ],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+      limit: limit,
+      offset: offset,
+    });
+
+    if (guests.length === 0) {
+      return res.status(404).json({
+        message: "No hay invitados para este evento",
+      });
+    }
+
+    const userData = guests.map((guest) => guest.User);
+
+    return res.status(200).json({
+      guests: userData,
+      totalGuests: totalGuests,
+    });
+  } catch (error) {
+    console.error("Error al obtener los invitados del evento:", error);
+    return res
+      .status(500)
+      .json({ message: "Error al obtener los invitados del evento" });
+  }
+};

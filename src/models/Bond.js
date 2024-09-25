@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "./db.js";
+import { sequelize } from "../database/database.js";
 
 export const Bond = sequelize.define(
   "Bond",
@@ -9,7 +9,7 @@ export const Bond = sequelize.define(
       allowNull: false,
       references: {
         model: "User",
-        key: "id",
+        key: "userId",
       },
     },
     bondId: {
@@ -17,7 +17,7 @@ export const Bond = sequelize.define(
       allowNull: false,
       references: {
         model: "User",
-        key: "id",
+        key: "userId",
       },
     },
   },
@@ -26,7 +26,7 @@ export const Bond = sequelize.define(
     indexes: [
       {
         unique: true,
-        fields: ["userId", "friendId"],
+        fields: ["userId", "bondId"],
       },
     ],
   }

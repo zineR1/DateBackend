@@ -10,7 +10,7 @@ export const createReceiptsRoot = async (
   event2
 ) => {
   const dbTickets1 = await PurchasedTicket.findAll({
-    where: { userId: user1.userId, eventId: event2.eventId },
+    where: { userId: user1.userId, eventId: 2 },
   });
   const dbTickets1ID = dbTickets1.map((tickets) => tickets.ticketId);
   const dbTickets2 = await PurchasedTicket.findAll({
@@ -23,7 +23,7 @@ export const createReceiptsRoot = async (
   const dbTickets3ID = dbTickets3.map((tickets) => tickets.ticketId);
 
   const receipt1 = await Receipt.findOne({
-    where: { userId: user1.userId, eventId: event2.eventId },
+    where: { userId: user1.userId, eventId: 2 },
   });
   const receipt2 = await Receipt.findOne({
     where: { userId: user2.userId, eventId: event1.eventId },
@@ -50,7 +50,7 @@ export const createReceiptsRoot = async (
   if (user1 && event2 && dbTickets1[0] && !receipt1) {
     const receipt1 = await Receipt.create({
       userId: user1.userId,
-      eventId: event2.eventId,
+      eventId: 2,
       purchasedTickets: dbTickets1ID,
       totalAmount: calcularCostoTotal(dbTickets1, event2.tickets),
       receipts: "",
