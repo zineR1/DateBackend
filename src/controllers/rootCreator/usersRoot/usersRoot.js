@@ -87,7 +87,7 @@ export const createRootUser = async () => {
 
     if (user2) {
       console.log(colors.bold.green("----> admin2 created"));
-      createGuestRoot();
+      // createGuestRoot();
     }
   } else {
     console.log(colors.bold.green("----> admin2 already exists"));

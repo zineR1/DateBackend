@@ -1,6 +1,7 @@
 import { User } from "../models/User.js";
 import { Bond } from "../models/Bond.js";
 import { BondRequest } from "../models/BondRequest.js";
+import { Op } from "sequelize";
 
 export const sendBondRequest = async (req, res) => {
   const { requesterId, receiverId, eventId } = req.body;
@@ -112,5 +113,48 @@ export const getPendingBondRequests = async (req, res) => {
   } catch (error) {
     console.error("Error fetching bond requests:", error);
     return res.status(500).json({ message: "Error fetching bond requests" });
+  }
+};
+
+export const checkBondRequestsStatus = async (req, res) => {
+  const { userId, guestId, eventId } = req.params;
+  try {
+    const bondRequest = await BondRequest.findOne({
+      where: {
+        eventId: eventId,
+        [Op.or]: [
+          { requesterId: userId, receiverId: guestId },
+          { requesterId: guestId, receiverId: userId },
+        ],
+      },
+    });
+
+    if (!bondRequest) {
+      return res.status(200).json({ status: "noBondRequest" });
+    }
+
+    if (
+      bondRequest.requesterId === guestId &&
+      bondRequest.receiverId === userId
+    ) {
+      if (bondRequest.status === "pending") {
+        return res.status(200).json({ status: "pendingRequestReceived" });
+      }
+    }
+
+    switch (bondRequest.status) {
+      case "pending":
+        return res.status(200).json({ status: "pendingRequestSent" });
+      case "accepted":
+        return res.status(200).json({ status: "bond" });
+      default:
+        return res.status(400).json({
+          message: `La solicitud está en estado: ${bondRequest.status}`,
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error al gestionar la solicitud de estado de vinculación",
+    });
   }
 };

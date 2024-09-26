@@ -523,7 +523,6 @@ export const getEventGuests = async (req, res) => {
     }
 
     const userData = guests.map((guest) => guest.User);
-
     return res.status(200).json({
       guests: userData,
       totalGuests: totalGuests,
