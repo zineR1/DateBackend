@@ -8,8 +8,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const generateRandomImage = () => {
-  const width = 200;
-  const height = 300;
+  const width = 800;
+  const height = 1000;
   return `https://picsum.photos/${width}/${height}?random=${Math.floor(
     Math.random() * 1000
   )}`;
