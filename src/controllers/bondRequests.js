@@ -79,11 +79,12 @@ export const getPendingBondRequests = async (req, res) => {
       include: [
         {
           model: User,
-          as: "SentRequests",
+          as: "Requester",
           attributes: ["userId", "name", "lastName", "profilePictures"],
         },
       ],
     });
+
     let bondRequestReceived = await BondRequest.findAll({
       where: {
         receiverId: userId,
@@ -93,28 +94,22 @@ export const getPendingBondRequests = async (req, res) => {
       include: [
         {
           model: User,
-          as: "SentRequests",
+          as: "Receiver",
           attributes: ["userId", "name", "lastName", "profilePictures"],
         },
       ],
     });
 
-    if (bondRequestsSent.length === 0) {
-      bondRequestsSent = [];
-    }
-    if (bondRequestReceived.length === 0) {
-      bondRequestReceived = [];
-    }
-
     return res.status(200).json({
-      bondRequestsSent: bondRequestsSent,
-      bondRequestReceived: bondRequestReceived,
+      bondRequestsSent: bondRequestsSent.length ? bondRequestsSent : [],
+      bondRequestReceived: bondRequestReceived.length ? bondRequestReceived : [],
     });
   } catch (error) {
     console.error("Error fetching bond requests:", error);
     return res.status(500).json({ message: "Error fetching bond requests" });
   }
 };
+
 
 export const checkBondRequestsStatus = async (req, res) => {
   const { userId, guestId, eventId } = req.params;
