@@ -116,7 +116,7 @@ export const createPurchasedTicketsRoot = async (
     });
     if (created1 && created2 && created3) {
       console.log(colors.bold.red("----> Tickets user3 created"));
-      createReceiptsRoot(user1, user2, user3, event1, event2);
+      await createReceiptsRoot(user1, user2, user3, event1, event2);
     }
   }
 };

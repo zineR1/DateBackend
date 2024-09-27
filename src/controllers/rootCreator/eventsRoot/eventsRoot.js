@@ -144,7 +144,7 @@ export const createEventRoot = async () => {
     if (event2) {
       console.log(colors.bold.magenta("----> event2 created"));
     } else {
-      console.log(colors.bold.magenta("----> envent2 already exists"));
+      console.log(colors.bold.magenta("----> event2 already exists"));
     }
   }
 };
