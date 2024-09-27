@@ -22,10 +22,11 @@ async function main() {
   //   });
   // });
 
-  server.listen(PORT, () => {
+  server.listen(PORT, async () => {
     console.log(colors.black.bgGreen(`Server running on ${PORT}`));
-    createRootUser();
-    createEventRoot();
+    await createRootUser();
+    await createEventRoot();
+    console.log(colors.black.bgGreen(`All test registers created`));
   });
 }
 

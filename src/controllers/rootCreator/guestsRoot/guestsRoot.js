@@ -77,7 +77,7 @@ export const createGuestRoot = async () => {
     });
     if (guest1 && guest2) {
       console.log(colors.bold.cyan("----> guest3 created"));
-      createPurchasedTicketsRoot(dbUser1, dbUser2, dbUser3, dbEvent1, dbEvent2);
+      await createPurchasedTicketsRoot(dbUser1, dbUser2, dbUser3, dbEvent1, dbEvent2);
     } else {
       console.log(colors.bold.cyan("----> guest3 already exists"));
     }
