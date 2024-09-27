@@ -13,13 +13,16 @@ export const Event = sequelize.define("Event", {
   eventName: {
     type: DataTypes.STRING,
   },
-  eventDate: {
+  startEventDate: {
     type: DataTypes.DATE,
   },
-  startTime: {
+  endEventDate: {
+    type: DataTypes.DATE,
+  },
+  startEventTime: {
     type: DataTypes.TIME,
   },
-  endTime: {
+  endEventTime: {
     type: DataTypes.TIME,
   },
   startPreEventTime: {
