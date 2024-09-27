@@ -9,8 +9,9 @@ import dotenv from "dotenv";
 import fs from "fs";
 
 dotenv.config();
-const urlBackend = process.env.URL_BACKEND_QA;
-const urlBackendApp = process.env.URL_BACKEND_FOR_APP;
+
+const urlBackend = process.env.URL_API;
+
 
 export const getUsers = async (req, res) => {
   try {
@@ -344,7 +345,7 @@ export const deletePicture = async (req, res) => {
       user.profilePictures = [
         user.profilePictures[1],
         user.profilePictures[2],
-        `${urlBackendApp}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
       ];
     }
 
@@ -352,14 +353,14 @@ export const deletePicture = async (req, res) => {
       user.profilePictures = [
         user.profilePictures[0],
         user.profilePictures[2],
-        `${urlBackendApp}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
       ];
     }
     if (posicion == 2) {
       user.profilePictures = [
         user.profilePictures[0],
         user.profilePictures[1],
-        `${urlBackendApp}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
       ];
     }
 
@@ -386,9 +387,9 @@ export const updatePicture = async (req, res) => {
 
     if (!Array.isArray(user.profilePictures)) {
       user.profilePictures = [
-        `${urlBackendApp}/public/imagen/defaultPic.png`,
-        `${urlBackendApp}/public/imagen/defaultPic.png`,
-        `${urlBackendApp}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
+        `${urlBackend}/public/imagen/defaultPic.png`,
       ];
     }
 
@@ -412,7 +413,7 @@ export const updatePicture = async (req, res) => {
       // user.pictures[posicion] = req.file.filename;
       if (posicion == 0) {
         user.profilePictures = [
-          `${urlBackendApp}/public/imgs/${req.file.filename}`,
+          `${urlBackend}/public/imgs/${req.file.filename}`,
           user.profilePictures[1],
           user.profilePictures[2],
         ];
@@ -420,7 +421,7 @@ export const updatePicture = async (req, res) => {
       if (posicion == 1) {
         user.profilePictures = [
           user.profilePictures[0],
-          `${urlBackendApp}/public/imgs/${req.file.filename}`,
+          `${urlBackend}/public/imgs/${req.file.filename}`,
           user.profilePictures[2],
         ];
       }
@@ -428,7 +429,7 @@ export const updatePicture = async (req, res) => {
         user.profilePictures = [
           user.profilePictures[0],
           user.profilePictures[1],
-          `${urlBackendApp}/public/imgs/${req.file.filename}`,
+          `${urlBackend}/public/imgs/${req.file.filename}`,
         ];
       }
       await user.save(); // Guarda el usuario actualizado en la base de datos

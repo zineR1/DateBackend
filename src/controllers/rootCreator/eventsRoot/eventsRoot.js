@@ -9,13 +9,12 @@ export const createEventRoot = async () => {
   const eventRoot2 = process.env.EVENT_ROOT2;
   const dbEvent1 = await Event.findOne({ where: { eventName: eventRoot1 } });
   const dbEvent2 = await Event.findOne({ where: { eventName: eventRoot2 } });
-  const urlBackend = process.env.URL_BACKEND_QA;
-  const urlBackendApp = process.env.URL_BACKEND_FOR_APP;
+  const urlBackend = process.env.URL_API;
 
 
   if (!dbEvent1) {
     const event1 = await Event.create({
-      flyer: `${urlBackendApp}/public/imagen/defaultPicEvent.png`,
+      flyer: `${urlBackend}/public/imagen/defaultPicEvent.png`,
       eventName: eventRoot1,
       eventDate: "02-04-2026",
       startTime: "00:00",
@@ -84,7 +83,7 @@ export const createEventRoot = async () => {
 
   if (!dbEvent2) {
     const event2 = await Event.create({
-      flyer: `${urlBackendApp}/public/imagen/defaultPicEvent.png`,
+      flyer: `${urlBackend}/public/imagen/defaultPicEvent.png`,
       eventName: eventRoot2,
       eventDate: "02-04-2026",
       startTime: "00:00",

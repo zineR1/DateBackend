@@ -8,7 +8,7 @@ import { Event } from "../models/Event.js";
 import { User } from "../models/User.js";
 
 dotenv.config();
-const urlBackend = process.env.URL_BACKEND_QA;
+const urlBackend = process.env.URL_API;
 
 
 export const getComprobantes = async (req, res) => {
