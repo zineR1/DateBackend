@@ -1,6 +1,7 @@
 import { Event } from "../../../models/Event.js";
 import colors from "colors";
 import dotenv from "dotenv";
+import { createGuestRoot } from "../guestsRoot/guestsRoot.js";
 
 dotenv.config();
 
@@ -10,7 +11,6 @@ export const createEventRoot = async () => {
   const dbEvent1 = await Event.findOne({ where: { eventName: eventRoot1 } });
   const dbEvent2 = await Event.findOne({ where: { eventName: eventRoot2 } });
   const urlBackend = process.env.URL_API;
-
 
   if (!dbEvent1) {
     const event1 = await Event.create({
@@ -151,6 +151,7 @@ export const createEventRoot = async () => {
     });
     if (event2) {
       console.log(colors.bold.magenta("----> event2 created"));
+      await createGuestRoot();
     } else {
       console.log(colors.bold.magenta("----> event2 already exists"));
     }
