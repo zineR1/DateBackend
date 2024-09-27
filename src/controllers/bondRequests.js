@@ -131,8 +131,6 @@ export const checkBondRequestsStatus = async (req, res) => {
       },
     });
 
-    console.log(bondRequest, "bondRequest");
-
     if (!bondRequest) {
       return res.status(200).json({ status: "noBondRequest" });
     }
