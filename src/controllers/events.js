@@ -507,6 +507,7 @@ export const getEventGuests = async (req, res) => {
             "city",
             "phone",
             "sentimentalSituation",
+            "contactMethods"
           ],
         },
       ],
