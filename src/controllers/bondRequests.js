@@ -102,14 +102,15 @@ export const getPendingBondRequests = async (req, res) => {
 
     return res.status(200).json({
       bondRequestsSent: bondRequestsSent.length ? bondRequestsSent : [],
-      bondRequestReceived: bondRequestReceived.length ? bondRequestReceived : [],
+      bondRequestReceived: bondRequestReceived.length
+        ? bondRequestReceived
+        : [],
     });
   } catch (error) {
     console.error("Error fetching bond requests:", error);
     return res.status(500).json({ message: "Error fetching bond requests" });
   }
 };
-
 
 export const checkBondRequestsStatus = async (req, res) => {
   const { userId, guestId, eventId } = req.params;
@@ -130,19 +131,30 @@ export const checkBondRequestsStatus = async (req, res) => {
       },
     });
 
+    console.log(bondRequest, "bondRequest");
+
     if (!bondRequest) {
       return res.status(200).json({ status: "noBondRequest" });
     }
 
     // Determinar quién es el solicitante y quién es el receptor
-    const isRequestFromUser = bondRequest.requesterId === userIdNum && bondRequest.receiverId === guestIdNum;
-    const isRequestFromGuest = bondRequest.requesterId === guestIdNum && bondRequest.receiverId === userIdNum;
+    const isRequestFromUser =
+      bondRequest.requesterId === userIdNum &&
+      bondRequest.receiverId === guestIdNum;
+    const isRequestFromGuest =
+      bondRequest.requesterId === guestIdNum &&
+      bondRequest.receiverId === userIdNum;
 
     if (bondRequest.status === "pending") {
       if (isRequestFromUser) {
         return res.status(200).json({ status: "pendingRequestSent" });
       } else if (isRequestFromGuest) {
-        return res.status(200).json({ status: "pendingRequestReceived" });
+        return res
+          .status(200)
+          .json({
+            status: "pendingRequestReceived",
+            requestId: bondRequest.requestId,
+          });
       }
     }
 
@@ -154,13 +166,12 @@ export const checkBondRequestsStatus = async (req, res) => {
       message: `La solicitud está en estado: ${bondRequest.status}`,
     });
   } catch (error) {
-    console.error("Error al gestionar la solicitud de estado de vinculación:", error);
+    console.error(
+      "Error al gestionar la solicitud de estado de vinculación:",
+      error
+    );
     return res.status(500).json({
       message: "Error al gestionar la solicitud de estado de vinculación",
     });
   }
 };
-
-
-
-
