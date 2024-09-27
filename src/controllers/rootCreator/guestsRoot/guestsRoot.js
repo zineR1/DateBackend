@@ -21,6 +21,7 @@ export const createGuestRoot = async () => {
       eventId: dbEvent2 && dbEvent2.eventId || 2,
     },
   });
+
   const dbGuest2 = await Guest.findOne({
     where: {
       userId: dbUser2 && dbUser2.userId,
@@ -77,7 +78,7 @@ export const createGuestRoot = async () => {
     });
     if (guest1 && guest2) {
       console.log(colors.bold.cyan("----> guest3 created"));
-       createPurchasedTicketsRoot(dbUser1, dbUser2, dbUser3, dbEvent1, dbEvent2);
+      await createPurchasedTicketsRoot(dbUser1, dbUser2, dbUser3, dbEvent1, dbEvent2);
     } else {
       console.log(colors.bold.cyan("----> guest3 already exists"));
     }

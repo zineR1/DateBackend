@@ -3,7 +3,6 @@ import app from "./app.js";
 import { sequelize } from "./database/database.js";
 // import { Server } from "socket.io";
 import { createRootUser } from "./controllers/rootCreator/usersRoot/usersRoot.js";
-import { createEventRoot } from "./controllers/rootCreator/eventsRoot/eventsRoot.js";
 import colors from "colors";
 
 const PORT = process.env.PORT || 3001;
@@ -25,7 +24,6 @@ async function main() {
   server.listen(PORT, async () => {
     console.log(colors.black.bgGreen(`Server running on ${PORT}`));
     await createRootUser();
-    await createEventRoot();
     console.log(colors.black.bgGreen(`All test registers created`));
   });
 }
