@@ -113,13 +113,19 @@ export const getPendingBondRequests = async (req, res) => {
 
 export const checkBondRequestsStatus = async (req, res) => {
   const { userId, guestId, eventId } = req.params;
+
+  // Convertir los IDs de string a number
+  const userIdNum = parseInt(userId, 10);
+  const guestIdNum = parseInt(guestId, 10);
+  const eventIdNum = parseInt(eventId, 10);
+
   try {
     const bondRequest = await BondRequest.findOne({
       where: {
-        eventId: eventId,
+        eventId: eventIdNum,
         [Op.or]: [
-          { requesterId: userId, receiverId: guestId },
-          { requesterId: guestId, receiverId: userId },
+          { requesterId: userIdNum, receiverId: guestIdNum },
+          { requesterId: guestIdNum, receiverId: userIdNum },
         ],
       },
     });
@@ -128,28 +134,33 @@ export const checkBondRequestsStatus = async (req, res) => {
       return res.status(200).json({ status: "noBondRequest" });
     }
 
-    if (
-      bondRequest.requesterId === guestId &&
-      bondRequest.receiverId === userId
-    ) {
-      if (bondRequest.status === "pending") {
+    // Determinar quién es el solicitante y quién es el receptor
+    const isRequestFromUser = bondRequest.requesterId === userIdNum && bondRequest.receiverId === guestIdNum;
+    const isRequestFromGuest = bondRequest.requesterId === guestIdNum && bondRequest.receiverId === userIdNum;
+
+    if (bondRequest.status === "pending") {
+      if (isRequestFromUser) {
+        return res.status(200).json({ status: "pendingRequestSent" });
+      } else if (isRequestFromGuest) {
         return res.status(200).json({ status: "pendingRequestReceived" });
       }
     }
 
-    switch (bondRequest.status) {
-      case "pending":
-        return res.status(200).json({ status: "pendingRequestSent" });
-      case "accepted":
-        return res.status(200).json({ status: "bond" });
-      default:
-        return res.status(400).json({
-          message: `La solicitud está en estado: ${bondRequest.status}`,
-        });
+    if (bondRequest.status === "accepted") {
+      return res.status(200).json({ status: "bond" });
     }
+
+    return res.status(400).json({
+      message: `La solicitud está en estado: ${bondRequest.status}`,
+    });
   } catch (error) {
+    console.error("Error al gestionar la solicitud de estado de vinculación:", error);
     return res.status(500).json({
       message: "Error al gestionar la solicitud de estado de vinculación",
     });
   }
 };
+
+
+
+
