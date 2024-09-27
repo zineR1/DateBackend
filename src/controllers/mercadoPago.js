@@ -3,7 +3,6 @@ import { Event } from "../models/Event.js";
 import axios from "axios";
 import CryptoJS from "crypto-js";
 const encryptionKey = process.env.ENCRYPTION_KEY;
-// const urlBackend = process.env.URL_BACKEND_QA;
 const urlFrontend = process.env.URL_FRONTEND_QA;
 
 export const createMPToken = async (req, res) => {
