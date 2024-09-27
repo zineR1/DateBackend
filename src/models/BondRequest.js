@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../config/database.js';
+import { sequelize } from "../database/database.js";
 
 export const BondRequest = sequelize.define('BondRequest', {
   requestId: {
@@ -25,10 +25,9 @@ export const BondRequest = sequelize.define('BondRequest', {
     allowNull: false,  // Si quieres hacer que sea obligatorio que una solicitud esté asociada a un evento
     references: {
       model: 'Events',  // Nombre de la tabla de eventos
-      key: 'id',
+      key: 'eventId',
     },
   },
 }, {
   timestamps: true,
-  tableName: 'bond_requests',
 });

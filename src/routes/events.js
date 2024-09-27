@@ -10,6 +10,7 @@ import {
   deleteOrganizador,
   upload,
   getAdminEventInfo,
+  getEventGuests,
   // addInvitado,
   // addComprobantes,
   // deleteComprobante,
@@ -54,6 +55,9 @@ router.get("/events/admin/:eventId", getAdminEventInfo);
 router.get("/events/:eventId/organizers", getOrganizadores);
 router.put("/events/:eventId/organizadores/:userId", addOrganizadores);
 router.put("/events/:eventId/delete-organizador/:userId", deleteOrganizador);
+
+//GUESTS
+router.get("/events/:eventId/guests", getEventGuests);
 
 //COMPROBANTES
 // router.post(

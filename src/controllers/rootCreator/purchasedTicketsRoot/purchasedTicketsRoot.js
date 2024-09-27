@@ -10,7 +10,7 @@ export const createPurchasedTicketsRoot = async (
   event2
 ) => {
   const dbTickets1 = await PurchasedTicket.findAll({
-    where: { userId: user1.userId, eventId: event2.eventId },
+    where: { userId: user1.userId, eventId: 2 },
   });
   const dbTickets2 = await PurchasedTicket.findAll({
     where: { userId: user2.userId, eventId: event1.eventId },
@@ -22,7 +22,7 @@ export const createPurchasedTicketsRoot = async (
   if (user1 && event2 && !dbTickets1[0]) {
     const created1 = await PurchasedTicket.create({
       userId: user1.userId,
-      eventId: event2.eventId,
+      eventId: 2,
       ticketIdEntry: 2,
       assigned: true,
       owner: user1.userId,
@@ -32,7 +32,7 @@ export const createPurchasedTicketsRoot = async (
 
     const created2 = await PurchasedTicket.create({
       userId: user1.userId,
-      eventId: event2.eventId,
+      eventId: 2,
       ticketIdEntry: 2,
       assigned: false,
       status: { text: "pending", time: null },
@@ -41,7 +41,7 @@ export const createPurchasedTicketsRoot = async (
 
     const created3 = await PurchasedTicket.create({
       userId: user1.userId,
-      eventId: event2.eventId,
+      eventId: 2,
       ticketIdEntry: 2,
       assigned: false,
       status: { text: "pending", time: null },

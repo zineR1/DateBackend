@@ -3,7 +3,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const urlBackend = process.env.URL_BACKEND_QA;
+const urlBackend = process.env.URL_API;
 
 
 const storage = multer.diskStorage({

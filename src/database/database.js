@@ -1,12 +1,9 @@
 import { Sequelize } from "sequelize";
-import dotenv from 'dotenv';
-import colors from 'colors';
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_PORT, NODE_ENV, DATABASE_URL } = process.env;
-
-const config = `postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+const { NODE_ENV, DATABASE_URL } = process.env;
 
 let sequelize;
 if (NODE_ENV === "production" && DATABASE_URL) {
@@ -16,22 +13,26 @@ if (NODE_ENV === "production" && DATABASE_URL) {
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false,
+        rejectUnauthorized: false, // Importante para conexiones sin verificación de certificados
       },
     },
   });
 } else {
+  // Configuración para desarrollo o entornos no productivos
+  const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_PORT } = process.env;
+  const config = `postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
   sequelize = new Sequelize(config, {
-    dialect: 'postgres',
+    dialect: "postgres",
   });
 }
 
-sequelize.authenticate()
+sequelize
+  .authenticate()
   .then(() => {
-    console.log('Connection has been established successfully.'.green);
+    console.log("Connection has been established successfully.".green);
   })
-  .catch(err => {
-    console.error('Unable to connect to the database:'.red, err);
+  .catch((err) => {
+    console.error("Unable to connect to the database:".red, err);
   });
 
 export { sequelize };

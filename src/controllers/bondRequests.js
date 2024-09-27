@@ -1,9 +1,10 @@
-import { BondRequest } from "../models/BondRequest";
-import { Bond } from "../models/Bond";
-import { User } from "../models/User";
+import { User } from "../models/User.js";
+import { Bond } from "../models/Bond.js";
+import { BondRequest } from "../models/BondRequest.js";
+import { Op } from "sequelize";
 
 export const sendBondRequest = async (req, res) => {
-  const { requesterId, receiverId } = req.body;
+  const { requesterId, receiverId, eventId } = req.body;
 
   try {
     const existingRequest = await BondRequest.findOne({
@@ -16,7 +17,11 @@ export const sendBondRequest = async (req, res) => {
         .json({ message: "Ya existe una solicitud pendiente." });
     }
 
-    const bondRequest = await BondRequest.create({ requesterId, receiverId });
+    const bondRequest = await BondRequest.create({
+      requesterId,
+      receiverId,
+      eventId,
+    });
     return res.status(201).json(bondRequest);
   } catch (error) {
     return res
@@ -65,30 +70,86 @@ export const getPendingBondRequests = async (req, res) => {
   const { userId, eventId } = req.params;
 
   try {
-    const bondRequests = await BondRequest.findAll({
+    let bondRequestsSent = await BondRequest.findAll({
       where: {
-        bondId: userId,
+        requesterId: userId,
         status: "pending",
         eventId: eventId,
       },
       include: [
         {
           model: User,
-          as: "SentRequests",
+          as: "Requester",
           attributes: ["userId", "name", "lastName", "profilePictures"],
         },
       ],
     });
 
-    if (bondRequests.length === 0) {
-      return res.status(404).json({
-        message: "No tienes solicitudes pendientes en este evento",
-      });
-    }
+    let bondRequestReceived = await BondRequest.findAll({
+      where: {
+        receiverId: userId,
+        status: "pending",
+        eventId: eventId,
+      },
+      include: [
+        {
+          model: User,
+          as: "Receiver",
+          attributes: ["userId", "name", "lastName", "profilePictures"],
+        },
+      ],
+    });
 
-    return res.status(200).json(bondRequests);
+    return res.status(200).json({
+      bondRequestsSent: bondRequestsSent.length ? bondRequestsSent : [],
+      bondRequestReceived: bondRequestReceived.length ? bondRequestReceived : [],
+    });
   } catch (error) {
     console.error("Error fetching bond requests:", error);
     return res.status(500).json({ message: "Error fetching bond requests" });
+  }
+};
+
+
+export const checkBondRequestsStatus = async (req, res) => {
+  const { userId, guestId, eventId } = req.params;
+  try {
+    const bondRequest = await BondRequest.findOne({
+      where: {
+        eventId: eventId,
+        [Op.or]: [
+          { requesterId: userId, receiverId: guestId },
+          { requesterId: guestId, receiverId: userId },
+        ],
+      },
+    });
+
+    if (!bondRequest) {
+      return res.status(200).json({ status: "noBondRequest" });
+    }
+
+    if (
+      bondRequest.requesterId === guestId &&
+      bondRequest.receiverId === userId
+    ) {
+      if (bondRequest.status === "pending") {
+        return res.status(200).json({ status: "pendingRequestReceived" });
+      }
+    }
+
+    switch (bondRequest.status) {
+      case "pending":
+        return res.status(200).json({ status: "pendingRequestSent" });
+      case "accepted":
+        return res.status(200).json({ status: "bond" });
+      default:
+        return res.status(400).json({
+          message: `La solicitud está en estado: ${bondRequest.status}`,
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error al gestionar la solicitud de estado de vinculación",
+    });
   }
 };

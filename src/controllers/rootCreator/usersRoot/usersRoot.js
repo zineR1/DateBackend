@@ -14,7 +14,7 @@ export const createRootUser = async () => {
   const dbUser1 = await User.findOne({ where: { email: root1 } });
   const dbUser2 = await User.findOne({ where: { email: root2 } });
   const dbUser3 = await User.findOne({ where: { email: root3 } });
-  const urlBackend = process.env.URL_BACKEND_FOR_APP;
+  const urlBackend = process.env.URL_API;
 
   if (!dbUser1) {
     const user1 = await User.create({
