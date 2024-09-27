@@ -24,6 +24,8 @@ Receipt.hasMany(PurchasedTicket, { foreignKey: "receiptId" });
 // Relaciones entre usuarios y solicitudes de amistad
 User.hasMany(BondRequest, { as: "SentRequests", foreignKey: "requesterId" });
 User.hasMany(BondRequest, { as: "ReceivedRequests", foreignKey: "receiverId" });
+BondRequest.belongsTo(User, { foreignKey: "requesterId", as: "Requester" }); // Asociación para el que envía
+BondRequest.belongsTo(User, { foreignKey: "receiverId", as: "Receiver" }); // Asociación para el que recibe
 
 // Relaciones entre usuarios y vínculos
 User.belongsToMany(User, {
