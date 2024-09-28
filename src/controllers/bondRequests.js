@@ -79,8 +79,8 @@ export const getPendingBondRequests = async (req, res) => {
       include: [
         {
           model: User,
-          as: "Requester",
-          attributes: ["userId", "name", "lastName", "profilePictures"],
+          as: "Receiver",
+          attributes: ["userId", "name", "lastName","description","city", "profilePictures"],
         },
       ],
     });
@@ -94,8 +94,8 @@ export const getPendingBondRequests = async (req, res) => {
       include: [
         {
           model: User,
-          as: "Receiver",
-          attributes: ["userId", "name", "lastName", "profilePictures"],
+          as: "Requester",
+          attributes: ["userId", "name", "lastName","description","city", "profilePictures"],
         },
       ],
     });
