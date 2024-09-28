@@ -80,7 +80,14 @@ export const getPendingBondRequests = async (req, res) => {
         {
           model: User,
           as: "Receiver",
-          attributes: ["userId", "name", "lastName","description","city", "profilePictures"],
+          attributes: [
+            "userId",
+            "name",
+            "lastName",
+            "description",
+            "city",
+            "profilePictures",
+          ],
         },
       ],
     });
@@ -95,17 +102,21 @@ export const getPendingBondRequests = async (req, res) => {
         {
           model: User,
           as: "Requester",
-          attributes: ["userId", "name", "lastName","description","city", "profilePictures"],
+          attributes: [
+            "userId",
+            "name",
+            "lastName",
+            "description",
+            "city",
+            "profilePictures",
+          ],
         },
       ],
     });
 
-    return res.status(200).json({
-      bondRequestsSent: bondRequestsSent.length ? bondRequestsSent : [],
-      bondRequestReceived: bondRequestReceived.length
-        ? bondRequestReceived
-        : [],
-    });
+    return res
+      .status(200)
+      .json(bondRequestReceived.length ? bondRequestReceived : []);
   } catch (error) {
     console.error("Error fetching bond requests:", error);
     return res.status(500).json({ message: "Error fetching bond requests" });
@@ -147,12 +158,10 @@ export const checkBondRequestsStatus = async (req, res) => {
       if (isRequestFromUser) {
         return res.status(200).json({ status: "pendingRequestSent" });
       } else if (isRequestFromGuest) {
-        return res
-          .status(200)
-          .json({
-            status: "pendingRequestReceived",
-            requestId: bondRequest.requestId,
-          });
+        return res.status(200).json({
+          status: "pendingRequestReceived",
+          requestId: bondRequest.requestId,
+        });
       }
     }
 
