@@ -107,10 +107,21 @@ export const createUser = async (req, res) => {
       `${urlBackend}/public/imagen/defaultPic.png`,
       `${urlBackend}/public/imagen/defaultPic.png`,
     ];
-    newUSer.events = [];
+    newUSer.events = [2];
     await newUSer.save();
 
-    res.json({ success: true, message: "Creado con éxito" });
+    const token = Utils.tokenGenerator(newUSer);
+    res
+      .cookie("token", token, {
+        maxAge: 60 * 60 * 1000,
+        httpOnly: true,
+      })
+      .json({
+        id: newUSer.userId,
+        success: true,
+        token: token,
+        message: "Creado con éxito",
+      });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
