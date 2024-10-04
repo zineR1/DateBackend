@@ -19,6 +19,9 @@ const app = express();
 const allowedOrigins = [
   "https://datefrontendpruebas.onrender.com",
   "https://datefrontendpruebas.onrender.com/#",
+  "https://vincufyappmobile.onrender.com",
+  "https://vincufy.com",
+  "http://vincufy.com",
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:8081",
