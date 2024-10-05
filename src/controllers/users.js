@@ -12,7 +12,6 @@ dotenv.config();
 
 const urlBackend = process.env.URL_API;
 
-
 export const getUsers = async (req, res) => {
   try {
     const users = await User.findAll();
@@ -158,6 +157,7 @@ export const updateUser = async (req, res) => {
     sentimentalSituation,
     phone,
     events,
+    contactMethod,
   } = req.body.payload;
   try {
     let user = await User.findByPk(id);
@@ -191,6 +191,7 @@ export const updateUser = async (req, res) => {
       : user.sentimentalSituation;
     user.phone = phone ? phone : user.phone;
     user.instagramToken = user.instagramToken;
+    user.contactMethod = contactMethod ? contactMethod : user.contactMethod;
     await user.save();
     res.json(user);
   } catch (error) {
