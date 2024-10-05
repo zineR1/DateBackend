@@ -62,11 +62,6 @@ export const User = sequelize.define("User", {
   },
   contactMethods: {
     type: DataTypes.JSON,
-    defaultValue: {
-      linkedin: null,
-      instagram: null,
-      whatsapp: null,
-      mail: null,
-    },
+    defaultValue: {},
   },
 });
