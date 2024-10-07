@@ -8,7 +8,7 @@ import colors from "colors";
 const PORT = process.env.PORT || 3001;
 
 async function main() {
-  await sequelize.sync({ force: true });
+  await sequelize.sync({ force: false });
   const server = http.createServer(app);
 
   ///servidor con sockets
