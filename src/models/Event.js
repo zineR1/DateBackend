@@ -13,19 +13,32 @@ export const Event = sequelize.define("Event", {
   eventName: {
     type: DataTypes.STRING,
   },
-  eventDate: {
+  startEventDate: {
     type: DataTypes.DATE,
   },
-  startTime: {
+  endEventDate: {
+    type: DataTypes.DATE,
+  },
+  startEventTime: {
     type: DataTypes.TIME,
   },
-  endTime: {
+  endEventTime: {
     type: DataTypes.TIME,
+  },
+  startPreEventTime: {
+    type: DataTypes.TIME,
+  },
+  preEventDate: {
+    type: DataTypes.DATE,
   },
   description: {
     type: DataTypes.STRING,
   },
-  status: {
+  eventStatus: {
+    type: DataTypes.STRING,
+    defaultValue: "pendiente",
+  },
+  preEventStatus: {
     type: DataTypes.STRING,
     defaultValue: "pendiente",
   },

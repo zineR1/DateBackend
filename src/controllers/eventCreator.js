@@ -5,7 +5,6 @@ import fs from "fs";
 
 const urlBackend = process.env.URL_API;
 
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "src/public/events");
@@ -50,10 +49,15 @@ export const createEvent = async (req, res) => {
   const {
     eventName,
     eventDate,
-    startTime,
-    endTime,
+    startEventDate,
+    endEventDate,
+    startEventTime,
+    endEventTime,
+    startPreEventTime,
+    preEventDate,
+    eventStatus,
+    preEventStatus,
     description,
-    status,
     location,
     ticketType,
     tickets,
@@ -66,17 +70,22 @@ export const createEvent = async (req, res) => {
       flyer: req.filename
         ? req.filename
         : `${urlBackend}/public/imagen/defaultEventPic.png`,
-      eventName,
-      eventDate,
-      startTime,
-      endTime,
-      description,
-      status,
-      location,
-      ticketType,
-      tickets,
-      organizers,
-      bankDetails,
+        eventName,
+        eventDate,
+        startEventDate,
+        endEventDate,
+        startEventTime,
+        endEventTime,
+        startPreEventTime,
+        preEventDate,
+        eventStatus,
+        preEventStatus,
+        description,
+        location,
+        ticketType,
+        tickets,
+        organizers,
+        bankDetails,
     });
     res.json(newEvent);
   } catch (error) {
@@ -88,11 +97,15 @@ export const editEvent = async (req, res) => {
   const { id } = req.params;
   const {
     eventName,
-    eventDate,
-    startTime,
-    endTime,
+    startEventDate,
+    endEventDate,
+    startEventTime,
+    endEventTime,
+    startPreEventTime,
+    preEventDate,
+    eventStatus,
+    preEventStatus,
     description,
-    status,
     location,
     ticketType,
     tickets,
@@ -108,11 +121,15 @@ export const editEvent = async (req, res) => {
     });
 
     event.eventName = eventName;
-    event.eventDate = eventDate;
-    event.startTime = startTime;
-    event.endTime = endTime;
+    event.startEventDate= startEventDate;
+    event.endEventDate=endEventDate,
+    event.startEventTime=startEventTime,
+    event.endEventTime=endEventTime,
+    event.startPreEventTime=startPreEventTime,
+    event.preEventDate=preEventDate,
+    event.eventStatus=eventStatus,
+    event.preEventStatus=preEventStatus,
     event.description = description;
-    event.status = status;
     event.location = location;
     event.ticketType = ticketType;
     event.tickets = tickets;

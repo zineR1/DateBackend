@@ -1,6 +1,7 @@
 import { Event } from "../../../models/Event.js";
 import colors from "colors";
 import dotenv from "dotenv";
+import { createGuestRoot } from "../guestsRoot/guestsRoot.js";
 
 dotenv.config();
 
@@ -11,16 +12,19 @@ export const createEventRoot = async () => {
   const dbEvent2 = await Event.findOne({ where: { eventName: eventRoot2 } });
   const urlBackend = process.env.URL_API;
 
-
   if (!dbEvent1) {
     const event1 = await Event.create({
       flyer: `${urlBackend}/public/imagen/defaultPicEvent.png`,
       eventName: eventRoot1,
-      eventDate: "02-04-2026",
-      startTime: "00:00",
-      endTime: "06:00",
+      startEventDate: "2024-09-26",
+      endEventDate: "2024-12-26",
+      startEventTime: "10:00:00",
+      endEventTime: "24:00:00",
+      startPreEventTime: "02:00:00",
+      preEventDate: "2024-12-26",
       description: "Fiesta del Sugus",
-      status: "pendiente",
+      eventStatus: "en curso",
+      preEventStatus: "en curso",
       location: "Cordoba",
       ticketType: "multiple",
       tickets: [
@@ -85,11 +89,15 @@ export const createEventRoot = async () => {
     const event2 = await Event.create({
       flyer: `${urlBackend}/public/imagen/defaultPicEvent.png`,
       eventName: eventRoot2,
-      eventDate: "02-04-2026",
-      startTime: "00:00",
-      endTime: "06:00",
+      startEventDate: "2024-09-26",
+      endEventDate: "2024-12-26",
+      startEventTime: "10:00:00",
+      endEventTime: "24:00:00",
+      startPreEventTime: "02:00:00",
+      preEventDate: "2024-12-26",
       description: "Fiesta del Marchi",
-      status: "pendiente",
+      eventStatus: "en curso",
+      preEventStatus: "en curso",
       location: "Cordoba",
       ticketType: "multiple",
       tickets: [
@@ -143,8 +151,9 @@ export const createEventRoot = async () => {
     });
     if (event2) {
       console.log(colors.bold.magenta("----> event2 created"));
+      await createGuestRoot();
     } else {
-      console.log(colors.bold.magenta("----> envent2 already exists"));
+      console.log(colors.bold.magenta("----> event2 already exists"));
     }
   }
 };

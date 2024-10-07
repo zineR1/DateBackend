@@ -12,7 +12,6 @@ dotenv.config();
 
 const urlBackend = process.env.URL_API;
 
-
 export const getUsers = async (req, res) => {
   try {
     const users = await User.findAll();
@@ -107,10 +106,21 @@ export const createUser = async (req, res) => {
       `${urlBackend}/public/imagen/defaultPic.png`,
       `${urlBackend}/public/imagen/defaultPic.png`,
     ];
-    newUSer.events = [];
+    newUSer.events = [2];
     await newUSer.save();
 
-    res.json({ success: true, message: "Creado con éxito" });
+    const token = Utils.tokenGenerator(newUSer);
+    res
+      .cookie("token", token, {
+        maxAge: 60 * 60 * 1000,
+        httpOnly: true,
+      })
+      .json({
+        id: newUSer.userId,
+        success: true,
+        token: token,
+        message: "Creado con éxito",
+      });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -147,29 +157,21 @@ export const updateUser = async (req, res) => {
     sentimentalSituation,
     phone,
     events,
+    contactMethods,
   } = req.body.payload;
+
   try {
     let user = await User.findByPk(id);
-    // let existe = (user.events[0] && user.events[0] !== null) && user.events.find((event) => event.id === events.id)
-    //   ? true
-    //   : false;
-    // if (existe) {
-    //   let filtrados = user.events.filter((event) => event.id !== events.id);
-
-    //   user.events = [...filtrados, events];
-    // } else {
     if (!user.events[0] || user.events[0] === null) {
       user.events = [events];
     } else {
       user.events = [...user.events, events];
     }
-    // }
 
     user.name = name ? name : user.name;
     user.lastName = lastName ? lastName : user.lastName;
     user.userName = userName ? userName : user.userName;
     user.email = email ? email : user.email;
-    // user.password = user.password;
     user.description = description ? description : user.description;
     user.age = dateOfBirth ? calculateExactAge(dateOfBirth) : user.age;
     user.dateOfBirth = dateOfBirth ? dateOfBirth : user.dateOfBirth;
@@ -180,6 +182,7 @@ export const updateUser = async (req, res) => {
       : user.sentimentalSituation;
     user.phone = phone ? phone : user.phone;
     user.instagramToken = user.instagramToken;
+    user.contactMethods = contactMethods ? contactMethods : user.contactMethods;
     await user.save();
     res.json(user);
   } catch (error) {

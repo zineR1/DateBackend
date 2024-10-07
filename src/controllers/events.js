@@ -154,11 +154,12 @@ export const deleteEvent = async (req, res) => {
 
 export const getEventById = async (req, res) => {
   const { id } = req.params;
+  const eventId = parseInt(id, 10);
 
   try {
     const event = await Event.findOne({
       where: {
-        eventId: id,
+        eventId: eventId,
       },
     });
     if (!event) {
@@ -506,6 +507,7 @@ export const getEventGuests = async (req, res) => {
             "city",
             "phone",
             "sentimentalSituation",
+            "contactMethods"
           ],
         },
       ],

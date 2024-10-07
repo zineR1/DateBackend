@@ -3,6 +3,7 @@ import { createGuestRoot } from "../guestsRoot/guestsRoot.js";
 import Utils from "../../../utils/index.js";
 import colors from "colors";
 import dotenv from "dotenv";
+import { createEventRoot } from "../eventsRoot/eventsRoot.js";
 
 dotenv.config();
 
@@ -87,7 +88,6 @@ export const createRootUser = async () => {
 
     if (user2) {
       console.log(colors.bold.green("----> admin2 created"));
-      // createGuestRoot();
     }
   } else {
     console.log(colors.bold.green("----> admin2 already exists"));
@@ -126,7 +126,7 @@ export const createRootUser = async () => {
 
     if (user3) {
       console.log(colors.bold.green("----> admin3 created"));
-      createGuestRoot();
+     await createEventRoot()
     }
   } else {
     console.log(colors.bold.green("----> admin3 already exists"));

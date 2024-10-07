@@ -10,7 +10,7 @@ import routerBonds from "./routes/bonds.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import initPassport from "./config/passport.config.js";
-import bodyParser from 'body-parser';
+import bodyParser from "body-parser";
 import cors from "cors";
 import "./models/asociations.js";
 
@@ -19,12 +19,16 @@ const app = express();
 const allowedOrigins = [
   "https://datefrontendpruebas.onrender.com",
   "https://datefrontendpruebas.onrender.com/#",
+  "https://vincufyappmobile.onrender.com",
+  "https://vincufy.com",
+  "http://vincufy.com",
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:8081",
   "http://localhost:8082",
-  "exp://192.168.100.31:8081",
-  "exp://192.168.100.31:8082",
+  "http://localhost:19006",
+  `exp://${process.env.LOCAL_NETWORK_IP}:8081`,
+  `exp://${process.env.LOCAL_NETWORK_IP}:8082`,
 ];
 const corsOptions = {
   origin: function (origin, callback) {
