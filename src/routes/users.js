@@ -4,6 +4,7 @@ import {
   getUserById,
   getUserEvents,
   updateUser,
+  updateNotificationToken,
   deleteUser,
   correoReset,
   upload,
@@ -25,6 +26,7 @@ router.post(
 );
 //router.post('/users/:id/updateImage', upload.single('file', updatePicture))
 router.put("/users/:id", updateUser);
+router.put("/users/:id/updateNotificationToken", updateNotificationToken);
 router.delete("/users/:id", deleteUser);
 router.delete("/users/:id/deleteImage/:posicion", deletePicture);
 // router.put("/users/:id/events");
