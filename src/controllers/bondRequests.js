@@ -2,11 +2,26 @@ import { User } from "../models/User.js";
 import { Bond } from "../models/Bond.js";
 import { BondRequest } from "../models/BondRequest.js";
 import { Op } from "sequelize";
+import colors from "colors";
 
 export const sendBondRequest = async (req, res) => {
   const { requesterId, receiverId, eventId } = req.body;
 
   try {
+    const user = await User.findByPk(requesterId);
+    if (user) {
+      const token = user.notificationToken
+      if (token) {
+        const response = await sendWebNotification(token, "Holaa", "Amigouuu", "MyBondsStack")
+        console.log(colors.bold.green("ACA EXITO ---------------->"));
+        console.log({ response })
+      } else {
+        console.log(colors.bold.green("ACA NO_TOKEN ---------------->"));
+      }
+    } else {
+      console.log(colors.bold.green("ACA NO_USER ---------------->"));
+    }
+
     const existingRequest = await BondRequest.findOne({
       where: { requesterId, receiverId, status: "pending" },
     });
