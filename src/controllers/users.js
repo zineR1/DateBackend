@@ -2,6 +2,7 @@ import multer from "multer";
 import { User } from "../models/User.js";
 import { Event } from "../models/Event.js";
 import { Receipt } from "../models/Receipt.js";
+import { Guest } from "../models/Guest.js";
 import Utils from "../utils/index.js";
 import emailService from "../services/email.service.js";
 import path from "path";
@@ -106,9 +107,56 @@ export const createUser = async (req, res) => {
       `${urlBackend}/public/imagen/defaultPic.png`,
       `${urlBackend}/public/imagen/defaultPic.png`,
     ];
-    newUSer.events = [2];
     await newUSer.save();
 
+    const token = Utils.tokenGenerator(newUSer);
+    res
+      .cookie("token", token, {
+        maxAge: 60 * 60 * 1000,
+        httpOnly: true,
+      })
+      .json({
+        id: newUSer.userId,
+        success: true,
+        token: token,
+        message: "Creado con éxito",
+      });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const createUserSiglo21 = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({
+    where: {
+      email: email,
+    },
+  });
+
+  if (user) {
+    return res.json({ success: false, message: "Este usuario ya existe" });
+  }
+
+  const nwPass = Utils.createHash(password);
+  try {
+    const newUSer = await User.create({
+      email: email,
+      password: nwPass,
+      events: [2],
+    });
+    newUSer.profilePictures = [
+      `${urlBackend}/public/imagen/defaultPic.png`,
+      `${urlBackend}/public/imagen/defaultPic.png`,
+      `${urlBackend}/public/imagen/defaultPic.png`,
+    ];
+    console.log(newUSer, "NEWUSER");
+    await newUSer.save();
+    await Guest.create({
+      userId: newUSer.userId,
+      eventId: 2,
+    });
     const token = Utils.tokenGenerator(newUSer);
     res
       .cookie("token", token, {
@@ -162,12 +210,13 @@ export const updateUser = async (req, res) => {
 
   try {
     let user = await User.findByPk(id);
-    if (!user.events[0] || user.events[0] === null) {
-      user.events = [events];
-    } else {
-      user.events = [...user.events, events];
+    if (events) {
+      if (!user.events[0]) {
+        user.events = [events];
+      } else {
+        user.events = [...user.events, events];
+      }
     }
-
     user.name = name ? name : user.name;
     user.lastName = lastName ? lastName : user.lastName;
     user.userName = userName ? userName : user.userName;
