@@ -88,7 +88,7 @@ export const createEventRoot = async () => {
   if (!dbEvent2) {
     const event2 = await Event.create({
       flyer: `${urlBackend}/public/imagen/defaultPicEvent.png`,
-      eventName: eventRoot2,
+      eventName: 'Feria 21',
       startEventDate: "2024-09-26",
       endEventDate: "2024-12-26",
       startEventTime: "10:00:00",
