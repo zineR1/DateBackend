@@ -88,14 +88,14 @@ export const createEventRoot = async () => {
   if (!dbEvent2) {
     const event2 = await Event.create({
       flyer: `${urlBackend}/public/imagen/defaultPicEvent.png`,
-      eventName: 'Feria 21',
-      startEventDate: "2024-09-26",
-      endEventDate: "2024-12-26",
+      eventName: 'Feria 21 (Semana21)',
+      startEventDate: "2024-10-15",
+      endEventDate: "2024-10-18",
       startEventTime: "10:00:00",
-      endEventTime: "24:00:00",
-      startPreEventTime: "02:00:00",
-      preEventDate: "2024-12-26",
-      description: "Fiesta del Marchi",
+      endEventTime: "17:00:00",
+      startPreEventTime: "17:00:00",
+      preEventDate: "2024-10-14",
+      description: "Feria 21 Siglo 21",
       eventStatus: "en curso",
       preEventStatus: "en curso",
       location: "Cordoba",
@@ -143,10 +143,10 @@ export const createEventRoot = async () => {
       ],
       organizers: [2],
       bankDetails: {
-        titular: "Lucas Marchi",
-        cbu: "121223235534",
-        alias: "TRONCO.PARED.MP",
-        banco: "Santander Río",
+        titular: "",
+        cbu: "",
+        alias: "",
+        banco: "",
       },
     });
     if (event2) {

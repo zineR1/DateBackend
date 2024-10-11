@@ -20,6 +20,7 @@ const allowedOrigins = [
   "https://datefrontendpruebas.onrender.com",
   "https://datefrontendpruebas.onrender.com/#",
   "https://vincufyappmobile.onrender.com",
+  "https://www.vincufy.com",
   "https://vincufy.com",
   "http://vincufy.com",
   "http://localhost:3000",
