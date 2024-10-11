@@ -107,6 +107,7 @@ export const getPendingBondRequests = async (req, res) => {
             "name",
             "lastName",
             "description",
+            "age",
             "city",
             "profilePictures",
             "contactMethods",
