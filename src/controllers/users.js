@@ -238,6 +238,19 @@ export const updateUser = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+export const updateNotificationToken = async (req, res) => {
+  const { id } = req.params;
+  const { notificationToken } = req.body.payload;
+
+  try {
+    let user = await User.findByPk(id);
+    user.notificationToken = notificationToken ? notificationToken : user.notificationToken;
+    await user.save();
+    res.json(user);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 export const deleteUser = async (req, res) => {
   const { id } = req.params;

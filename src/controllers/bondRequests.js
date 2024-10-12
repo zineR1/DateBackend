@@ -2,11 +2,25 @@ import { User } from "../models/User.js";
 import { Bond } from "../models/Bond.js";
 import { BondRequest } from "../models/BondRequest.js";
 import { Op } from "sequelize";
+import { sendWebNotification } from "../services/firebase/webNotification.service.js";
 
 export const sendBondRequest = async (req, res) => {
   const { requesterId, receiverId, eventId } = req.body;
 
   try {
+    const user = await User.findByPk(requesterId);
+    if (user) {
+      const token = user.notificationToken;
+      if (token) {
+        await sendWebNotification({
+          token,
+          title: "Holaa",
+          body: "Amigouuu",
+          link: "MyBondsStack",
+        });
+      }
+    }
+
     const existingRequest = await BondRequest.findOne({
       where: { requesterId, receiverId, status: "pending" },
     });
@@ -70,27 +84,27 @@ export const getPendingBondRequests = async (req, res) => {
   const { userId, eventId } = req.params;
 
   try {
-    let bondRequestsSent = await BondRequest.findAll({
-      where: {
-        requesterId: userId,
-        status: "pending",
-        eventId: eventId,
-      },
-      include: [
-        {
-          model: User,
-          as: "Receiver",
-          attributes: [
-            "userId",
-            "name",
-            "lastName",
-            "description",
-            "city",
-            "profilePictures",
-          ],
-        },
-      ],
-    });
+    // let bondRequestsSent = await BondRequest.findAll({
+    //   where: {
+    //     requesterId: userId,
+    //     status: "pending",
+    //     eventId: eventId,
+    //   },
+    //   include: [
+    //     {
+    //       model: User,
+    //       as: "Receiver",
+    //       attributes: [
+    //         "userId",
+    //         "name",
+    //         "lastName",
+    //         "description",
+    //         "city",
+    //         "profilePictures",
+    //       ],
+    //     },
+    //   ],
+    // });
 
     let bondRequestReceived = await BondRequest.findAll({
       where: {
