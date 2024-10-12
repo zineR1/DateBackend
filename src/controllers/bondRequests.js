@@ -2,7 +2,7 @@ import { User } from "../models/User.js";
 import { Bond } from "../models/Bond.js";
 import { BondRequest } from "../models/BondRequest.js";
 import { Op } from "sequelize";
-import colors from "colors";
+import { sendWebNotification } from "../services/firebase/webNotification.service.js";
 
 export const sendBondRequest = async (req, res) => {
   const { requesterId, receiverId, eventId } = req.body;
@@ -10,16 +10,15 @@ export const sendBondRequest = async (req, res) => {
   try {
     const user = await User.findByPk(requesterId);
     if (user) {
-      const token = user.notificationToken
+      const token = user.notificationToken;
       if (token) {
-        const response = await sendWebNotification(token, "Holaa", "Amigouuu", "MyBondsStack")
-        console.log(colors.bold.green("ACA EXITO ---------------->"));
-        console.log({ response })
-      } else {
-        console.log(colors.bold.green("ACA NO_TOKEN ---------------->"));
+        await sendWebNotification({
+          token,
+          title: "Holaa",
+          body: "Amigouuu",
+          link: "MyBondsStack",
+        });
       }
-    } else {
-      console.log(colors.bold.green("ACA NO_USER ---------------->"));
     }
 
     const existingRequest = await BondRequest.findOne({
@@ -85,27 +84,27 @@ export const getPendingBondRequests = async (req, res) => {
   const { userId, eventId } = req.params;
 
   try {
-    let bondRequestsSent = await BondRequest.findAll({
-      where: {
-        requesterId: userId,
-        status: "pending",
-        eventId: eventId,
-      },
-      include: [
-        {
-          model: User,
-          as: "Receiver",
-          attributes: [
-            "userId",
-            "name",
-            "lastName",
-            "description",
-            "city",
-            "profilePictures",
-          ],
-        },
-      ],
-    });
+    // let bondRequestsSent = await BondRequest.findAll({
+    //   where: {
+    //     requesterId: userId,
+    //     status: "pending",
+    //     eventId: eventId,
+    //   },
+    //   include: [
+    //     {
+    //       model: User,
+    //       as: "Receiver",
+    //       attributes: [
+    //         "userId",
+    //         "name",
+    //         "lastName",
+    //         "description",
+    //         "city",
+    //         "profilePictures",
+    //       ],
+    //     },
+    //   ],
+    // });
 
     let bondRequestReceived = await BondRequest.findAll({
       where: {

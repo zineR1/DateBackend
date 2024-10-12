@@ -1,4 +1,4 @@
-import { messaging } from "./firebaseAdmin.service.js";
+import { messaging } from './service_key.js';
 
 export const sendWebNotification = async ({ token, title, body, link }) => {
     return await messaging.send({
