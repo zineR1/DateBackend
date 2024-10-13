@@ -244,7 +244,9 @@ export const updateNotificationToken = async (req, res) => {
 
   try {
     let user = await User.findByPk(id);
-    user.notificationToken = notificationToken ? notificationToken : user.notificationToken;
+    user.notificationToken = notificationToken
+      ? notificationToken
+      : user.notificationToken;
     await user.save();
     res.json(user);
   } catch (error) {
@@ -378,7 +380,6 @@ export const upload = multer({
 
 export const deletePicture = async (req, res) => {
   const { id, posicion } = req.params;
-  console.log({ id, posicion });
 
   try {
     const user = await User.findOne({
@@ -400,11 +401,19 @@ export const deletePicture = async (req, res) => {
 
     const imagePath = user.profilePictures[posicion];
     let arr = imagePath.split("/");
-    fs.unlink(`src/public/imgs/${arr[5]}`, function (err) {
-      if (err) throw err;
-      // if no error, file has been deleted successfully
-      console.log("File deleted!");
-    });
+    const fileName = arr[arr.length - 1];
+    if (fileName !== "defaultPic.png") {
+      try {
+        fs.unlink(`src/public/imgs/${arr[5]}`, function (err) {
+          if (err) throw err;
+          console.log("File deleted!");
+        });
+      } catch (err) {
+        console.log(err, "We couldn't delete this pic");
+      }
+    } else {
+      console.log(`We can't delete default pic for user ${id}`);
+    }
 
     if (posicion == 0) {
       user.profilePictures = [
