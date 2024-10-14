@@ -50,16 +50,17 @@ export const respondToBondRequest = async (req, res) => {
 
   try {
     const bondRequest = await BondRequest.findByPk(requestId);
-
-    const user = await User.findByPk(requesterId);
+    const user = await User.findByPk(bondRequest.requesterId);
     if (user) {
       const token = user.notificationToken;
-      if (token) {
+      const name = user.name;
+      if (token && name) {
         await sendWebNotification({
           token,
-          title: "Holaa",
-          body: "Amigouuu",
+          title: "Vincufy",
+          body: `${name} aceptó tu solicitud de vinculación. Escribile a través de sus métodos de contacto `,
           link: "MyBondsStack",
+          icon: "../public/imagen/icon.png",
         });
       }
     }
