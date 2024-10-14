@@ -2,25 +2,11 @@ import { User } from "../models/User.js";
 import { Bond } from "../models/Bond.js";
 import { BondRequest } from "../models/BondRequest.js";
 import { Op } from "sequelize";
-import { sendWebNotification } from "../services/firebase/webNotification.service.js";
 
 export const sendBondRequest = async (req, res) => {
   const { requesterId, receiverId, eventId } = req.body;
 
   try {
-    const user = await User.findByPk(receiverId);
-    if (user) {
-      const token = user.notificationToken;
-      if (token) {
-        await sendWebNotification({
-          token,
-          title: "Vincufy",
-          body: "Recibiste una nueva solicitud de vinculación. ¡Descubrí quién es!",
-          link: "BondRequests",
-          icon: "../public/imagen/icon.png",
-        });
-      }
-    }
 
     const existingRequest = await BondRequest.findOne({
       where: { requesterId, receiverId, status: "pending" },
@@ -50,20 +36,6 @@ export const respondToBondRequest = async (req, res) => {
 
   try {
     const bondRequest = await BondRequest.findByPk(requestId);
-    const user = await User.findByPk(bondRequest.requesterId);
-    if (user) {
-      const token = user.notificationToken;
-      const name = user.name;
-      if (token && name) {
-        await sendWebNotification({
-          token,
-          title: "Vincufy",
-          body: `${name} aceptó tu solicitud de vinculación. Escribile a través de sus métodos de contacto `,
-          link: "MyBondsStack",
-          icon: "../public/imagen/icon.png",
-        });
-      }
-    }
 
     if (!bondRequest) {
       return res.status(404).json({ message: "Solicitud no encontrada." });

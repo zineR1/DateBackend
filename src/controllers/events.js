@@ -5,7 +5,6 @@ import { Receipt } from "../models/Receipt.js";
 import { Guest } from "../models/Guest.js";
 import multer from "multer";
 import path from "path";
-import { sendWebNotification } from "../services/firebase/webNotification.service.js";
 
 export const getEvents = async (req, res) => {
   try {
