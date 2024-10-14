@@ -8,15 +8,16 @@ export const sendBondRequest = async (req, res) => {
   const { requesterId, receiverId, eventId } = req.body;
 
   try {
-    const user = await User.findByPk(requesterId);
+    const user = await User.findByPk(receiverId);
     if (user) {
       const token = user.notificationToken;
       if (token) {
         await sendWebNotification({
           token,
-          title: "Holaa",
-          body: "Amigouuu",
-          link: "MyBondsStack",
+          title: "Vincufy",
+          body: "Recibiste una nueva solicitud de vinculación. ¡Descubrí quién es!",
+          link: "BondRequests",
+          icon: "../public/imagen/icon.png",
         });
       }
     }
@@ -49,6 +50,19 @@ export const respondToBondRequest = async (req, res) => {
 
   try {
     const bondRequest = await BondRequest.findByPk(requestId);
+
+    const user = await User.findByPk(requesterId);
+    if (user) {
+      const token = user.notificationToken;
+      if (token) {
+        await sendWebNotification({
+          token,
+          title: "Holaa",
+          body: "Amigouuu",
+          link: "MyBondsStack",
+        });
+      }
+    }
 
     if (!bondRequest) {
       return res.status(404).json({ message: "Solicitud no encontrada." });
