@@ -17,6 +17,7 @@ export const sendBondRequest = async (req, res) => {
           title: "Vincufy",
           body: "Recibiste una nueva solicitud de vinculación. ¡Descubrí quién es!",
           link: "BondRequests",
+          icon: "../public/imagen/icon.png",
         });
       }
     }
