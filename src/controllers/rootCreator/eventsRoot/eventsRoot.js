@@ -93,7 +93,7 @@ export const createEventRoot = async () => {
       endEventDate: "2024-10-18",
       startEventTime: "10:00:00",
       endEventTime: "17:00:00",
-      startPreEventTime: "16:00:00",
+      startPreEventTime: "20:00:00",
       preEventDate: "2024-10-14",
       description: "Feria 21 Siglo 21",
       eventStatus: "en curso",
