@@ -350,11 +350,11 @@ export const correoReset = async (req, res) => {
             </div>
           
           `;
-    const result = await emailService.sendEmail(
-      user.email,
-      "Hola Como estas",
-      page
-    );
+    // const result = await emailService.sendEmail(
+    //   user.email,
+    //   "Hola Como estas",
+    //   page
+    // );
     res.send("email enviado");
   } catch (error) {
     res.send(error.message);
